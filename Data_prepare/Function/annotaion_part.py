@@ -1,11 +1,11 @@
 import os
 import json
 
-def make_annotation(dataset_path,label_filename):
+def make_annotation(dataset_path,label_filename,direc_root = "/opt/ml/final-project-level3-cv-13/Data_prepare/Fish_dataset/output/new_json_set"):
     ###########annotation Part ###########
     #디렉토리 없으면 만들어 주는 코드 -> 새로운 json이 담길 폴더를 만들기
     
-    direc_root = "/opt/ml/jzone_workspace/Data_prepare/Fish_dataset/output/new_json_set"
+    
     try:
         if not os.path.exists(direc_root):
             os.makedirs(direc_root)
