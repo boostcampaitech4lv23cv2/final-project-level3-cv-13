@@ -1,10 +1,9 @@
 import os
 import json
 
-def make_annotation(dataset_path,label_filename,direc_root = "/opt/ml/final-project-level3-cv-13/Data_prepare/Fish_dataset/output/new_json_set"):
+def make_annotation(dataset_path,label_filename,direc_root = "/opt/ml/jzone_workspace/Data_prepare/Fish_dataset/output/new_json_set"):
     ###########annotation Part ###########
     #디렉토리 없으면 만들어 주는 코드 -> 새로운 json이 담길 폴더를 만들기
-    
     
     try:
         if not os.path.exists(direc_root):
@@ -15,10 +14,11 @@ def make_annotation(dataset_path,label_filename,direc_root = "/opt/ml/final-proj
     anns_path = dataset_path + '/' + label_filename
     anns_name_list = os.listdir(anns_path)
     for count ,anns_folder_name in enumerate (anns_name_list): #gbt_fish_dtset1~4.json
+        print("Making anns process [",count+1,"/",len(anns_name_list),"]")
         if anns_folder_name[-5:] != ".json":
-            print(anns_folder_name," is not json")
+            print(anns_folder_name," is not json \n\n")
         else:
-            print("Making anns process [",count+1,"/",len(anns_name_list),"]")
+            
             tmp_anns_path = anns_path +'/'+ anns_folder_name
             with open(tmp_anns_path, 'r') as f: # Read annotations
                 anns = json.loads(f.read())
@@ -40,7 +40,7 @@ def make_annotation(dataset_path,label_filename,direc_root = "/opt/ml/final-proj
             print("## Number of categories_id : ", len(categories_id))
             print("## Number of img_file_name : ", len(img_file_name))
             print("## Number of bbox : ", len(bbox))
-            print("################################## \n")
+            print("##################################")
             new_json = {}
             for idx in range (len(img_file_name)):
                 new_json[idx]= {'img_file_name' : img_file_name[idx][2:], 
@@ -48,7 +48,7 @@ def make_annotation(dataset_path,label_filename,direc_root = "/opt/ml/final-proj
                                 "bbox" : bbox[idx]}
 
             with open(direc_root+'/'+'[new]_'+anns_folder_name, "w") as f:
-                print("new_json file is complete to create at ",direc_root+'/'+'[new]'+anns_folder_name)
+                print("new_json file is complete to create at \n",direc_root+'/'+'[new]'+anns_folder_name,"\n\n")
                 json.dump(new_json, f, indent = 4)
 
     return categories
