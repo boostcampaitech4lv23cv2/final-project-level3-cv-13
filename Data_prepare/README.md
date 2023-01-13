@@ -72,15 +72,15 @@ Please rename the Dirctories like bottom Structure <br/><br/><br/>
 
 ┃ ┃ ┃ ┗ 📜gbt_fish_dtset4.json
 
-┃ ┃ ┃ ┗ 📂dtset
+┃ ┃ ┗ 📂dtset
 
-┃ ┃ ┃ ┃ ┣ 📂dtset1
+┃ ┃ ┃ ┣ 📂dtset1
 
-┃ ┃ ┃ ┃ ┣ 📂dtset2
+┃ ┃ ┃ ┣ 📂dtset2
 
-┃ ┃ ┃ ┃ ┣ 📂dtset3
+┃ ┃ ┃ ┣ 📂dtset3
 
-┃ ┃ ┃ ┃ ┗ 📂dtset4
+┃ ┃ ┃ ┗ 📂dtset4
 
 ┃ ┗ 📂Validation
 
@@ -100,13 +100,30 @@ Please rename the Dirctories like bottom Structure <br/><br/><br/>
 
 
 ### 다음과 같은 세팅을 마친 후
+<br/> 
 
-## 5. Fish_Data_Crop.py를 실행 시켜준다 
+## 5. gbt_fish_dtset_val_images.json를 열어 
+
+<br/> 
+"categories":[]
+<br/> <br/> 
+를
+
+<br/>
+
+
+"categories":[{"name":"Olive flounder","supercategory":"fish","id":1},{"name":"Korea rockfish","supercategory":"fish","id":2},{"name":"Red seabream","supercategory":"fish","id":3},{"name":"Black porgy","supercategory":"fish","id":4},{"name":"Rock bream","supercategory":"fish","id":5}]
+
+<br/> 
+로  바꿔주자
+<br/> <br/> 
+
+## 6. Fish_Data_Crop.py를 실행 시켜준다 
 경로 등은 설정
 <br/> 
 <br/> 
 
-## 6. 실행 이후 다음과 같은 파일 구조가 만들어졌는지 확인
+## 7. 실행 이후 다음과 같은 파일 구조가 만들어졌는지 확인
 
 # 
 
