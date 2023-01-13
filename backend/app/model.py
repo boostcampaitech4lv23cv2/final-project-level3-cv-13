@@ -15,7 +15,7 @@ class EfficientNetB0(nn.Module):
     
 if __name__=="__main__":
     model=EfficientNetB0()
-    x=torch.randn(1, 3, 224, 224, requires_grad=True)
+    x=torch.randn(1, 3, 512,512, requires_grad=True)
     torch.onnx.export(model,
                       x,
                       "ImageClassifier.onnx",
