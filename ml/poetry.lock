@@ -3103,6 +3103,7 @@ typing-extensions = "*"
 [package.source]
 type = "url"
 url = "https://download.pytorch.org/whl/cu110/torch-1.7.1%2Bcu110-cp38-cp38-linux_x86_64.whl"
+
 [[package]]
 name = "torchaudio"
 version = "0.7.2"
@@ -3120,6 +3121,23 @@ torch = "1.7.1"
 [package.source]
 type = "url"
 url = "https://download.pytorch.org/whl/torchaudio-0.7.2-cp38-cp38-linux_x86_64.whl"
+
+[[package]]
+name = "torchsummaryx"
+version = "1.3.0"
+description = "Improved visualization tool of torchsummary."
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "torchsummaryX-1.3.0-py3-none-any.whl", hash = "sha256:185d7c0389bf7743d0a502875635c4515088ec63165938b0ffdaef7de45bfaea"},
+]
+
+[package.dependencies]
+numpy = "*"
+pandas = "*"
+torch = "*"
+
 [[package]]
 name = "torchvision"
 version = "0.8.2+cu110"
@@ -3142,6 +3160,7 @@ scipy = ["scipy"]
 [package.source]
 type = "url"
 url = "https://download.pytorch.org/whl/cu110/torchvision-0.8.2%2Bcu110-cp38-cp38-linux_x86_64.whl"
+
 [[package]]
 name = "tornado"
 version = "6.2"
@@ -3370,4 +3389,4 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.10"
-content-hash = "06aa53ba743b7d68f50531be77c49b8fa79f28e7842c9230cbc57388df414565"
+content-hash = "f3af8a37b21fca6bd54f854fc9684b6da615eb94a947a68b5d31ed5418d161e0"
