@@ -1,6 +1,6 @@
 import torchvision
 import torch.nn as nn
-
+import torch
 
 class EfficientNetB0(nn.Module):
     def __init__(self, num_classes=5):
@@ -12,3 +12,16 @@ class EfficientNetB0(nn.Module):
         x=self.base_model(x)
         x=self.fc(x)
         return x
+    
+if __name__=="__main__":
+    model=EfficientNetB0()
+    x=torch.randn(1, 3, 224, 224, requires_grad=True)
+    torch.onnx.export(model,
+                      x,
+                      "ImageClassifier.onnx",
+                      export_params=True,
+                      input_names = ['input'],
+                      output_names = ['output'],
+                      dynamic_axes={'input' : {0 : 'batch_size'},
+                                'output' : {0 : 'batch_size'}})
+    

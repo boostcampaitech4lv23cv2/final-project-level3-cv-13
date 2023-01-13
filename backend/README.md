@@ -4,4 +4,5 @@ pip install fast-api
 pip install uvicorn
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
 pip install onnxruntime
+pip install onnx
 ```
