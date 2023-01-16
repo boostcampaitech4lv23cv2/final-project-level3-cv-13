@@ -9,6 +9,7 @@ def get_prediction(picture):
     t=time.time()
     image_bytes = picture.getvalue()
     image = Image.open(io.BytesIO(image_bytes))
+    image = image.convert('RGB')
 
     st.image(image, caption='Uploaded Image',use_column_width=True)
     with st.spinner("Predicting Image..."):
