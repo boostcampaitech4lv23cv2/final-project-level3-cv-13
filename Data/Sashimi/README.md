@@ -11,13 +11,23 @@ Please rename the Dirctories like bottom Structure
 
 
 #
-📂Data_prepare
+📂Fish
 
 ┣ 📂Fish_dataset
 
 ┃ ┣ 📂Training
 
-┃ ┃ ┣ 📂gbt_fish_dtset
+┃ ┃ ┣ 📂dtset
+
+┃ ┃ ┃ ┣ 📂dtset1
+
+┃ ┃ ┃ ┣ 📂dtset2
+
+┃ ┃ ┃ ┣ 📂dtset3
+
+┃ ┃ ┃ ┗ 📂dtset4
+
+┃ ┃ ┗ 📂gbt_fish_dtset
 
 ┃ ┃ ┃ ┗ 📜gbt_fish_dtset1.json
 
@@ -27,29 +37,29 @@ Please rename the Dirctories like bottom Structure
 
 ┃ ┃ ┃ ┗ 📜gbt_fish_dtset4.json
 
-┃ ┃ ┃ ┗ 📂dtset
-
-┃ ┃ ┃ ┃ ┣ 📂dtset1
-
-┃ ┃ ┃ ┃ ┣ 📂dtset2
-
-┃ ┃ ┃ ┃ ┣ 📂dtset3
-
-┃ ┃ ┃ ┃ ┗ 📂dtset4
-
 ┃ ┗ 📂Validation
 
-┃ ┃ ┣ 📜gbt_fish_dtset_val_images.json
+┃ ┃ ┣ 📂dtset
 
-┃ ┃ ┗ 📂val_images
+┃ ┃ ┃ ┗ 📂val_images
 
-┣ 📂Function
+┃ ┃ ┣ 📂gbt_fish_dtset
+
+┃ ┃ ┃ ┗ 📜gbt_fish_dtset_val_images.json
+
+┃ ┣ 📂Function
 
 ┃ ┃ ┣ 📜annotation_part.py
 
 ┃ ┃ ┗ 📜image_part.py
 
-┗ 📜Fish_Data_Crop.py (main)
+┃ ┣ 📂utils
+
+┃ ┃ ┗ 📜json_refactor.py
+
+┃ ┗ 📜Fish_Data_Crop.py (main)
+
+┗ 📂Sashimi
 <br/> 
 <br/> 
 <br/> 
@@ -65,7 +75,7 @@ Please rename the Dirctories like bottom Structure
 ## After running code
 # 
 
-📂Data_prepare
+📂Fish
 
 ┣ 📂Fish_dataset
 
@@ -75,11 +85,15 @@ Please rename the Dirctories like bottom Structure
 
 ┃ ┃ ┃ ┣ 📜catagory_list.csv
 
-┃ ┃ ┃ ┣ 📜valid_catagory_list.csv
-
 ┃ ┃ ┃ ┣ 📜train_images_size_list.csv
 
-┃ ┃ ┃ ┗ 📜valid_images_size_list.csv
+┃ ┃ ┃ ┣ 📜train.csv
+
+┃ ┃ ┃ ┣ 📜valid_catagory_list.csv
+
+┃ ┃ ┃ ┣ 📜valid_images_size_list.csv
+
+┃ ┃ ┃ ┗ 📜valid.csv
 
 ┃ ┃ ┣ 📂crop_image
 
@@ -109,10 +123,16 @@ Please rename the Dirctories like bottom Structure
 
 ┃ ┗ 📂Validation
 
-┣ 📂Function
+┃ ┣ 📂Function
 
 ┃ ┃ ┣ 📜annotation_part.py
 
 ┃ ┃ ┗ 📜image_part.py
 
-┗ 📜Fish_Data_Crop.py (main)
+┃ ┣ 📂utils
+
+┃ ┃ ┗ 📜json_refactor.py
+
+┃ ┗ 📜Fish_Data_Crop.py (main)
+
+┗ 📂Sashimi
