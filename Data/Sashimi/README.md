@@ -1,4 +1,4 @@
-# How To prepare Fish Data
+# How To prepare Sashimi Data
 Please rename the Dirctories like bottom Structure
 
 ## Before running code
@@ -77,62 +77,8 @@ Please rename the Dirctories like bottom Structure
 
 📂Fish
 
-┣ 📂Fish_dataset
+📂Sashimi
 
-┃ ┣ 📂output
+┣ 📂Sashimi_dataset
 
-┃ ┃ ┣ 📂analysis_csv
-
-┃ ┃ ┃ ┣ 📜catagory_list.csv
-
-┃ ┃ ┃ ┣ 📜train_images_size_list.csv
-
-┃ ┃ ┃ ┣ 📜train.csv
-
-┃ ┃ ┃ ┣ 📜valid_catagory_list.csv
-
-┃ ┃ ┃ ┣ 📜valid_images_size_list.csv
-
-┃ ┃ ┃ ┗ 📜valid.csv
-
-┃ ┃ ┣ 📂crop_image
-
-┃ ┃ ┃ ┣ 📂dtset1
-
-┃ ┃ ┃ ┣ 📂dtset2
-
-┃ ┃ ┃ ┣ 📂dtset3
-
-┃ ┃ ┃ ┣ 📂dtset4
-
-┃ ┃ ┃ ┗ 📂val_images
-
-┃ ┃ ┗ 📂new_json_set
-
-┃ ┃ ┃ ┣ 📜[new]_gbt_fish_dtset_val_images.json
-
-┃ ┃ ┃ ┣ 📜[new]_gbt_fish_dtset1.json
-
-┃ ┃ ┃ ┣ 📜[new]_gbt_fish_dtset2.json
-
-┃ ┃ ┃ ┣ 📜[new]_gbt_fish_dtset3.json
-
-┃ ┃ ┃ ┣ 📜[new]_gbt_fish_dtset4.json
-
-┃ ┣ 📂Training
-
-┃ ┗ 📂Validation
-
-┃ ┣ 📂Function
-
-┃ ┃ ┣ 📜annotation_part.py
-
-┃ ┃ ┗ 📜image_part.py
-
-┃ ┣ 📂utils
-
-┃ ┃ ┗ 📜json_refactor.py
-
-┃ ┗ 📜Fish_Data_Crop.py (main)
-
-┗ 📂Sashimi
+┃ ┗ 📜Sashimi_Data_Crop.py (main)
