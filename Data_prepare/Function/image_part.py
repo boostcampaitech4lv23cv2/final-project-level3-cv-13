@@ -56,12 +56,12 @@ def crop_image(dataset_path,image_filename,anns_path = "./Fish_dataset/output/ne
             for idx in anns.keys():
                 try:
                     file_name = anns[idx]["img_file_name"]
-                    category = anns[idx]["categories_id"]
+                    category = anns[idx]["categories_id"]-1
                     tmp_img_path =image_path+ '/'+image_folder_name +'/' + file_name
                     bbox = anns[idx]["bbox"]
                     tmp_img = Image.open(tmp_img_path)
                     croppedImage=tmp_img.crop(tuple([bbox[0],bbox[1],bbox[0]+bbox[2],bbox[1]+bbox[3]]))
-                    result = tuple([file_name,int(category)])
+                    result = tuple([image_folder_name + '/' + file_name, int(category)])
                     results.append(result)
                     images_size.append(croppedImage.size)
                     croppedImage.save(tmp_save_path +"/"+file_name)

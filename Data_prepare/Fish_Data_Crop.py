@@ -51,6 +51,7 @@ print("#######################################\n")
 
 with open(csv_folder_path +'train.csv','w',newline='') as f:
     writer = csv.writer(f)
+    writer.writerow(["img_path","categories_id"])
     for idx in range (len(train_csv)):
         writer.writerow(train_csv[idx])
 
@@ -66,6 +67,7 @@ print("#######################################\n")
 
 with open(csv_folder_path +'valid.csv','w',newline='') as f:
     writer = csv.writer(f)
+    writer.writerow(["img_path","categories_id"])
     for idx in range (len(valid_csv)):
         writer.writerow(valid_csv[idx])
 
