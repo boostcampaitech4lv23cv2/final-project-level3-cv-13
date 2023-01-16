@@ -10,6 +10,8 @@ from pathlib import Path
 import yaml
 from tqdm import tqdm
 import torch.onnx
+from datetime import datetime
+from shutil import copyfile
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -75,7 +77,7 @@ def grid_image(np_images, gts, preds, n=16, shuffle=False):
     return figure
 
 # output 폴더 생성하는 함수인데 약간 망가진 듯 작동 안해서 고정으로 바꿔놨음
-def increment_path(path, exist_ok=False):
+def increment_path(path,  exist_ok=False):
     """ Automatically increment path, i.e. runs/exp --> runs/exp0, runs/exp1 etc.
 
     Args:
@@ -83,14 +85,40 @@ def increment_path(path, exist_ok=False):
         exist_ok (bool): whether increment path (increment if False).
     """
     path = Path(path)
-    if (path.exists() and exist_ok) or (not path.exists()):
+    if path.exists() == False:
+        os.mkdir(path)
         return str(path)
     else:
         dirs = glob.glob(f"{path}*")
         matches = [re.search(rf"%s(\d+)" % path.stem, d) for d in dirs]
         i = [int(m.groups()[0]) for m in matches if m]
-        n = max(i) + 1 if i else 2
-        return f"{path}{n}"
+        n = max(i) + 1 if i else 2 
+        os.mkdir(f"{path}_exp{n}")
+        return f"{path}_exp{n}"
+
+
+# [START storage_upload_file]
+from google.cloud import storage
+
+
+def upload_blob(bucket_name, source_file_name, destination_blob_name):
+    """Uploads a file to the bucket."""
+    # The ID of your GCS bucket
+    # bucket_name = "your-bucket-name"
+    # The path to your file to upload
+    # source_file_name = "local/path/to/file"
+    # The ID of your GCS object
+    # destination_blob_name = "storage-object-name"
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(destination_blob_name)
+
+    blob.upload_from_filename(source_file_name)
+
+    print(
+        f"File {source_file_name} uploaded to {destination_blob_name}."
+    )
 
 # #Function to Convert to ONNX 
 # def Convert_ONNX(model, output_path): 
@@ -119,7 +147,9 @@ def increment_path(path, exist_ok=False):
 def train(data_dir, model_dir, args):
     seed_everything(args.seed)
 
-    save_dir = increment_path(os.path.join(model_dir, args.name))
+    global save_dir
+    save_dir = increment_path(os.path.join(model_dir, f"{config.model}_{config.epochs}_{config.batch_size}_{config.optimizer}_{config.lr}"))
+    
 
     # -- settings
     use_cuda = torch.cuda.is_available()
@@ -219,6 +249,7 @@ def train(data_dir, model_dir, args):
     '''with open(os.path.join(save_dir, 'config.json'), 'w', encoding='utf-8') as f:
         json.dump(vars(args), f, ensure_ascii=False, indent=4)'''
 
+    global best_val_acc
     best_val_acc = 0
     best_val_loss = np.inf
 
@@ -261,7 +292,7 @@ def train(data_dir, model_dir, args):
                 train_acc = matches / args.batch_size / args.log_interval
                 current_lr = get_lr(optimizer)
                 print(
-                    f"Epoch[{epoch}/{args.epochs}]({idx + 1}/{len(train_loader)}) || "
+                    f"Epoch[{epoch+1}/{args.epochs}]({idx + 1}/{len(train_loader)}) || "
                     f"training loss {train_loss:4.4} || training accuracy {train_acc:4.2%} || lr {current_lr}"
                 )
                 wandb.log({"Train/loss": train_loss,"Train/accuracy": train_acc, 'epoch': epoch})
@@ -309,11 +340,19 @@ def train(data_dir, model_dir, args):
             if val_acc > best_val_acc:
                 early_stop = 0
                 print(f"New best model for val accuracy : {val_acc:4.2%}! saving the best model..")
-                torch.save(model.state_dict(), f"/opt/ml/final-project-level3-cv-13/ml/output/exp/best.pth")
-                torch.onnx.export(model, dummy_input, "/opt/ml/final-project-level3-cv-13/ml/output/exp/best.onnx", example_outputs=dummy_output)
+                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_{epoch}epoch_{val_acc:6.4}.pth")
+                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{val_acc:6.4}.onnx", export_params=True,
+                      input_names = ['input'],
+                      output_names = ['output'],
+                      dynamic_axes={'input' : {0 : 'batch_size'},
+                                'output' : {0 : 'batch_size'}})
                 best_val_acc = val_acc
-            torch.save(model.state_dict(), f"/opt/ml/final-project-level3-cv-13/ml/output/exp/last.pth")
-            torch.onnx.export(model, dummy_input, "/opt/ml/final-project-level3-cv-13/ml/output/exp/last.onnx", example_outputs=dummy_output)
+            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{val_acc:6.4}.pth")
+            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{val_acc:6.4}.onnx", export_params=True,
+                      input_names = ['input'],
+                      output_names = ['output'],
+                      dynamic_axes={'input' : {0 : 'batch_size'},
+                                'output' : {0 : 'batch_size'}})
             # 저장경로 짜는법 다시 작성해야함
             print(
                 f"[Val] acc : {val_acc:4.2%}, loss: {val_loss:4.2} || "
@@ -391,3 +430,15 @@ if __name__ == '__main__':
 
     train(data_dir, model_dir, args)
     wandb.finish()
+    
+    copyfile(wandb_yaml, f"{save_dir}/config.yaml")
+
+    today = datetime.today().strftime('%Y%m%d')
+
+    upload_blob(
+        bucket_name="model-registry-cv13",
+        source_file_name=f"{save_dir}/{config.model}_best_{best_val_acc:6.4}.onnx",
+        destination_blob_name=f"{config.model}-{best_val_acc:6.4}-{today}.onnx",
+    )
+
+    

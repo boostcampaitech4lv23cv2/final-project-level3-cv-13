@@ -3,7 +3,7 @@ seed:
 lr:
   value: 0.0001
 epochs:
-  value: 50
+  value: 10
 batch_size:
   value: 64
 val_batch_size:
