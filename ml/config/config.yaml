@@ -16,6 +16,8 @@ criterion:
   value: 'cross_entropy'
 model:
   value: 'Resnet50'
+scheduler:
+  value: 'lambda_lr'
 early_stop:
   value: 10
 val_ratio:
@@ -25,7 +27,7 @@ log_interval:
 dataset:
   value: 'Fish_Dataset'
 transform:
-  value: 'Basepreprocessing'
+  value: 'transforms_1'
 model_dir:
   desc: 'output이 저장될 경로'
   value: '/opt/ml/final-project-level3-cv-13/ml/output'
@@ -38,4 +40,5 @@ data_dir:
 ann_dir:
   desc: 'csv 저장소 경로'
   value: '/opt/ml/final-project-level3-cv-13/Data_prepare/Fish_dataset/output/analysis_csv'
-
+momentum:
+  value: 0.001
