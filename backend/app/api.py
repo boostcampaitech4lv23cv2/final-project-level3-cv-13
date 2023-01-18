@@ -15,9 +15,9 @@ def init():
     global model
     model=Inference()
 
-@app.get("/")
-def hello_world():
-    return {"message": "Hello World"}
+@app.get("/blob_name")
+def get_blob_name() -> str:
+    return model.blob_name
 
 @app.post("/inference")
 async def inference(files: UploadFile=File(...)) -> int:

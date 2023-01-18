@@ -17,13 +17,14 @@ def get_prediction(picture):
     st.metric("Type",label)
     st.metric("Time Taken",f"{time.time()-t:.3f} sec")
 
-# @st.experimental_singleton
-# def start():
-#     requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/")
+@st.experimental_singleton
+def start():
+    return requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/blob_name").json()
+    # return requests.get("http://0.0.0.0:8000/blob_name").json()
 
-# start()
-
+name=start()
 st.title("FICV")
+
 
 genre = st.radio(
     "Image Mode:",
@@ -39,4 +40,4 @@ else:
         get_prediction(picture)
 
 
-st.markdown("<h6 style='text-align: right; color: grey'> Created by BoostCamp CV-13 </h6>",unsafe_allow_html=True)
+st.markdown(f"<h6 style='text-align: right; color: grey'> {name} </h6>",unsafe_allow_html=True)

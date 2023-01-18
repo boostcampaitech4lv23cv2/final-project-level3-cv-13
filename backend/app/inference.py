@@ -42,10 +42,17 @@ class Inference:
         logger.info(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
         storage_client = storage.Client()
         bucket = storage_client.bucket(BUCKET_NAME)
-        blob = next(bucket.list_blobs())
+        newest_blob=None
+        for blob in bucket.list_blobs():
+            if newest_blob==None:
+                newest_blob=blob
+            else:
+                if newest_blob.updated<blob.updated:
+                    newest_blob=blob
         contents = blob.download_as_string()
-        logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {blob.name}")
+        logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {newest_blob.name}")
         self.session=self.__create_session(contents)
+        self.blob_name=newest_blob.name
 
     def __create_session(self,model: str) -> ort.InferenceSession:
         return ort.InferenceSession(model)
