@@ -17,11 +17,11 @@ def get_prediction(picture):
     st.metric("Type",label)
     st.metric("Time Taken",f"{time.time()-t:.3f} sec")
 
-@st.experimental_singleton
-def start():
-    requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/")
+# @st.experimental_singleton
+# def start():
+#     requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/")
 
-start()
+# start()
 
 st.title("FICV")
 
