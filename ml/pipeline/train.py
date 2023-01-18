@@ -30,10 +30,17 @@ from utils import UploadBlob
 from utils import IncrementPath
 from utils import GridImage
 from utils import SeedEverything
+from utils.ConfusionMatrix import confusion_matrix, accuracy, macro_f1, cm_image
+
 import wandb
 import os.path as osp
 from torch.optim.lr_scheduler import StepLR
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/opt/ml/storage_key.json"
 
+'''
+222, 224 print문 삭제 필요
+200번 째 CLASSES 상수 삭제하고 실제 리스트 작성 필요
+'''
 
 def get_lr(optimizer):
     for param_group in optimizer.param_groups:
@@ -189,6 +196,10 @@ def train(data_dir, model_dir, args):
             val_loss_items = []
             val_acc_items = []
             figure = None
+            
+            CLASSES = [0 ,1, 2, 3, 4]            
+            class_items = np.zeros((len(CLASSES),len(CLASSES)))
+
             for val_batch in val_loader:
                 inputs, labels = val_batch
                 inputs = inputs.to(device, dtype=torch.float32)
@@ -197,6 +208,8 @@ def train(data_dir, model_dir, args):
                 outs = model(inputs)
                 preds = torch.argmax(outs, dim=-1)
 
+                class_items = confusion_matrix(labels, preds, class_items, CLASSES)
+                
                 loss_item = criterion(outs, labels).item()
                 acc_item = (labels == preds).sum().item()
                 val_loss_items.append(loss_item)
@@ -208,7 +221,13 @@ def train(data_dir, model_dir, args):
                     figure = GridImage.grid_image(
                         inputs_np, labels, preds, n=16, shuffle= False
                     )
-
+            cm_figure = cm_image(class_items)
+            cm_figure = wandb.Image(cm_figure)
+            accuracy_score = accuracy(class_items, CLASSES)
+            print(accuracy_score)
+            macro_f1_score = macro_f1(class_items, CLASSES)
+            print(macro_f1_score)
+            
             val_loss = np.sum(val_loss_items) / len(val_loader)
             val_acc = np.sum(val_acc_items) / len(val_dataset)
             best_val_loss = min(best_val_loss, val_loss)
@@ -235,7 +254,7 @@ def train(data_dir, model_dir, args):
                 f"best acc : {best_val_acc:4.2%}, best loss: {best_val_loss:4.2}"
             )
 
-            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "results": figure})
+            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "results": figure, "Confusion Matrix": cm_figure})
 
             print(f'{early_stop_arg-early_stop} Epoch left until early stopping..')                
             if val_acc <= best_val_acc:                
