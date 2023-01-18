@@ -52,7 +52,9 @@ pip install albumentations
 
 ### PyTest 설정
 [FastAPI 및 pytest를 이용한 API 서버 테스트 코드 작성하기](https://sehoi.github.io/etc/fastapi-pytest/)  
-
+[Google Cloud 로깅 및 로그 보기](https://cloud.google.com/run/docs/logging)
+### logging 설정
+[체계적인 Python Logging](https://hwangheek.github.io/2019/python-logging/)  
 ### GCP Docker 설정
 [Docker Credential gcr](https://github.com/GoogleCloudPlatform/docker-credential-gcr)  
 ### Serverless 모델 자료
