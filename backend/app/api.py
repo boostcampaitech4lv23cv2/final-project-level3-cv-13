@@ -15,6 +15,9 @@ def init():
     global model
     model=Inference()
 
+@app.get("/")
+def hello_world():
+    return {"message": "Hello World"}
 @app.post("/inference")
 async def inference(files: UploadFile=File(...)) -> int:
     image= await files.read()

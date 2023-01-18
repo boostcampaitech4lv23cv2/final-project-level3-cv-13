@@ -17,6 +17,8 @@ def get_prediction(picture):
     st.metric("Type",label)
     st.metric("Time Taken",f"{time.time()-t:.3f} sec")
 
+requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/")
+
 st.title("FICV")
 
 genre = st.radio(
