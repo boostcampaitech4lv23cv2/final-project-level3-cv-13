@@ -1,14 +1,10 @@
 ## api 구성
 from fastapi import FastAPI, UploadFile, File
-from fastapi.param_functions import Depends
-from pydantic import BaseModel, Field
-from typing import List, Union, Optional, Dict, Any
 from app.inference import Inference
 from PIL import Image
 import io
 import numpy as np
 import albumentations
-import time
 
 RESIZE=(384,384)
 
