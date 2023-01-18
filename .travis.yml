@@ -57,7 +57,7 @@ jobs:
       script:
         - docker build -t "${IMAGE}/frontend:${TRAVIS_COMMIT}" -f frontend/Dockerfile .
         - docker push "${IMAGE}/frontend:${TRAVIS_COMMIT}"
-        - gcloud run deploy "${FRONTEND_RUN_SERVICE}" --image="${IMAGE}/frontend:${TRAVIS_COMMIT}" --port=8080
+        - gcloud run deploy "${FRONTEND_RUN_SERVICE}" --image="${IMAGE}/frontend:${TRAVIS_COMMIT}" --port=443
           --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed --memory=512Mi --max-instances=1
 
 notifications:
