@@ -10,7 +10,7 @@ import numpy as np
 import albumentations
 import time
 
-RESIZE=(512,512)
+RESIZE=(384,384)
 
 app=FastAPI()
 

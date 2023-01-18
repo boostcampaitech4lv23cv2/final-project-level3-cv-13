@@ -1,15 +1,22 @@
 import onnxruntime as ort
 import numpy as np
 import torch
+import os
+from google.cloud import storage
 
-MODEL_FILE = '/opt/ml/final-project-level3-cv-13/test/ImageClassifier.onnx'
-DEVICE_NAME = 'cuda' if torch.cuda.is_available() else 'cpu'
-DEVICE_INDEX = 0     # Replace this with the index of the device you want to run on
-DEVICE=f'{DEVICE_NAME}:{DEVICE_INDEX}'
+#Google Cloud Configuration
+BUCKET_NAME="model-registry-cv13"
+KEY_PATH="/opt/ml/helloworld-374304-e880cf8462f6.json"
 
 class Inference:
     def __init__(self) -> None:
-        self.session=self.__create_session(MODEL_FILE)
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"]= KEY_PATH
+        storage_client = storage.Client()
+        bucket = storage_client.bucket(BUCKET_NAME)
+        blob = next(bucket.list_blobs())
+        contents = blob.download_as_string()
+        print(f"Downloaded ONNX from {BUCKET_NAME} as {blob.name}")
+        self.session=self.__create_session(contents)
 
     def __create_session(self,model: str) -> ort.InferenceSession:
         return ort.InferenceSession(model)
