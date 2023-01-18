@@ -1,0 +1,44 @@
+seed:
+  value: 42
+lr:
+  value: 0.0001
+epochs:
+  value: 10
+batch_size:
+  value: 64
+val_batch_size:
+  value: 16
+optimizer:
+  value: "Adam"
+resize:
+  value: [384, 384]
+criterion:
+  value: 'cross_entropy'
+model:
+  value: 'EfficientNetB0'
+scheduler:
+  value: 'lambda_lr'
+early_stop:
+  value: 10
+val_ratio:
+  value: 0.2
+log_interval:
+  value: 1
+dataset:
+  value: 'Fish_Dataset'
+transform:
+  value: 'transforms_1'
+model_dir:
+  desc: 'output이 저장될 경로'
+  value: '/opt/ml/final-project-level3-cv-13/ml/output'
+output_folder_name:
+  desc: 'output에 생성될 폴더 이름'
+  value: 'exp'
+data_dir:
+  desc: 'data 저장소 경로'
+  value: '/opt/ml/final-project-level3-cv-13/Data_prepare/Fish_dataset/output/crop_image'
+ann_dir:
+  desc: 'csv 저장소 경로'
+  value: '/opt/ml/final-project-level3-cv-13/Data_prepare/Fish_dataset/output/analysis_csv'
+momentum:
+  value: 0.001
