@@ -33,13 +33,13 @@ class CustomFormatter(logging.Formatter):
 
 class Inference:
     def __init__(self) -> None:
-        logger = logging.getLogger()
+        self.logger = logging.getLogger()
         # DEBUG(10), INFO(20), WARNING(30, default), ERROR(40), CRITICAL(50)
-        logger.setLevel("INFO")
+        self.logger.setLevel("INFO")
         handler=logging.StreamHandler()
         handler.setFormatter(CustomFormatter())
-        logger.addHandler(handler)
-        logger.info(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
+        self.logger.addHandler(handler)
+        self.logger.info(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
         storage_client = storage.Client()
         bucket = storage_client.bucket(BUCKET_NAME)
         newest_blob=None
@@ -47,10 +47,11 @@ class Inference:
             if newest_blob==None:
                 newest_blob=blob
             else:
-                if newest_blob.updated<blob.updated:
+                if newest_blob.time_created<blob.time_created:
+                    
                     newest_blob=blob
         contents = blob.download_as_string()
-        logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {newest_blob.name}")
+        self.logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {newest_blob.name}")
         self.session=self.__create_session(contents)
         self.blob_name=newest_blob.name
 
@@ -59,4 +60,5 @@ class Inference:
 
     def run(self,x):
         out=self.session.run(None, {'input': x})
-        return out[0][0].argmax(0)
+        self.logger.info(out[0][0].tolist())
+        return out[0][0]
