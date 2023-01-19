@@ -20,7 +20,8 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 
 from albumentations.pytorch.transforms import ToTensorV2
-from torchvision.transforms import Resize,ToTensor
+from albumentations.augmentations.transforms import InvertImg
+from torchvision.transforms import Resize, ToTensor
 
 from dataloader import Fish_Dataset
 from loss import create_criterion
@@ -57,8 +58,9 @@ def train(data_dir, model_dir, args):
     # transform = getattr(import_module("transforms"), args.transform)
     transform = A.Compose([
             A.Resize(*config.resize),
+            InvertImg(p=1),
             #A.Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
-            ToTensorV2(p=1.0)
+            ToTensorV2()
             ])
 
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
