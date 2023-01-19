@@ -31,7 +31,7 @@ def transform(image):
             albumentations.Resize(height=RESIZE[0], width=RESIZE[1])
         ])
     image = Image.open(io.BytesIO(image))
-    image = image.conver("RGB")
+    image = image.convert("RGB")
     image=np.array(image)
     image=aug(image=image)['image']
     image=np.transpose(image,axes=[2,0,1])/255
