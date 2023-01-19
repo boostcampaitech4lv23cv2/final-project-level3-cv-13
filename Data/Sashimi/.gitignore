@@ -1,9 +1,0 @@
-*.pyc
-__pycache__/
-Include/
-Lib/
-output/
-Scripts/
-chromedriver.exe
-*.log
-*.cfg
