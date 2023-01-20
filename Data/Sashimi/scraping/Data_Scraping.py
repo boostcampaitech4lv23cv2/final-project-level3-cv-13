@@ -171,7 +171,7 @@ for keyword in search_keywords:
                 driver.switch_to.window(driver.window_handles[0])  #다시 이전 창(탭)으로 이동
                 time.sleep(DELAY)
                 count += 1
-                print("\n## ",max_img_num,"(",len(images),")","개의 이미지 중 ",count+1,"번째 이미지 저장완료")
+                print("\n## ",max_img_num,"(",len(images),")","개의 이미지 중 ",output_name,"번째 이미지 저장완료")
                 pbar.update(1)
                 output_name += 1
             except:
