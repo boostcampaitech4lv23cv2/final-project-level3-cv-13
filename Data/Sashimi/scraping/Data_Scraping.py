@@ -13,8 +13,8 @@ from tqdm import tqdm
 search_url = "https://www.google.co.kr/imghp?hl=ko&tab=ri&ogbl"#구글이미지
 User_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
 search_keywords = ["광어회", "방어회" ,"참치회"]
-max_img_num = 50
-Max_scroll_count = 3
+max_img_num = 1500
+Max_scroll_count = 30
 save_path = "C:\\Users\\tmdwh\\Desktop\\Sashimi\\scraping\\output"
 DELAY = 0.8
 SCROLL_PAUSE_TIME = 0.5
