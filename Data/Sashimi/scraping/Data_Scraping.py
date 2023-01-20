@@ -135,9 +135,8 @@ for keyword in search_keywords:
     print("## 스크롤링을 성공적으로 마쳤습니다")
     print("## [",keyword,"] 에 대한 이미지 다운로드 시작합니다 (최대 이미지 개수 : ",max_img_num,")\n")
     print("## 크롤링된 이미지 개수 : ",len(images),"\n")
-    with tqdm(total=100) as pbar:
+    with tqdm(total=len(images)) as pbar:
         for image in images:
-            
             if count == max_img_num:
                 break
             try:
@@ -159,7 +158,7 @@ for keyword in search_keywords:
                 #이제 src 링크를 가져오는 코드를 짜자
                 if img_url[-4:] == "file": #file로 새탭을 열면 자동으로 다운로드 받아지는 현상 fix
                     print("\n## 탭에서 다운로드 시도")
-                    pbar.update(0)
+                    pbar.update(1)
                     #driver.close()  #링크 이동 후 탭 닫기
                     driver.switch_to.window(driver.window_handles[0])  #다시 이전 창(탭)으로 이동
                     time.sleep(DELAY)
@@ -173,11 +172,11 @@ for keyword in search_keywords:
                 time.sleep(DELAY)
                 count += 1
                 print("\n## ",max_img_num,"(",len(images),")","개의 이미지 중 ",count+1,"번째 이미지 저장완료")
-                pbar.update((1/max_img_num)*100)
+                pbar.update(1)
                 output_name += 1
             except:
                 print("\n## [Error] 사진을 저장하지 못했습니다 (can't load image)")
-                pbar.update(0)
+                pbar.update(1)
                 pass
 
 
