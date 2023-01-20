@@ -12,9 +12,9 @@ from tqdm import tqdm
 #setting part
 search_url = "https://www.google.co.kr/imghp?hl=ko&tab=ri&ogbl"#구글이미지
 User_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
-search_keywords = ["광어회", "방어회" ,"참치회"]
+search_keywords = ["방어", "부시리" ,"참돔회"]
 max_img_num = 1500
-Max_scroll_count = 30
+Max_scroll_count = 40
 save_path = "C:\\Users\\tmdwh\\Desktop\\Sashimi\\scraping\\output"
 DELAY = 1
 SCROLL_PAUSE_TIME = 1.5
@@ -134,7 +134,7 @@ for keyword in search_keywords:
 
     print("## 스크롤링을 성공적으로 마쳤습니다")
     print("## [",keyword,"] 에 대한 이미지 다운로드 시작합니다 (최대 이미지 개수 : ",max_img_num,")\n")
-    print("## 크롤링된 이미지 개수 : ",len(images))
+    print("## 크롤링된 이미지 개수 : ",len(images),"\n")
     with tqdm(total=100) as pbar:
         for image in images:
             
