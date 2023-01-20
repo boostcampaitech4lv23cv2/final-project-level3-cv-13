@@ -78,9 +78,62 @@ ex) 본인 :버전 108.0.5359.126 -> 버전 108.0.5359
 ### 4. Data_Scraping.py의 세팅부분을 건드려 주자
 <br/>
 
+#### 4-1. User_agent : 다음링크에 들어가서 User_agent확인 
+<br/>
+https://www.whatismybrowser.com/detect/what-is-my-user-agent/
+
+```text
+User_agent : 일종의 '인증키'라 생각 
+= 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36' 
+```
+
+
+#### 4-2. 나머지 부분을 세팅해주자 
+
+**search_url : 구글이미지 url (고정추천)**
+
+(예시) "https://www.google.co.kr/imghp?hl=ko&tab=ri&ogbl"<br/><br/>
+
+
+**search_keywords** : 검색할 키워드
+
+
+(예시) ["광어회", "방어회" ,"참치회"] <br/><br/>
+
+**max_img_num** : 최대 다운 이미지 개수 
+
+(예시) 1500 <br/><br/>
+
+**Max_scroll_count** : 최대 스크롤 수 (1 스크롤 => 약 50장)
+
+(예시) 30<br/><br/>
+
+**save_path** : 결과물 저장 경로
+
+(예시) "C:\\Users\\tmdwh\\Desktop\\Sashimi\\scraping\\output"<br/><br/>
+
+**DELAY** : 각 행동 당 대기시간
+
+(예시) 0.8<br/><br/>
+
+**SCROLL_PAUSE_TIME** : 한 스크롤 당 대기시간
+
+(예시) 0.5<br/><br/>
+
+<br/>
+
 ### 5. 다음과 같은 세팅을 마친 후
 <br/>
 
 ```text
-Data_Scraping.py를 실행 시켜준다 (경로 등을 설정)
+Data_Scraping.py를 실행 시켜준다
+```
+
+### 6. out폴더를 확인한다
+<br/>
+
+```text
+size_csv : 각 크롤링된 파일에 대한 크기 정보를 담은 csv
+
+keyword 파일 : 각 키워드에 따른 이미지들 모음
 ```
