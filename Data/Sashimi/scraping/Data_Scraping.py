@@ -16,8 +16,8 @@ search_keywords = ["광어회", "방어회" ,"참치회"]
 max_img_num = 1500
 Max_scroll_count = 30
 save_path = "C:\\Users\\tmdwh\\Desktop\\Sashimi\\scraping\\output"
-DELAY = 0.8
-SCROLL_PAUSE_TIME = 0.5
+DELAY = 1.8
+SCROLL_PAUSE_TIME = 2
 
 
 print("###########################")
@@ -129,7 +129,7 @@ for keyword in search_keywords:
     #class를 이용하여 작은 이미지를 클릭하는 코드를 작성
     images = driver.find_elements_by_css_selector(".rg_i.Q4LuWd")
     #find_elements_by_css_selector(".rg_i.Q4LuWd")[0]의 의미는 가장 첫번째 애를 누르겠다
-    time.sleep(0.8)
+    time.sleep(DELAY)
 
 
     print("## 스크롤링을 성공적으로 마쳤습니다")
