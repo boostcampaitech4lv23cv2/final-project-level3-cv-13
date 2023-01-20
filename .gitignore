@@ -193,6 +193,5 @@ poetry.toml
 Include/
 Lib/
 Scripts/
-chromedriver.exe
 *.log
 *.cfg
