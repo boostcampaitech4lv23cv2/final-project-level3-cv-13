@@ -79,7 +79,7 @@ ex) 본인 :버전 108.0.5359.126 -> 버전 108.0.5359
 <br/>
 
 #### 4-1. User_agent : 다음링크에 들어가서 User_agent확인 
-<br/>
+
 https://www.whatismybrowser.com/detect/what-is-my-user-agent/
 
 ```text
