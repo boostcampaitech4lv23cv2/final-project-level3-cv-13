@@ -16,8 +16,8 @@ search_keywords = ["광어회", "방어회" ,"참치회"]
 max_img_num = 1500
 Max_scroll_count = 30
 save_path = "C:\\Users\\tmdwh\\Desktop\\Sashimi\\scraping\\output"
-DELAY = 0.8
-SCROLL_PAUSE_TIME = 0.5
+DELAY = 1
+SCROLL_PAUSE_TIME = 1.5
 
 
 print("###########################")
