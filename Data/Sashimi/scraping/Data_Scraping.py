@@ -134,6 +134,7 @@ for keyword in search_keywords:
 
     print("## 스크롤링을 성공적으로 마쳤습니다")
     print("## [",keyword,"] 에 대한 이미지 다운로드 시작합니다 (최대 이미지 개수 : ",max_img_num,")\n")
+    print("## 크롤링된 이미지 개수 : ",len(images))
     with tqdm(total=100) as pbar:
         for image in images:
             
