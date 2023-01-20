@@ -30,11 +30,10 @@ class Fish_Dataset(Dataset):
         file_path = self.img_labels.iloc[idx+1, 0]
         label = self.img_labels.iloc[idx+1, 1]
         image = cv2.imread(osp.join(self.img_dir, file_path))
-        #image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
         image = self.transform(image=image)['image']
-        return image, label
+        return image/255, label
 
     def set_transform(self, transform):
         self.transform = transform
