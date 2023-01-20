@@ -24,7 +24,7 @@ def start():
 
 name=start()
 st.title("FICV")
-
+st.markdown(f"<h6 style='text-align: right; color: grey'> {name} </h6>",unsafe_allow_html=True)
 
 genre = st.radio(
     "Image Mode:",
@@ -40,4 +40,7 @@ else:
         get_prediction(picture)
 
 
-st.markdown(f"<h6 style='text-align: right; color: grey'> {name} </h6>",unsafe_allow_html=True)
+
+
+st.markdown(f"<h6 style='text-align: right; color: grey'> We collect your data to ensure you have the best browsing experience on our website. </h6>",unsafe_allow_html=True)
+st.markdown(f"<h6 style='text-align: right; color: grey'> By using our site, you acknowledge that you have read and understood our Privacy Policy. </h6>",unsafe_allow_html=True)

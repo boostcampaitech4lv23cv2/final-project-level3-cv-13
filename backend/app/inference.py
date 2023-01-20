@@ -40,8 +40,8 @@ class Inference:
         handler.setFormatter(CustomFormatter())
         self.logger.addHandler(handler)
         self.logger.info(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
-        storage_client = storage.Client()
-        bucket = storage_client.bucket(BUCKET_NAME)
+        self.storage_client = storage.Client()
+        bucket = self.storage_client.bucket(BUCKET_NAME)
         newest_blob=None
         for blob in bucket.list_blobs():
             if newest_blob==None:
