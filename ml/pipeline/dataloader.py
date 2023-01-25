@@ -33,7 +33,7 @@ class Fish_Dataset(Dataset):
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         
         image = self.transform(image=image)['image']
-        return image, label
+        return image/255, label
 
     def set_transform(self, transform):
         self.transform = transform
