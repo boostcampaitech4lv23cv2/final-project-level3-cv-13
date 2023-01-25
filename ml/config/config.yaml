@@ -15,7 +15,7 @@ resize:
 criterion:
   value: 'cross_entropy'
 model:
-  value: 'Resnet50'
+  value: 'EfficientNetB0'
 scheduler:
   value: 'lambda_lr'
 early_stop:
