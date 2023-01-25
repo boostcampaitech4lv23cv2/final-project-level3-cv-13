@@ -12,12 +12,15 @@ from tqdm import tqdm
 #setting part
 search_url = "https://www.google.co.kr/imghp?hl=ko&tab=ri&ogbl"#구글이미지
 User_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
-search_keywords = ["방어", "부시리" ,"참돔회"]
+search_keywords = ["참돔화"]
 max_img_num = 1500
 Max_scroll_count = 40
-save_path = "C:\\Users\\tmdwh\\Desktop\\Sashimi\\scraping\\output"
+save_path = "C:\\Users\\user\\Desktop\\final_proj\\myenv\\output"
 DELAY = 1
 SCROLL_PAUSE_TIME = 1.5
+
+
+count_list = {"normal" : 0, "link" : 0, "cant" : 0}
 
 
 print("###########################")
@@ -131,6 +134,7 @@ for keyword in search_keywords:
     #find_elements_by_css_selector(".rg_i.Q4LuWd")[0]의 의미는 가장 첫번째 애를 누르겠다
     time.sleep(DELAY)
 
+    link_url = []
 
     print("## 스크롤링을 성공적으로 마쳤습니다")
     print("## [",keyword,"] 에 대한 이미지 다운로드 시작합니다 (최대 이미지 개수 : ",max_img_num,")\n")
@@ -158,10 +162,13 @@ for keyword in search_keywords:
                 #이제 src 링크를 가져오는 코드를 짜자
                 if img_url[-4:] == "file": #file로 새탭을 열면 자동으로 다운로드 받아지는 현상 fix
                     print("\n## 탭에서 다운로드 시도")
+                    link_url.append(img_url)
                     pbar.update(1)
                     #driver.close()  #링크 이동 후 탭 닫기
                     driver.switch_to.window(driver.window_handles[0])  #다시 이전 창(탭)으로 이동
                     time.sleep(DELAY)
+                    count_list["link"]+=1
+                    
                     continue
 
                 urllib.request.urlretrieve(img_url, tmp_save_path + "\\" + str(output_name).zfill(4) +".jpg")
@@ -171,26 +178,52 @@ for keyword in search_keywords:
                 driver.switch_to.window(driver.window_handles[0])  #다시 이전 창(탭)으로 이동
                 time.sleep(DELAY)
                 count += 1
+                count_list["normal"]+=1
                 print("\n## ",max_img_num,"(",len(images),")","개의 이미지 중 ",output_name,"번째 이미지 저장완료")
                 pbar.update(1)
                 output_name += 1
             except:
+
                 print("\n## [Error] 사진을 저장하지 못했습니다 (can't load image)")
+                count_list["cant"]+=1
                 pbar.update(1)
                 pass
+            print(len(driver.window_handles))
+            if len(driver.window_handles) != 1:
+                time.sleep(DELAY)
+                driver.close()  #링크 이동 후 탭 닫기
+                driver.switch_to.window(driver.window_handles[0])  #다시 이전 창(탭)으로 이동
+                time.sleep(DELAY)
+
 
 
     print("###################################################################")
     print("## 사진 크기 정보 csv 만들기")
     print("###################################################################")
-
     with open(csv_save_path + "\\"+ keyword +"_size.csv",'w', newline='') as f:
         writer =csv.writer(f)
         for idx in range (len(size_lst)):
             writer.writerow(size_lst[idx].split("×"))
 
+
     print("## csv가 성공적으로 만들어 졌습니다")
     print('## csv 저장 경로 : ', csv_save_path + "\\"+ keyword +"_size.csv 를 확인하세요")
+
+    print("###################################################################")
+    print("## 예외 url 정보 csv 만들기")
+    print("###################################################################")
+
+    # with open(csv_save_path + "\\"+"[Error]" +keyword +"_link.csv",'w', newline='') as f:
+    #     writer =csv.writer(f)
+    #     for idx in range (len(link_url)):
+    #         writer.writerow(link_url[idx].split(""))
+            
+    print(count_list)
+
+
+    print("## csv가 성공적으로 만들어 졌습니다")
+    print('## csv 저장 경로 : ', csv_save_path + "\\"+ keyword +"_size.csv 를 확인하세요")
+
 
 
 #    print("###################################################################")
