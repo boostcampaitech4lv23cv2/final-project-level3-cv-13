@@ -188,3 +188,10 @@ poetry.toml
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
+
+#Virtual Env
+Include/
+Lib/
+Scripts/
+*.log
+*.cfg
