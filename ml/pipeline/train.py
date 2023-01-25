@@ -20,7 +20,8 @@ from pathlib import Path
 from torch.utils.data import DataLoader
 
 from albumentations.pytorch.transforms import ToTensorV2
-from torchvision.transforms import Resize,ToTensor
+from albumentations.augmentations.transforms import InvertImg
+from torchvision.transforms import Resize, ToTensor
 
 from dataloader import Fish_Dataset
 from loss import create_criterion
@@ -34,6 +35,7 @@ import wandb
 import os.path as osp
 from torch.optim.lr_scheduler import StepLR
 
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/opt/ml/storage_key.json"
 
 def get_lr(optimizer):
     for param_group in optimizer.param_groups:
@@ -58,7 +60,7 @@ def train(data_dir, model_dir, args):
     transform = A.Compose([
             A.Resize(*config.resize),
             #A.Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
-            ToTensorV2(p=1.0)
+            ToTensorV2()
             ])
 
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
