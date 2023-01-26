@@ -56,6 +56,8 @@ pip install albumentations
 ### GCP Docker 설정
 [Docker Credential gcr](https://github.com/GoogleCloudPlatform/docker-credential-gcr)
 
+### GCP Docker 설정
+[Docker Credential gcr](https://github.com/GoogleCloudPlatform/docker-credential-gcr)  
 ### Serverless 모델 자료
 [Google Cloud Run](https://cloud.google.com/run?hl=ko)  
 [Google Cloud Deploy](https://cloud.google.com/sdk/gcloud/reference/run/deploy)   

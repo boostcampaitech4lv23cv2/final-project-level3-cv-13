@@ -1,5 +1,4 @@
 import streamlit as st
-import yaml
 from PIL import Image
 import io
 import requests
@@ -13,12 +12,12 @@ def get_prediction(picture):
 
     st.image(image, caption='Uploaded Image',use_column_width=True)
     with st.spinner("Predicting Image..."):
-        response = requests.post("http://localhost:8000/inference", files={'files': image_bytes})
+        response = requests.post("https://fast-api-backend-nzhkc6v44a-du.a.run.app/inference", files={'files': image_bytes})
         label = response.json()
     st.metric("Type",label)
     st.metric("Time Taken",f"{time.time()-t:.3f} sec")
 
-st.title("Fish Classification Model")
+st.title("FICV")
 
 genre = st.radio(
     "Image Mode:",
@@ -34,4 +33,4 @@ else:
         get_prediction(picture)
 
 
-st.markdown("<h6 style='text-align: right; color: grey'> Created by Jaeyoung Shin </h6>",unsafe_allow_html=True)
+st.markdown("<h6 style='text-align: right; color: grey'> Created by BoostCamp CV-13 </h6>",unsafe_allow_html=True)

@@ -9,7 +9,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+google_key.json
 # Distribution / packaging
 .Python
 build/
