@@ -12,7 +12,7 @@ def get_prediction(picture):
 
     st.image(image, caption='Uploaded Image',use_column_width=True)
     with st.spinner("Predicting Image..."):
-        response = requests.post("https://fast-api-backend-nzhkc6v44a-du.a.run.app/inference", files={'files': image_bytes})
+        response = requests.post("https://fast-api-backend-nzhkc6v44a-du.a.run.app/inference", files={'files': picture})
         # response = requests.post("http://0.0.0.0:8000/inference", files={'files': image_bytes})
         label = response.json()
     st.metric("Type",label)
