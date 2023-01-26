@@ -18,6 +18,8 @@ from shutil import copyfile
 from importlib import import_module
 from pathlib import Path
 from torch.utils.data import DataLoader
+from torchvision.utils import save_image
+from albumentations.augmentations.transforms import InvertImg
 
 from albumentations.pytorch.transforms import ToTensorV2
 from torchvision.transforms import Resize,ToTensor
@@ -57,7 +59,8 @@ def train(data_dir, model_dir, args):
     # transform = getattr(import_module("transforms"), args.transform)
     transform = A.Compose([
             A.Resize(*config.resize),
-            #A.Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
+            # InvertImg(p=1.0),
+            # A.Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
             ToTensorV2(p=1.0)
             ])
 
@@ -67,7 +70,7 @@ def train(data_dir, model_dir, args):
         ann_dir = osp.join(config.ann_dir, 'train.csv'),
         transform = transform,
     )
-    num_classes = train_dataset.num_classes  # 18
+    num_classes = train_dataset.num_classes  # 5
 
     val_dataset_module = getattr(import_module("dataloader"), args.dataset)
     val_dataset = val_dataset_module(
@@ -151,9 +154,10 @@ def train(data_dir, model_dir, args):
         matches = 0
         
         for idx, (inputs, labels) in enumerate(train_loader):
-
+            
             inputs = inputs.to(device, dtype=torch.float32)
             labels = labels.to(device)
+            # save_image(inputs, '/opt/ml/loader_image/test.png')
 
             optimizer.zero_grad()
 
@@ -216,15 +220,15 @@ def train(data_dir, model_dir, args):
             if val_acc > best_val_acc:
                 early_stop = 0
                 print(f"New best model for val accuracy : {val_acc:4.2%}! saving the best model..")
-                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_{epoch}epoch_{val_acc:6.4}.pth")
-                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{val_acc:6.4}.onnx", export_params=True,
+                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{val_acc:.4f}.pth")
+                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{val_acc:.4f}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
                                 'output' : {0 : 'batch_size'}})
                 best_val_acc = val_acc
-            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{val_acc:6.4}.pth")
-            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{val_acc:6.4}.onnx", export_params=True,
+            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}_{val_acc:.4f}.pth")
+            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{val_acc:.4f}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
@@ -254,6 +258,8 @@ def train(data_dir, model_dir, args):
 
 
 if __name__ == '__main__':
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/opt/ml/storage_key.json"
+
     wandb.login()
     
     wandb_yaml = input("설정한 yaml 파일의 절대 경로를 넣어주세요...")
@@ -263,11 +269,15 @@ if __name__ == '__main__':
         raise TypeError('This is not yaml file')
     print(wandb_yaml)
 
-    # 🐝 initialise a wandb run
+    with open(wandb_yaml, "r") as yamlfile:
+        data = yaml.load(yamlfile, Loader=yaml.FullLoader)
+        wandb_name = f"{data['model']['value']}_{data['epochs']['value']}_{data['batch_size']['value']}_{data['optimizer']['value']}_{data['lr']['value']}_{data['scheduler']['value']}"
+
+    # 🐝 initialize a wandb run
     wandb.init(
         entity='boostcamp_cv13',
         project="Final_Project",
-        name='test',
+        name=wandb_name,
         config = wandb_yaml
     )
     wandb.save(wandb_yaml)
@@ -306,6 +316,7 @@ if __name__ == '__main__':
     model_dir = args.model_dir
 
     train(data_dir, model_dir, args)
+    print(str(save_dir))
     wandb.finish()
     
     copyfile(wandb_yaml, f"{save_dir}/config.yaml")
@@ -314,8 +325,8 @@ if __name__ == '__main__':
 
     UploadBlob.upload_blob(
         bucket_name="model-registry-cv13",
-        source_file_name=f"{save_dir}/{config.model}_best_{best_val_acc:6.4}.onnx",
-        destination_blob_name=f"{config.model}-{best_val_acc:6.4}-{today}.onnx",
+        source_file_name=f"{save_dir}/{config.model}_best_{best_val_acc:.4f}.onnx",
+        destination_blob_name=f"{config.model}-{best_val_acc:.4f}-{today}.onnx",
     )
 
     
