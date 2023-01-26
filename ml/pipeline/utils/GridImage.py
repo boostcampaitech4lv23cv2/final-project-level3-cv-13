@@ -36,6 +36,6 @@ def grid_image(np_images, gts, preds, n=16, shuffle=False):
         plt.yticks([])
         plt.grid(False)
 
-        plt.imshow((image).astype(np.float32), cmap=plt.cm.binary)
+        plt.imshow((image*255).astype(np.uint8))
 
     return figure

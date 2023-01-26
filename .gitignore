@@ -191,3 +191,10 @@ Data/Fish/Fish_dataset/output/crop_image/*
 Data/Fish/Fish_dataset/Training/*
 Data/Fish/Fish_dataset/Validation/*
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
+
+#Virtual Env
+Include/
+Lib/
+Scripts/
+*.log
+*.cfg

@@ -16,7 +16,7 @@ resize:
 criterion:
   value: 'cross_entropy'
 model:
-  value: 'Resnet50'
+  value: 'EfficientNetB0'
 scheduler:
   desc: 'step_lr, lambda_lr, multistep_lr, exponential_lr, cosine_annealing_lr, cosine_annealing_warm_restarts_lr, reduce_on_plateau_lr, cyclic_lr'
   value: 'cosine_annealing_warm_restarts_lr'
