@@ -1,10 +1,15 @@
 import albumentations as A
+import cv2
 from albumentations.pytorch.transforms import ToTensorV2
-import wandb
 
-def transforms_1():
-    return A.Compose([
-                A.Resize(*wandb.config.resize),
-                #A.Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
-                ToTensorV2(p=1.0)
-                ])
+class transforms_1:
+    def __init__(self, resize) -> None:
+        self.transforms = A.Compose([
+            A.Resize(*resize, cv2.INTER_LINEAR),
+            A.Normalize(),
+            ToTensorV2()
+        ])
+
+    
+    def __call__(self, image):
+        return self.transforms(image=image)

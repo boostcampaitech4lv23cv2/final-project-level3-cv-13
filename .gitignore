@@ -195,3 +195,6 @@ Lib/
 Scripts/
 *.log
 *.cfg
+
+Data/*
+Data_prepare/*
