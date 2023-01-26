@@ -1,0 +1,64 @@
+language: python
+python: '3.8'
+services:
+- docker
+env:
+  global:
+  - GCP_PROJECT_ID=helloworld-374304
+  - IMAGE=asia.gcr.io/helloworld-374304
+  - FRONTEND_RUN_SERVICE=fast-api-frontend
+  - BACKEND_RUN_SERVICE=fast-api-backend
+  - CLOUD_RUN_REGION=asia-northeast3
+
+stages:
+  - 🚀build
+
+jobs:
+  include:
+    - stage: 🚀build
+      if: commit_message =~ /build$/ OR commit_message =~ /build-backend$/
+      name: Backend-build
+      before_install: 
+        - openssl aes-256-cbc -K $encrypted_e5b5363276b3_key -iv $encrypted_e5b5363276b3_iv
+          -in google_key.json.enc -out google_key.json -d
+        - sudo usermod -a -G docker $USER
+        - curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-410.0.0-linux-x86_64.tar.gz
+        - tar -xf google-cloud-cli-410.0.0-linux-x86_64.tar.gz
+        - "./google-cloud-sdk/install.sh --quiet"
+      install: 
+        - gcloud auth activate-service-account --key-file=google_key.json
+        - gcloud auth list
+        - cat google_key.json | docker login -u _json_key --password-stdin https://asia.gcr.io
+        - gcloud projects list
+        - gcloud config set project helloworld-374304
+        - gcloud services enable run.googleapis.com
+      script:
+        - docker build -t "${IMAGE}/backend:${TRAVIS_COMMIT}" -f backend/Dockerfile .
+        - docker push "${IMAGE}/backend:${TRAVIS_COMMIT}"
+        - gcloud run deploy "${BACKEND_RUN_SERVICE}" --image="${IMAGE}/backend:${TRAVIS_COMMIT}" --port=8000
+          --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed --cpu=4 --memory=2Gi --max-instances=3
+    - stage: 🚀build
+      if: commit_message =~ /build$/ OR commit_message =~ /build-frontend$/
+      name: Frontend-build
+      before_install: 
+        - openssl aes-256-cbc -K $encrypted_e5b5363276b3_key -iv $encrypted_e5b5363276b3_iv
+          -in google_key.json.enc -out google_key.json -d
+        - sudo usermod -a -G docker $USER
+        - curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-410.0.0-linux-x86_64.tar.gz
+        - tar -xf google-cloud-cli-410.0.0-linux-x86_64.tar.gz
+        - "./google-cloud-sdk/install.sh --quiet"
+      install: 
+        - gcloud auth activate-service-account --key-file=google_key.json
+        - gcloud auth list
+        - cat google_key.json | docker login -u _json_key --password-stdin https://asia.gcr.io
+        - gcloud projects list
+        - gcloud config set project helloworld-374304
+        - gcloud services enable run.googleapis.com
+      script:
+        - docker build -t "${IMAGE}/frontend:${TRAVIS_COMMIT}" -f frontend/Dockerfile .
+        - docker push "${IMAGE}/frontend:${TRAVIS_COMMIT}"
+        - gcloud run deploy "${FRONTEND_RUN_SERVICE}" --image="${IMAGE}/frontend:${TRAVIS_COMMIT}" --port=443
+          --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed --memory=512Mi --max-instances=1
+
+notifications:
+  slack: boostcampaitech:6V8JoxJiotqi87IDmTe3HgHb

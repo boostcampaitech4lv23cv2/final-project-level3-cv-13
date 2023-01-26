@@ -17,6 +17,8 @@ from datetime import datetime
 from shutil import copyfile
 from importlib import import_module
 from torch.utils.data import DataLoader
+from torchvision.utils import save_image
+from albumentations.augmentations.transforms import InvertImg
 
 from albumentations.pytorch.transforms import ToTensorV2
 
@@ -52,11 +54,6 @@ def train(data_dir, model_dir, args):
     # -- dataset
     transform_module = getattr(import_module("transforms"), args.transform)
     transform = transform_module(resize = config.resize)
-    # transform = A.Compose([
-    #         A.Resize(*config.resize),
-    #         #A.Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
-    #         ToTensorV2()
-    #         ])
 
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
@@ -73,15 +70,6 @@ def train(data_dir, model_dir, args):
         transform = transform,
         num_classes = len(args.classes)
     )
-
-    # -- transform --data_set
-    # transform_module = getattr(import_module("dataloader"), args.transform)
-    mean=(0.548, 0.504, 0.479)
-    std=(0.237, 0.247, 0.246)
-    
-    # train_dataset.set_transform(transform)
-    # val_dataset.set_transform(transform)
-    # train_set,val_set = dataset.split_dataset()
 
     # collate_fn needs for batch
     def collate_fn(batch):
@@ -152,6 +140,7 @@ def train(data_dir, model_dir, args):
 
             inputs = inputs.to(device, dtype=torch.float32)
             labels = labels.to(device)
+            # save_image(inputs, '/opt/ml/loader_image/test.png')
 
             optimizer.zero_grad()
 
@@ -216,8 +205,8 @@ def train(data_dir, model_dir, args):
 
                 [os.remove(f) for f in glob.glob(f"{save_dir}/*_best_*")]
                 print(f"New best model for val accuracy : {val_acc:4.2%}! saving the best model..")
-                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_{epoch}epoch_{val_acc:6.4}.pth")
-                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{val_acc:6.4}.onnx", export_params=True,
+                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{val_acc:.4f}.pth")
+                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{val_acc:.4f}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
@@ -254,6 +243,8 @@ def train(data_dir, model_dir, args):
             wandb.watch(model)
 
 if __name__ == '__main__':
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/opt/ml/storage_key.json"
+
     wandb.login()
     # 🐝 initialise a wandb run
     runs=wandb.Api().runs(path="boostcamp_cv13/Final_Project",order="created_at")
@@ -305,6 +296,7 @@ if __name__ == '__main__':
     model_dir = args.model_dir
 
     train(data_dir, model_dir, args)
+    print(str(save_dir))
     wandb.finish()
     
     copyfile(wandb_yaml, f"{save_dir}/config.yaml")
@@ -313,8 +305,8 @@ if __name__ == '__main__':
 
     UploadBlob.upload_blob(
         bucket_name="model-registry-cv13",
-        source_file_name=f"{save_dir}/{config.model}_best_{best_val_acc:6.4}.onnx",
-        destination_blob_name=f"{config.model}-{best_val_acc:6.4}-{today}.onnx",
+        source_file_name=f"{save_dir}/{config.model}_best_{best_val_acc:.4f}.onnx",
+        destination_blob_name=f"{config.model}-{best_val_acc:.4f}-{today}.onnx",
     )
 
     
