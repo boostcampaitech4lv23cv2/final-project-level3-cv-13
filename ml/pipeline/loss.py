@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import inspect
+from inspect import signature
 from torch.nn.modules.loss import _WeightedLoss
 from torch import Tensor
 from typing import Callable, Optional

@@ -58,17 +58,17 @@ def train(data_dir, model_dir, args):
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
         img_dir = data_dir,
-        ann_dir = osp.join(config.ann_dir, 'train.csv'),
+        ann_dir = osp.join(config.ann_dir, 'fish.csv'),
         transform = transform,
-        num_classes = len(args.classes)
+        num_classes = len(args.fish_classes) if args.dataset == 'Fish_dataset' else len(args.sashimi_classes)
     )
 
     val_dataset_module = getattr(import_module("dataloader"), args.dataset)
     val_dataset = val_dataset_module(
         img_dir = data_dir,
-        ann_dir = osp.join(config.ann_dir, 'valid.csv'),
+        ann_dir = osp.join(config.ann_dir, 'fish.csv'),
         transform = transform,
-        num_classes = len(args.classes)
+        num_classes = len(args.fish_classes) if args.dataset == 'Fish_dataset' else len(args.sashimi_classes)
     )
 
     # collate_fn needs for batch
@@ -110,11 +110,11 @@ def train(data_dir, model_dir, args):
     # -- model
     model_module = getattr(import_module("model"), args.model)  # default: BaseModel
     model = model_module(
-        num_classes=len(args.classes)
+        num_classes = len(args.fish_classes) if args.dataset == 'Fish_dataset' else len(args.sashimi_classes)
     ).to(device)
 
     # -- loss & metric
-    criterion = create_criterion(args.criterion, classes = len(args.classes))  # default: cross_entropy
+    criterion = create_criterion(args.criterion, classes = len(args.fish_classes) if args.dataset == 'Fish_dataset' else len(args.sashimi_classes))  # default: cross_entropy
     optimizer = getattr(import_module("optimizer"), args.optimizer)(model)  # default: SGD
     
     # scheduler
@@ -267,7 +267,8 @@ if __name__ == '__main__':
 
     # Data and model checkpoints directories
     parser.add_argument('--seed', type=int, default=config.seed, help='random seed (default: 42)')
-    parser.add_argument('--classes', type=list, default=config.classes, help='category id')
+    parser.add_argument('--fish_classes', type=list, default=config.fish_classes, help='fish category id')
+    parser.add_argument('--sashimi_classes', type=list, default=config.sashimi_classes, help='sashimi category id')
     parser.add_argument('--epochs', type=int, default=config.epochs, help='number of epochs to train (default: 1)')
     parser.add_argument('--dataset', type=str, default=config.dataset, help='dataset augmentation type (default: MaskBaseDataset)')
     parser.add_argument('--transform', type=str, default=config.transform, help='data augmentation type (default: Basepreprocessing)')
