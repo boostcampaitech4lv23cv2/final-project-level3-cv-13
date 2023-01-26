@@ -64,6 +64,7 @@ pip install albumentations
 [Heroku](https://www.heroku.com/)  
 [Cold Start Optimizing](https://www.youtube.com/watch?v=rWw90N2gVPk)
 
+
 ### Data Logging 설정 자료
 [Stream Handler Attribute Error](https://stackoverflow.com/questions/34319521/python-logging-module-having-a-formatter-causes-attributeerror) 
 [Python Logging 설명](https://data-newbie.tistory.com/248)  
@@ -80,6 +81,7 @@ pip install albumentations
 [Customize Builds](https://docs.travis-ci.com/user/customizing-the-build/)  
 [Script Deployment](https://docs.travis-ci.com/user/deployment/script/)  
 [Build Stages](https://docs.travis-ci.com/user/build-stages/)  
+
 
 ### Docker
 [Parent Directory](https://velog.io/@skynet/Dockerfile%EC%97%90-%EB%B6%80%EB%AA%A8-%EB%94%94%EB%A0%89%ED%86%A0%EB%A6%AC%EC%9D%98-%ED%8C%8C%EC%9D%BC%EC%9D%84-%EB%B3%B5%EC%82%AC-%ED%95%98%EB%8A%94-%EB%B0%A9%EB%B2%95)

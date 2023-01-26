@@ -1,23 +1,32 @@
 ## api 구성
 from fastapi import FastAPI, UploadFile, File
-from fastapi.param_functions import Depends
-from pydantic import BaseModel, Field
-from typing import List, Union, Optional, Dict, Any
 from app.inference import Inference
 from PIL import Image
 import io
 import numpy as np
 import albumentations
-import time
+from fastapi.middleware.cors import CORSMiddleware
 
 RESIZE=(384,384)
 
 app=FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 @app.on_event("startup") 
 def init():
     global model
     model=Inference()
+
+@app.get("/")
+def hello_world():
+    return {"message": "Hello World"}
 
 @app.post("/inference")
 async def inference(files: UploadFile=File(...)) -> int:
