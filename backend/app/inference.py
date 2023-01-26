@@ -52,6 +52,7 @@ class Inference:
                     newest_blob=blob
         contents = blob.download_as_string()
         self.logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {newest_blob.name}")
+
         self.session=self.__create_session(contents)
         self.blob_name=newest_blob.name
 

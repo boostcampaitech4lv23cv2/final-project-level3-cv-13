@@ -7,10 +7,20 @@ import numpy as np
 import albumentations
 import pandas as pd
 import gcsfs
+from fastapi.middleware.cors import CORSMiddleware
+
 
 RESIZE=(384,384)
 
 app=FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup") 
 def init():
