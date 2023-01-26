@@ -35,7 +35,22 @@ def grid_image(np_images, gts, preds, n=16, shuffle=False):
         plt.xticks([])
         plt.yticks([])
         plt.grid(False)
+        
+        mean=(0.548, 0.504, 0.479)
+        std=(0.237, 0.247, 0.246)
+        image = denormalize_image(image, mean, std)
 
         plt.imshow((image*255).astype(np.uint8))
 
     return figure
+
+
+def denormalize_image(image, mean, std):
+    
+    img_cp = image.copy()
+    img_cp *= std
+    img_cp += mean
+    img_cp *= 255.0
+    img_cp = np.clip(img_cp, 0, 255).astype(np.uint8)
+        
+    return img_cp
