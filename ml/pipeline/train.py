@@ -4,26 +4,23 @@ import json
 import multiprocessing
 import os
 import random
-import re
-import yaml
 import torch.onnx
-import matplotlib.pyplot as plt
 import numpy as np
 import torch
 import albumentations as A
+import os.path as osp
+import wandb
+import fnmatch
 
 from tqdm import tqdm
 from datetime import datetime
 from shutil import copyfile
 from importlib import import_module
-from pathlib import Path
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 from albumentations.augmentations.transforms import InvertImg
 
 from albumentations.pytorch.transforms import ToTensorV2
-from albumentations.augmentations.transforms import InvertImg
-from torchvision.transforms import Resize, ToTensor
 
 from dataloader import Fish_Dataset
 from loss import create_criterion
@@ -33,9 +30,6 @@ from utils import UploadBlob
 from utils import IncrementPath
 from utils import GridImage
 from utils import SeedEverything
-import wandb
-import os.path as osp
-from torch.optim.lr_scheduler import StepLR
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/opt/ml/storage_key.json"
 
@@ -58,36 +52,24 @@ def train(data_dir, model_dir, args):
     print(f'Currently using {device}...')
 
     # -- dataset
-    # transform = getattr(import_module("transforms"), args.transform)
-    transform = A.Compose([
-            A.Resize(*config.resize),
-            #A.Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
-            ToTensorV2()
-            ])
+    transform_module = getattr(import_module("transforms"), args.transform)
+    transform = transform_module(resize = config.resize)
 
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
         img_dir = data_dir,
         ann_dir = osp.join(config.ann_dir, 'train.csv'),
         transform = transform,
+        num_classes = len(args.classes)
     )
-    num_classes = train_dataset.num_classes  # 5
 
     val_dataset_module = getattr(import_module("dataloader"), args.dataset)
     val_dataset = val_dataset_module(
         img_dir = data_dir,
         ann_dir = osp.join(config.ann_dir, 'valid.csv'),
         transform = transform,
+        num_classes = len(args.classes)
     )
-
-    # -- transform --data_set
-    # transform_module = getattr(import_module("dataloader"), args.transform)
-    mean=(0.548, 0.504, 0.479)
-    std=(0.237, 0.247, 0.246)
-    
-    # train_dataset.set_transform(transform)
-    # val_dataset.set_transform(transform)
-    # train_set,val_set = dataset.split_dataset()
 
     # collate_fn needs for batch
     def collate_fn(batch):
@@ -128,11 +110,11 @@ def train(data_dir, model_dir, args):
     # -- model
     model_module = getattr(import_module("model"), args.model)  # default: BaseModel
     model = model_module(
-        num_classes=num_classes
+        num_classes=len(args.classes)
     ).to(device)
 
     # -- loss & metric
-    criterion = create_criterion(args.criterion)  # default: cross_entropy
+    criterion = create_criterion(args.criterion, classes = len(args.classes))  # default: cross_entropy
     optimizer = getattr(import_module("optimizer"), args.optimizer)(model)  # default: SGD
     
     # scheduler
@@ -154,8 +136,8 @@ def train(data_dir, model_dir, args):
         loss_value = 0
         matches = 0
         
-        for idx, (inputs, labels) in enumerate(train_loader):
-            
+        for idx, (inputs, labels) in enumerate(tqdm(train_loader, leave=True)):
+
             inputs = inputs.to(device, dtype=torch.float32)
             labels = labels.to(device)
             # save_image(inputs, '/opt/ml/loader_image/test.png')
@@ -220,6 +202,8 @@ def train(data_dir, model_dir, args):
             dummy_input = torch.randn(1, 3, 384, 384).to(device)
             if val_acc > best_val_acc:
                 early_stop = 0
+
+                [os.remove(f) for f in glob.glob(f"{save_dir}/*_best_*")]
                 print(f"New best model for val accuracy : {val_acc:4.2%}! saving the best model..")
                 torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{val_acc:.4f}.pth")
                 torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{val_acc:.4f}.onnx", export_params=True,
@@ -228,8 +212,9 @@ def train(data_dir, model_dir, args):
                       dynamic_axes={'input' : {0 : 'batch_size'},
                                 'output' : {0 : 'batch_size'}})
                 best_val_acc = val_acc
-            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}_{val_acc:.4f}.pth")
-            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{val_acc:.4f}.onnx", export_params=True,
+            [os.remove(f) for f in glob.glob(f"{save_dir}/*_last_*")]
+            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{val_acc:6.4}.pth")
+            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{val_acc:6.4}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
@@ -257,30 +242,23 @@ def train(data_dir, model_dir, args):
             # Optional
             wandb.watch(model)
 
-
 if __name__ == '__main__':
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/opt/ml/storage_key.json"
 
     wandb.login()
+    # 🐝 initialise a wandb run
+    runs=wandb.Api().runs(path="boostcamp_cv13/Final_Project",order="created_at")
     
-    wandb_yaml = input("설정한 yaml 파일의 절대 경로를 넣어주세요...")
-    if wandb_yaml == '':
-        wandb_yaml = '/opt/ml/final-project-level3-cv-13/ml/config/config.yaml'
-    elif wandb_yaml[-4:] != 'yaml':
-        raise TypeError('This is not yaml file')
-    print(wandb_yaml)
+    # yaml file 경로
+    wandb_yaml = '/opt/ml/final-project-level3-cv-13/ml/config/config.yaml'
 
-    with open(wandb_yaml, "r") as yamlfile:
-        data = yaml.load(yamlfile, Loader=yaml.FullLoader)
-        wandb_name = f"{data['model']['value']}_{data['epochs']['value']}_{data['batch_size']['value']}_{data['optimizer']['value']}_{data['lr']['value']}_{data['scheduler']['value']}"
-
-    # 🐝 initialize a wandb run
     wandb.init(
         entity='boostcamp_cv13',
         project="Final_Project",
-        name=wandb_name,
         config = wandb_yaml
     )
+    this_run_name=f"{wandb.config.model}_{wandb.config.epochs}_{wandb.config.batch_size}_{wandb.config.optimizer}_{wandb.config.lr}"
+    wandb.run.name=this_run_name
     wandb.save(wandb_yaml)
 
     # Copy your config 
@@ -289,6 +267,7 @@ if __name__ == '__main__':
 
     # Data and model checkpoints directories
     parser.add_argument('--seed', type=int, default=config.seed, help='random seed (default: 42)')
+    parser.add_argument('--classes', type=list, default=config.classes, help='category id')
     parser.add_argument('--epochs', type=int, default=config.epochs, help='number of epochs to train (default: 1)')
     parser.add_argument('--dataset', type=str, default=config.dataset, help='dataset augmentation type (default: MaskBaseDataset)')
     parser.add_argument('--transform', type=str, default=config.transform, help='data augmentation type (default: Basepreprocessing)')
