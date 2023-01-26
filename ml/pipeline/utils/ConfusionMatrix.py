@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.cm as cm
+from dataloader import CLASSES
 
-'''
-52번째 줄 print 제거 필요
-cm_image 함수 table 이름 잘 보이게 정리 필요
-accuracy, macro_f1 정확한지 확인 필요
-카테고리 이미지가 없을 때 NaN으로 표시 되는 오류 해결 필요
 
-'''
+# 52번째 줄 print 제거 필요
+# cm_image 함수 table 이름 잘 보이게 정리 필요
+# accuracy, macro_f1 정확한지 확인 필요
+# 카테고리 이미지가 없을 때 NaN으로 표시 되는 오류 해결 필요
 
 def confusion_matrix(labels, preds, class_items, CLASSES):
 
@@ -40,19 +40,19 @@ def macro_f1(class_items, CLASSES):
         fn = sum(class_items[i][:])-tp
 
         # precision & recall 계산
-        '''if tp == 0 and fp == 0:
-            precision = 0
-        else:     '''       
+        # if tp == 0 and fp == 0:
+        #     precision = 0
+        # else:     
         precision = (tp/(tp+fp))
             
-        '''if tp == 0 and fn == 0:
-            recall = 0 
-        else:'''
+        # if tp == 0 and fn == 0:
+        #     recall = 0 
+        # else:
         recall = (tp/(tp+fn))
 
-        '''if precision == 0 and recall == 0:
-            f1_score = 0
-        else:'''
+        # if precision == 0 and recall == 0:
+        #     f1_score = 0
+        # else:
         f1_score = 2*precision*recall/(precision + recall)
     
         macro_f1_items[CLASSES[i]] = f1_score
@@ -61,17 +61,17 @@ def macro_f1(class_items, CLASSES):
     return sum(macro_f1_items.values())/len(macro_f1_items)
 
 def cm_image(confusion_matrix):
-    cm_figure = plt.figure(figsize=(12, 18 + 2))
+    cm_figure = plt.figure(figsize=(24, 20))
     fig, ax =plt.subplots(1,1)
     data= confusion_matrix
-    CLASSES = ["Column 1", "Column 2", "Column 3", 'Column 4', 'Column 5']
+
     column_labels = CLASSES
     row_labels =CLASSES
 
-    ax.axis('tight')
     ax.axis('off')
 
-    ax.table(cellText=data,rowLabels=row_labels,colLabels=column_labels,cellLoc='center',loc="center")
+    axtable = ax.table(cellText=data, rowLabels=row_labels, colLabels=column_labels, cellLoc='center', loc="center", cellColours=plt.cm.RdYlGn(data/100))
+    axtable.scale(1,3)
 
     plt.show()
 

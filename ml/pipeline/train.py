@@ -32,6 +32,7 @@ from utils import IncrementPath
 from utils import GridImage
 from utils import SeedEverything
 from utils.ConfusionMatrix import confusion_matrix, accuracy, macro_f1, cm_image
+from dataloader import CLASSES
 
 import wandb
 import os.path as osp
@@ -62,12 +63,13 @@ def train(data_dir, model_dir, args):
     print(f'Currently using {device}...')
 
     # -- dataset
-    # transform = getattr(import_module("transforms"), args.transform)
-    transform = A.Compose([
-            A.Resize(*config.resize),
-            #A.Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
-            ToTensorV2()
-            ])
+    transform_module = getattr(import_module("transforms"), args.transform)
+    transform = transform_module(resize= config.resize)
+    # transform = A.Compose([
+    #         A.Resize(*config.resize),
+    #         #A.Normalize(mean=mean, std=std, max_pixel_value=255.0, p=1.0),
+    #         ToTensorV2()
+    #         ])
 
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
@@ -197,8 +199,7 @@ def train(data_dir, model_dir, args):
             val_loss_items = []
             val_acc_items = []
             figure = None
-            
-            CLASSES = [0 ,1, 2, 3, 4]            
+                        
             class_items = np.zeros((len(CLASSES),len(CLASSES)))
 
             for val_batch in val_loader:

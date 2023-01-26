@@ -16,9 +16,11 @@ from PIL import Image
 from torchvision.transforms import Resize,ToTensor, Normalize, Compose, CenterCrop, ColorJitter, RandomCrop, RandomHorizontalFlip, RandomGrayscale
 import wandb
 
+CLASSES = [0, 1, 2, 3, 4]
+
 class Fish_Dataset(Dataset):
 
-    num_classes = 5
+    num_classes = len(CLASSES)
 
     def __init__(self, img_dir, ann_dir, transform):
         self.img_labels = pd.read_csv(ann_dir)
@@ -40,6 +42,7 @@ class Fish_Dataset(Dataset):
 
     def __len__(self):
         return len(self.img_labels)-1
+    
 class Basepreprocessing:
     def __init__(self, resize, mean, std, **args):
         self.transform = A.Compose([
