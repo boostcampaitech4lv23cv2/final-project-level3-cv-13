@@ -5,6 +5,7 @@ from PIL import Image
 import io
 import numpy as np
 import albumentations
+from fastapi.middleware.cors import CORSMiddleware
 
 RESIZE=(384,384)
 
