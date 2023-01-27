@@ -1,13 +1,19 @@
 import UploadImageButton from "./components/uploadImageButton";
-import BigTitle from "./components/title";
-import { green,grey } from "@mui/material/colors";
+import { green, grey } from "@mui/material/colors";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Image from "./components/displayImage";
-import { Fragment, useState } from "react";
-import React from 'react';
-import MainDesc from "./components/main_desc"
-import Service from "./components/service"
-import fish_service from "./images/fish_classification_icon.png"
+import { useState } from "react";
+import React from "react";
+import MainDesc from "./components/main_desc";
+import Service from "./components/service";
+import fish_service from "./images/fish_classification_icon.png";
+import { Stack } from "@mui/system";
+import { Divider, Box, Toolbar } from "@mui/material";
+import SideBar from "./components/sidebar";
+import Appbar from "./components/appbar";
+import BigTitle from "components/title";
+
+const drawerWidth = 240;
 
 export default function App() {
   const [selectedImage, setSelectedImage] = useState(new Blob());
@@ -15,26 +21,50 @@ export default function App() {
   const theme = createTheme({
     typography: {
       h1: {
-        color: green[500]
+        color: green[500],
       },
     },
     palette: {
       text: {
-        primary: '#173A5E',
+        primary: "#173A5E",
         secondary: grey[400],
       },
     },
   });
 
   return (
-    <>
+    <Box sx={{ display: "flex" }}>
+      <SideBar></SideBar>
+      <Appbar></Appbar>
       <ThemeProvider theme={theme}>
-        <BigTitle>FICV</BigTitle>
-        <MainDesc>This part is description of project!</MainDesc>
-        <Image>{selectedImage}</Image>
-        <UploadImageButton onChange={setSelectedImage}></UploadImageButton>
-        <Service img_src = {fish_service}></Service>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 3,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+          }}
+        >
+          <Toolbar />
+          <BigTitle></BigTitle>
+          <MainDesc>This part is description of project!</MainDesc>
+          <Image>{selectedImage}</Image>
+          <UploadImageButton onChange={setSelectedImage}></UploadImageButton>
+          <Stack
+            direction="row"
+            divider={<Divider orientation="vertical" flexItem />}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+            spacing={4}
+          >
+            <Service img_src={fish_service}></Service>
+            <Service img_src={fish_service}></Service>
+          </Stack>
+        </Box>
       </ThemeProvider>
-    </>
+    </Box>
   );
 }

@@ -5,9 +5,12 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import { Paper } from "@mui/material";
+
 export default function Service({img_src}) {
-  console.log(typeof img_src)
   return (
+
+      <Paper elevation={24} sx={{ maxWidth: 345 }}>
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
         sx = {{ height: 225 }}
@@ -27,5 +30,6 @@ export default function Service({img_src}) {
         <Button size="small">Get Started</Button>
       </CardActions>
     </Card>
+      </Paper>
   );
 }

@@ -4,8 +4,12 @@ import { Typography } from "@mui/material";
 
 export default function BigTitle({ children }) {
   return (
-    <>
-      <Typography variant="h1" color={"text.primary"}>{children}</Typography>
-    </>
+    <Typography
+      variant="h1"
+      color={"text.primary"}
+      
+    >
+      {children}
+    </Typography>
   );
 }

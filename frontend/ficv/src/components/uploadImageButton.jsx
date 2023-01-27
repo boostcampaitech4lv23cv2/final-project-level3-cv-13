@@ -6,7 +6,7 @@ import ImageIcon from '@mui/icons-material/Image';
 export default function UploadImageButton({ onChange }) {
     const [label, setlabel] = useState(null);
     return (
-      <>
+      <div style={{display: 'flex', alignItems: 'center',justifyContent: 'center', padding:20}}>
         <Button variant="contained" component="label">
           <ImageIcon></ImageIcon>
             Upload File
@@ -32,6 +32,6 @@ export default function UploadImageButton({ onChange }) {
           />
         </Button>
         <h3  style={{"textAlign":"center"}}>{label}</h3>
-      </>
+      </div>
     );
   }

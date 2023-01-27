@@ -1,16 +1,18 @@
-import { Card, CardMedia, Typography } from "@mui/material";
+import { Card, CardMedia, Typography, Box } from "@mui/material";
 
-
-export default function Image({children}) {
+export default function Image({ children }) {
   return (
-    <>
-      <Card sx={{maxWidth:800}}>
-        <CardMedia sx={{height:500,maxWidth:800}} image={URL.createObjectURL(children)}>
-
-        </CardMedia>
-        <Typography variant="subtitle1" sx={{"textAlign":'center'}} color="text.secondary">Your Image</Typography> 
+    <Box display="flex" justifyContent="center" alignItems="center">
+      <Card sx={{ maxWidth: 500 }}>
+        <CardMedia sx={{ height: 300, width: 200 }} image={URL.createObjectURL(children)}></CardMedia>
+        <Typography
+          variant="subtitle1"
+          sx={{ textAlign: "center" }}
+          color="text.secondary"
+        >
+          Your Image
+        </Typography>
       </Card>
-      <br/>
-    </>
+    </Box>
   );
 }

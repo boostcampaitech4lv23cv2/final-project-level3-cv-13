@@ -1,13 +1,20 @@
-import Typography from '@mui/material/Typography'
-import React from 'react';
+import Typography from "@mui/material/Typography";
+import React from "react";
 
-export default function MainDesc({children}) {
-    return (
-        <>
-            <div>
-            <Typography variant='h3' align='center'>{children}</Typography>
-            </div>
-        </>
-        
-    );
-  }
+export default function MainDesc({ children }) {
+  return (
+    <>
+      <Typography
+        variant="h5"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {children}
+      </Typography>
+      <br />
+    </>
+  );
+}
