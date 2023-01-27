@@ -1,29 +1,35 @@
-import UploadImageButton  from "./components/uploadImageButton";
-import { Fragment, useState } from "react";
-import React from 'react';
+import UploadImageButton from "./components/uploadImageButton";
+import { useState } from "react";
+import React from "react";
+import BigTitle from "./components/title";
+import { green,grey } from "@mui/material/colors";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Image from "./components/displayImage";
 
-function App() {
+export default function App() {
   const [selectedImage, setSelectedImage] = useState(new Blob());
+
+  const theme = createTheme({
+    typography: {
+      h1: {
+        color: green[500]
+      },
+    },
+    palette: {
+      text: {
+        primary: '#173A5E',
+        secondary: grey[400],
+      },
+    },
+  });
+
   return (
     <>
-      <div>
-        <h1>FICV</h1>
-        <div>
-          <img
-            alt=""
-            width={"500px"}
-            src={URL.createObjectURL(selectedImage)}
-          />
-          <br />
-        </div>
-      </div>
-      <div>
-        <UploadImageButton
-          onChange={setSelectedImage}
-        ></UploadImageButton>
-      </div>
+      <ThemeProvider theme={theme}>
+        <BigTitle>FICV</BigTitle>
+        <Image>{selectedImage}</Image>
+        <UploadImageButton onChange={setSelectedImage}></UploadImageButton>
+      </ThemeProvider>
     </>
   );
 }
-
-export default App;

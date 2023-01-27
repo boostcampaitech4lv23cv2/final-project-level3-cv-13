@@ -1,13 +1,15 @@
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import React from 'react';
+import ImageIcon from '@mui/icons-material/Image';
 
 export default function UploadImageButton({ onChange }) {
     const [label, setlabel] = useState(null);
     return (
       <>
         <Button variant="contained" component="label">
-          Upload File
+          <ImageIcon></ImageIcon>
+            Upload File
           <input
             accept=".jpg, .jpeg, .png"
             type="file"
@@ -29,7 +31,7 @@ export default function UploadImageButton({ onChange }) {
             hidden
           />
         </Button>
-        <p>{label}</p>
+        <h3  style={{"textAlign":"center"}}>{label}</h3>
       </>
     );
   }
