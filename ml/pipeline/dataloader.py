@@ -29,8 +29,12 @@ class Fish_Dataset(Dataset):
         file_path = self.img_labels.iloc[idx+1, 0]
         label = self.img_labels.iloc[idx+1, 1]
         image = cv2.imread(osp.join(self.img_dir, file_path))
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = self.transform(image=image)['image']
+        try:
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        except:
+            print(f"{file_path}, {idx}번이 오류입니다.")
+            print(file_path, type(image))
+        image = self.transform(image)['image']
         return image/255, label
 
     def set_transform(self, transform):

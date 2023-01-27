@@ -39,9 +39,10 @@ optimizer:
 resize:
   value: [384, 384]
 criterion:
-  value: 'cross_entropy'
+  value: 'focal'
 model:
-  value: 'EfficientNetB0'
+  desc: 'Resnet50, EfficientNetB0, EfficientNetB7'
+  value: 'EfficientNetB7'
 scheduler:
   desc: 'step_lr, lambda_lr, multistep_lr, exponential_lr, cosine_annealing_lr, cosine_annealing_warm_restarts_lr, reduce_on_plateau_lr, cyclic_lr'
   value: 'cosine_annealing_warm_restarts_lr'
@@ -65,9 +66,9 @@ output_folder_name:
   value: 'exp'
 data_dir:
   desc: 'data 저장소 경로'
-  value: '../../../data/fish'
+  value: '../../../data'
 ann_dir:
   desc: 'csv 저장소 경로'
-  value: '../../../data/fish'
+  value: '../../../data'
 momentum:
   value: 0.001

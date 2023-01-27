@@ -42,33 +42,32 @@ def train(data_dir, model_dir, args):
     SeedEverything.seed_everything(args.seed)
 
     global save_dir
-    save_dir = IncrementPath.increment_path(os.path.join(model_dir, f"{config.model}_{config.epochs}_{config.batch_size}_{config.optimizer}_{config.lr}_exp"))
+    save_dir = IncrementPath.increment_path(os.path.join(model_dir, f"{args.model}_{args.epochs}_{args.batch_size}_{args.optimizer}_{args.lr}_exp"))
     
-
+    data = 'fish' if args.dataset == 'Fish_Dataset' else 'sashimi'
     # -- settings
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
     print(f'Currently using {device}...')
-    print(f'Currently using {device}...')
 
     # -- dataset
     transform_module = getattr(import_module("transforms"), args.transform)
-    transform = transform_module(resize = config.resize)
+    transform = transform_module(resize = args.resize)
 
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
-        img_dir = data_dir,
-        ann_dir = osp.join(config.ann_dir, 'fish.csv'),
+        img_dir = osp.join(data_dir, data),
+        ann_dir = osp.join(args.ann_dir, 'fish.csv'),
         transform = transform,
-        num_classes = len(args.fish_classes) if args.dataset == 'Fish_dataset' else len(args.sashimi_classes)
+        num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
 
     val_dataset_module = getattr(import_module("dataloader"), args.dataset)
     val_dataset = val_dataset_module(
         img_dir = data_dir,
-        ann_dir = osp.join(config.ann_dir, 'fish.csv'),
+        ann_dir = osp.join(args.ann_dir, 'fish.csv'),
         transform = transform,
-        num_classes = len(args.fish_classes) if args.dataset == 'Fish_dataset' else len(args.sashimi_classes)
+        num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
 
     # collate_fn needs for batch
@@ -110,11 +109,11 @@ def train(data_dir, model_dir, args):
     # -- model
     model_module = getattr(import_module("model"), args.model)  # default: BaseModel
     model = model_module(
-        num_classes = len(args.fish_classes) if args.dataset == 'Fish_dataset' else len(args.sashimi_classes)
+        num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     ).to(device)
 
     # -- loss & metric
-    criterion = create_criterion(args.criterion, classes = len(args.fish_classes) if args.dataset == 'Fish_dataset' else len(args.sashimi_classes))  # default: cross_entropy
+    criterion = create_criterion(args.criterion, classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     optimizer = getattr(import_module("optimizer"), args.optimizer)(model)  # default: SGD
     
     # scheduler
