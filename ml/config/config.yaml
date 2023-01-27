@@ -30,7 +30,7 @@ lr:
 epochs:
   value: 10
 batch_size:
-  value: 64
+  value: 16
 val_batch_size:
   value: 16
 optimizer:
@@ -66,9 +66,6 @@ output_folder_name:
   value: 'exp'
 data_dir:
   desc: 'data 저장소 경로'
-  value: '../../../data'
-ann_dir:
-  desc: 'csv 저장소 경로'
   value: '../../../data'
 momentum:
   value: 0.001

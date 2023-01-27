@@ -57,15 +57,15 @@ def train(data_dir, model_dir, args):
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
         img_dir = osp.join(data_dir, data),
-        ann_dir = osp.join(args.ann_dir, f'fish.csv'),
+        ann_dir = osp.join(data_dir, data, 'train_1.csv'),
         transform = transform,
         num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
 
     val_dataset_module = getattr(import_module("dataloader"), args.dataset)
     val_dataset = val_dataset_module(
-        img_dir = data_dir,
-        ann_dir = osp.join(args.ann_dir, 'fish.csv'),
+        img_dir = osp.join(data_dir, data),
+        ann_dir = osp.join(data_dir, data, 'valid_1.csv'),
         transform = transform,
         num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
@@ -113,7 +113,7 @@ def train(data_dir, model_dir, args):
     ).to(device)
 
     # -- loss & metric
-    criterion = create_criterion(args.criterion, classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
+    criterion = create_criterion(args.criterion, classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes))
     optimizer = getattr(import_module("optimizer"), args.optimizer)(model)  # default: SGD
     
     # scheduler
