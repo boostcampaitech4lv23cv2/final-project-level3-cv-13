@@ -30,7 +30,7 @@ def dataset_split(path, name):
 
 
 if __name__ == "__main__":
-    fish_path = '../fish/'
-    sashimi_path = '../sashimi/'
+    fish_path = '/opt/ml/data/fish/'
+    sashimi_path = '/opt/ml/data/sashimi/'
     dataset_split(fish_path, 'fish')
     dataset_split(sashimi_path, 'sashimi')
