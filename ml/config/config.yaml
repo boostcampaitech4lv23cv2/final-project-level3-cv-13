@@ -1,5 +1,7 @@
 seed:
   value: 42
+classes:
+  value: [0, 1, 2, 3, 4]
 lr:
   value: 0.0001
 epochs:
@@ -9,17 +11,21 @@ batch_size:
 val_batch_size:
   value: 16
 optimizer:
+  desc: 'SGD, Momentum, Adam, AdamW, Adagrad'
   value: "Adam"
 resize:
   value: [384, 384]
 criterion:
-  value: 'cross_entropy'
+  value: 'focal'
 model:
   value: 'EfficientNetB0'
 scheduler:
-  value: 'lambda_lr'
+  desc: 'step_lr, lambda_lr, multistep_lr, exponential_lr, cosine_annealing_lr, cosine_annealing_warm_restarts_lr, reduce_on_plateau_lr, cyclic_lr'
+  value: 'cosine_annealing_warm_restarts_lr'
+T_0:
+  value: 50
 early_stop:
-  value: 10
+  value: 5
 val_ratio:
   value: 0.2
 log_interval:
@@ -30,15 +36,15 @@ transform:
   value: 'transforms_1'
 model_dir:
   desc: 'output이 저장될 경로'
-  value: '/opt/ml/final-project-level3-cv-13/ml/output'
+  value: '../output'
 output_folder_name:
   desc: 'output에 생성될 폴더 이름'
   value: 'exp'
 data_dir:
   desc: 'data 저장소 경로'
-  value: '/opt/ml/final-project-level3-cv-13/Data_prepare/Fish_dataset/output/crop_image'
+  value: '../../Data/Fish/Fish_dataset/output/crop_image'
 ann_dir:
   desc: 'csv 저장소 경로'
-  value: '/opt/ml/final-project-level3-cv-13/Data_prepare/Fish_dataset/output/analysis_csv'
+  value: '../../Data/Fish/Fish_dataset/output/analysis_csv'
 momentum:
   value: 0.001

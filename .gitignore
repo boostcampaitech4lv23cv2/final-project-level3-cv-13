@@ -9,7 +9,7 @@ __pycache__/
 
 # C extensions
 *.so
-
+google_key.json
 # Distribution / packaging
 .Python
 build/
@@ -163,10 +163,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-### Python Patch ###
-# Poetry local configuration file - https://python-poetry.org/docs/configuration/#local-configuration
-poetry.toml
-
 
 ### VisualStudioCode ###
 .vscode/*
@@ -187,6 +183,9 @@ poetry.toml
 .history
 .ionide
 
+Data/Fish/Fish_dataset/output/crop_image/*
+Data/Fish/Fish_dataset/Training/*
+Data/Fish/Fish_dataset/Validation/*
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode
 
 #Virtual Env
@@ -195,3 +194,5 @@ Lib/
 Scripts/
 *.log
 *.cfg
+Data/*
+Data_prepare/*
