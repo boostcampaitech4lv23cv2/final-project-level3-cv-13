@@ -35,9 +35,9 @@ def grid_image(np_images, gts, preds, n=16, shuffle=False):
         plt.xticks([])
         plt.yticks([])
         plt.grid(False)
-        
-        mean=(0.548, 0.504, 0.479)
-        std=(0.237, 0.247, 0.246)
+
+        mean=(0.485, 0.456, 0.406)
+        std=(0.229, 0.224, 0.225)
         image = denormalize_image(image, mean, std)
 
         plt.imshow(image.astype(np.uint8))
