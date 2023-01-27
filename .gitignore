@@ -194,5 +194,10 @@ Lib/
 Scripts/
 *.log
 *.cfg
-Data/*
+
+#Data
+Data/**/*.JPG
+Data/**/*.jpg
+Data/**/*.png
+Data/**/*.PNG
 Data_prepare/*
