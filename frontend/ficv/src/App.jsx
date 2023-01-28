@@ -7,19 +7,20 @@ import React from "react";
 import MainDesc from "./components/main_desc";
 import Service from "./components/service";
 import fish_service from "./images/fish_classification_icon.png";
+import sashimi_service from "./images/sashimi_classification_icon.png";
 import { Stack } from "@mui/system";
-import { Divider, Box, Toolbar } from "@mui/material";
+import { Divider, Box, Toolbar ,Typography} from "@mui/material";
 import SideBar from "./components/sidebar";
 import Appbar from "./components/appbar";
 import BigTitle from "components/title";
 
-const drawerWidth = 240;
+const drawerWidth = 180;
 
 export default function App() {
   const [selectedImage, setSelectedImage] = useState(new Blob());
-
+  const [label, setlabel] = useState(null)
   const theme = createTheme({
-    typography: {
+    Typography: {
       h1: {
         color: green[500],
       },
@@ -45,11 +46,12 @@ export default function App() {
             width: { sm: `calc(100% - ${drawerWidth}px)` },
           }}
         >
-          <Toolbar />
-          <BigTitle></BigTitle>
+          <Toolbar/>
+          <BigTitle>FICV</BigTitle>
           <MainDesc>This part is description of project!</MainDesc>
           <Image>{selectedImage}</Image>
-          <UploadImageButton onChange={setSelectedImage}></UploadImageButton>
+          <UploadImageButton onChange={setSelectedImage} inference= {setlabel}></UploadImageButton>
+          <Typography display="flex" justifyContent="center" alignItems="center" variant="h5">{"Label: " + label}</Typography>
           <Stack
             direction="row"
             divider={<Divider orientation="vertical" flexItem />}
@@ -60,8 +62,8 @@ export default function App() {
             }}
             spacing={4}
           >
-            <Service img_src={fish_service}></Service>
-            <Service img_src={fish_service}></Service>
+            <Service img_src={fish_service} desc_title = "What is this fish?"></Service>
+            <Service img_src={sashimi_service} desc_title = "What is this Sashimi?"></Service>
           </Stack>
         </Box>
       </ThemeProvider>

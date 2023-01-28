@@ -2,7 +2,7 @@ import { AppBar,Toolbar,IconButton,Typography } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import React from "react"
 
-const drawerWidth = 240;
+const drawerWidth = 180;
 
 export default function Appbar(){
     const [mobileOpen, setMobileOpen] = React.useState(false);
@@ -12,10 +12,6 @@ export default function Appbar(){
     };
     return <AppBar
     position="fixed"
-    sx={{
-      width: { sm: `calc(100% - ${drawerWidth}px)` },
-      ml: { sm: `${drawerWidth}px` },
-    }}
   >
     <Toolbar>
       <IconButton
@@ -28,7 +24,7 @@ export default function Appbar(){
         <MenuIcon />
       </IconButton>
       <Typography variant="h6" noWrap component="div">
-        Responsive drawer
+        FICV
       </Typography>
     </Toolbar>
   </AppBar>

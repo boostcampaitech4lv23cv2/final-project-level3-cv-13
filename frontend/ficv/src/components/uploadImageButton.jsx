@@ -1,10 +1,8 @@
-import { useState } from "react";
 import Button from "@mui/material/Button";
 import React from 'react';
 import ImageIcon from '@mui/icons-material/Image';
 
-export default function UploadImageButton({ onChange }) {
-    const [label, setlabel] = useState(null);
+export default function UploadImageButton({ onChange , inference}) {
     return (
       <div style={{display: 'flex', alignItems: 'center',justifyContent: 'center', padding:20}}>
         <Button variant="contained" component="label">
@@ -23,7 +21,7 @@ export default function UploadImageButton({ onChange }) {
                   cache: "no-cache",
                   body: formData,
                 });
-                setlabel(await response.json());
+                inference(await response.json());
               } catch (err) {
                 console.log("Error >>", err);
               }
@@ -31,7 +29,6 @@ export default function UploadImageButton({ onChange }) {
             hidden
           />
         </Button>
-        <h3  style={{"textAlign":"center"}}>{label}</h3>
       </div>
     );
   }

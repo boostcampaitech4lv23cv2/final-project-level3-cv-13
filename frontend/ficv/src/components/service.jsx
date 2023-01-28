@@ -7,9 +7,8 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { Paper } from "@mui/material";
 
-export default function Service({img_src}) {
+export default function Service({img_src, desc_title}) {
   return (
-
       <Paper elevation={24} sx={{ maxWidth: 345 }}>
     <Card sx={{ maxWidth: 345 }}>
       <CardMedia
@@ -20,7 +19,7 @@ export default function Service({img_src}) {
       />
       <CardContent>
         <Typography gutterBottom variant="h5" component="div">
-          What is this fish?
+          {desc_title}
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Our fish classification service ....
