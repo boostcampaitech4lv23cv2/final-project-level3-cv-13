@@ -1,4 +1,4 @@
-import { Card, CardMedia, Typography, Box,CardContent } from "@mui/material";
+import { Card, CardMedia, Typography, Box } from "@mui/material";
 
 export default function Image({ children }) {
   return (

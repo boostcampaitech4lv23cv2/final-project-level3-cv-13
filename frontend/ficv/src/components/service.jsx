@@ -1,34 +1,35 @@
-import * as React from 'react';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import * as React from "react";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import { Paper } from "@mui/material";
-
-export default function Service({img_src, desc_title}) {
+import { useNavigate } from "react-router-dom";
+export default function Service({ img_src, desc_title, link}) {
+  const movePage = useNavigate();
   return (
-      <Paper elevation={24} sx={{ maxWidth: 345 }}>
-    <Card sx={{ maxWidth: 345 }}>
-      <CardMedia
-        sx = {{ height: 225 }}
-        image= {img_src}
-        alt = "Cannot load image"
-        title="Fish Classification Service"
-      />
-      <CardContent>
-        <Typography gutterBottom variant="h5" component="div">
-          {desc_title}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Our fish classification service ....
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Get Started</Button>
-      </CardActions>
-    </Card>
-      </Paper>
+    <Paper elevation={24} sx={{ maxWidth: 345 }}>
+      <Card sx={{ maxWidth: 345 }}>
+        <CardMedia
+          sx={{ height: 225 }}
+          image={img_src}
+          alt="Cannot load image"
+          title="Fish Classification Service"
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {desc_title}
+          </Typography>
+          <Typography variant="body2" color="text.secondary">
+            Our fish classification service ....
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small" onClick={(e)=> movePage(link)}>Get Started</Button>
+        </CardActions>
+      </Card>
+    </Paper>
   );
 }
