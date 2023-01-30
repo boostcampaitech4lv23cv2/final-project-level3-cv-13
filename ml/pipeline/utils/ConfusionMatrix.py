@@ -62,7 +62,7 @@ def macro_f1(class_items, CLASSES):
     return sum(macro_f1_items.values())/len(macro_f1_items)
 
 def cm_image(confusion_matrix, classes):
-    cm_figure = plt.figure(figsize=(24, 20))
+    cm_figure = plt.figure(figsize=(50, 50))
     fig, ax =plt.subplots(1,1)
 
     data= confusion_matrix
@@ -72,10 +72,10 @@ def cm_image(confusion_matrix, classes):
 
     ax.axis('off')
 
-    axtable = ax.table(cellText=data, rowLabels=row_labels, colLabels=column_labels, rowLoc='right', cellLoc='center', loc="center", cellColours=plt.cm.YlGn(data))
+    axtable = ax.table(cellText=data, rowLabels=row_labels, colLabels=column_labels, rowLoc='right', cellLoc='center', loc="right", cellColours=plt.cm.YlGn(data))
     axtable.auto_set_font_size(False)
     axtable.set_fontsize(13)
-    axtable.scale(1,3)
+    axtable.scale(1,2)
 
     plt.show()
 
