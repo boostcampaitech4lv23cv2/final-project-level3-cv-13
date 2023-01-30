@@ -119,7 +119,7 @@ def create_criterion(criterion_name, **kwargs):
     if is_criterion(criterion_name):
         create_fn = criterion_entrypoint(criterion_name)
         sig = signature(create_fn)
-        if 'classes' in sig.parameters.values() :
+        if sig.parameters['classes']:
             criterion = create_fn(**kwargs)
         else:
             criterion = create_fn()

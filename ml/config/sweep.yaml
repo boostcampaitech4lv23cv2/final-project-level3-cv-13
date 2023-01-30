@@ -4,11 +4,6 @@ metric:
   goal: maximize
   name: Val/f1 score
 parameters:
-  resize:
-    values:
-      - [384, 384]
-      - [512, 256]
-      - [256, 512]
   batch_size:
     values:
       - 16
@@ -21,10 +16,6 @@ parameters:
     distribution: int_uniform
     max: 20
     min: 10
-  log_interval:
-    distribution: int_uniform
-    max: 20
-    min: 1
   lr:
     distribution: uniform
     max: 0.0002

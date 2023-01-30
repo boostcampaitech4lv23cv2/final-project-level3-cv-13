@@ -39,7 +39,7 @@ optimizer:
 resize:
   value: [384, 384]
 criterion:
-  value: 'focal'
+  value: 'label_smoothing'
 model:
   desc: 'Resnet50, EfficientNetB0, EfficientNetB4, EfficientNetB7, Swin_Base_patch4_window12_384_in22k'
   value: 'EfficientNetB4'
