@@ -9,11 +9,10 @@ import numpy as np
 import torch
 import albumentations as A
 import os.path as osp
-import wandb
-import fnmatch
+import cv2
 
 from tqdm import tqdm
-from datetime import datetime
+import time
 from shutil import copyfile
 from importlib import import_module
 from torch.utils.data import DataLoader
@@ -31,9 +30,8 @@ from utils import IncrementPath
 from utils import GridImage
 from utils import SeedEverything
 
-def inference(data_dir, model_dir, args):
-    SeedEverything.seed_everything(args.seed)
-
+def inference(model_dir):
+    
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     model_module = getattr(import_module("model"), 'EfficientNetB7')  # default: BaseModel
@@ -49,20 +47,35 @@ def inference(data_dir, model_dir, args):
 
     # Let's create a dummy input tensor  
     # make dummy data
+    
+
     batch_size = 1
-    # model input size에 맞게 b c h w 순으로 파라미터 설정
-    x = torch.rand(batch_size, 3, 384, 384, requires_grad=True).to(device)
-    # feed-forward test
-    output = model(x)
+    file_path = '/opt/ml/data/fish/Croaker/0aadb8e6d39db834124c877bad828f2007e84a5006d4599788f5cb96b481.jpg'
+    image = cv2.imread(file_path)
+    image = np.expand_dims(image, axis=0)
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     transform=A.Compose([
-        # A.Resize(*HyperParameter.RESIZE),
+        A.Resize(384, 384),
         A.Normalize(),
         ToTensorV2(),
     ])
 
+    image = transform(image=image)['image']
+    image = image.unsqueeze(0)
+    image = image.to(device, dtype=torch.float32)
+    # feed-forward test
+    start = time.time()
+    output = model(image)
+    preds = torch.argmax(output, dim=-1)
+    end = time.time()
+    print(f"{end - start:.5f} sec")
+
+    
+
+
 if __name__ == "__main__":
-    path = input("inference를 실행할 output 폴더의 절대 경로를 적어주세요.\n")
+    path = '/opt/ml/final-project-level3-cv-13/ml/output/EfficientNetB7_10_16_Adam_0.0001_exp4'
     yaml = osp.join(path, 'config.yaml')
     model = glob.glob(f"{path}/*best*.pth")
     inference(model_dir=model)

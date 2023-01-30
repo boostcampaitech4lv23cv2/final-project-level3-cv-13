@@ -39,6 +39,7 @@ def get_lr(optimizer):
 
 
 def train(data_dir, model_dir, args):
+
     SeedEverything.seed_everything(args.seed)
 
     global save_dir
@@ -205,20 +206,23 @@ def train(data_dir, model_dir, args):
                 [os.remove(f) for f in glob.glob(f"{save_dir}/*_best_*")]
                 print(f"New best model for val accuracy : {val_acc:4.2%}! saving the best model..")
                 torch.save(model.state_dict(), f"{save_dir}/{data}_{config.model}_best_epoch{epoch}_{val_acc:.4f}.pth")
+                torch.set_flush_denormal(True)
                 torch.onnx.export(model, dummy_input, f"{save_dir}/{data}_{config.model}_best_{val_acc:.4f}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
                                 'output' : {0 : 'batch_size'}})
                 best_val_acc = val_acc
+                torch.set_flush_denormal(False)
             [os.remove(f) for f in glob.glob(f"{save_dir}/*_last_*")]
             torch.save(model.state_dict(), f"{save_dir}/{data}_{config.model}_last_{epoch}epoch_{val_acc:6.4}.pth")
+            torch.set_flush_denormal(True)
             torch.onnx.export(model, dummy_input, f"{save_dir}/{data}_{config.model}_last_{val_acc:6.4}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
                                 'output' : {0 : 'batch_size'}})
-
+            torch.set_flush_denormal(False)
             print(
                 f"[Val] acc : {val_acc:4.2%}, loss: {val_loss:4.2} || "
                 f"best acc : {best_val_acc:4.2%}, best loss: {best_val_loss:4.2}"

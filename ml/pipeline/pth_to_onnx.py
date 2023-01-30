@@ -4,7 +4,8 @@ from importlib import import_module
 #Function to Convert to ONNX 
 def Convert_ONNX(): 
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    torch.set_flush_denormal(True)
+    device = torch.device('cpu')
 
     model_module = getattr(import_module("model"), 'EfficientNetB7')  # default: BaseModel
     model = model_module(
@@ -26,7 +27,7 @@ def Convert_ONNX():
     output = model(x)
 
     # convert
-    torch.onnx.export(model, x, "./efficientnetb7.onnx", export_params=True, opset_version=10, do_constant_folding=True
+    torch.onnx.export(model, x, "./efficientnetb7.onnx", export_params=True, do_constant_folding=True
                   , input_names = ['input'], output_names=['output']
                   # , dynamic_axes={'input' : {0 : 'batch_size'}, 'output' : {0 : 'batch_size'}}
                   # dynamic axes 는 pytorch 1.2 부터 지원하는듯??
