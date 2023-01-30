@@ -45,7 +45,7 @@ class transforms_4:
             A.Resize(*resize, cv2.INTER_LINEAR),
             A.RandomRotate90(p=0.5),
             A.RandomBrightnessContrast(brightness_limit=(-0.2, 0.2)),
-            A.Oneof([
+            A.OneOf([
                 A.CLAHE(p=0.3),
                 A.Blur(blur_limit=(30, 40), p=0.3)
             ]),
