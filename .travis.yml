@@ -65,8 +65,8 @@ jobs:
     if: commit_message =~ /build$/ OR commit_message =~ /build-react$/
     name: React-build
     before_install:
-    - apt install nodejs
-    - sudo apt install npm
+    - apt-get install nodejs
+    - apt-get install npm
     - cd frontend/ficv
     - npm install
     script:
