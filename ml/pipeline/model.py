@@ -94,13 +94,8 @@ class EfficientNetB7(nn.Module):
     def forward(self, x):
         x = self.efficientnet(x)
         return x
-<<<<<<< HEAD
 
 class Swin_Base_patch4_window12_384_in22k(nn.Module):
-=======
-    
-class EfficientNetB4(nn.Module):
->>>>>>> d1c50c95fecc190f035a45875480212214e027b9
     
     '''
     def __init__(
@@ -122,15 +117,8 @@ class EfficientNetB4(nn.Module):
     
     def __init__(self, num_classes):
         super().__init__()
-<<<<<<< HEAD
         self.swin_base = timm.create_model('swin_base_patch4_window12_384_in22k', pretrained = True, num_classes = num_classes, drop_rate=0.5, act_layer = nn.ReLU)
 
     def forward(self, x):
         x = self.swin_base(x)
-=======
-        self.efficientnet = timm.create_model('efficientnet_b4', pretrained = True, num_classes = num_classes, drop_rate=0.5, act_layer = nn.ReLU)
-
-    def forward(self, x):
-        x = self.efficientnet(x)
->>>>>>> d1c50c95fecc190f035a45875480212214e027b9
         return x

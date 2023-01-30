@@ -30,7 +30,7 @@ lr:
 epochs:
   value: 10
 batch_size:
-  value: 16
+  value: 64
 val_batch_size:
   value: 16
 optimizer:
@@ -41,13 +41,8 @@ resize:
 criterion:
   value: 'focal'
 model:
-<<<<<<< HEAD
   desc: 'Resnet50, EfficientNetB0, EfficientNetB7, Swin_Base_patch4_window12_384_in22k'
-  value: 'Swin_Base_patch4_window12_384_in22k'
-=======
-  desc: 'Resnet50, EfficientNetB0, EfficientNetB7'
-  value: 'EfficientNetB4'
->>>>>>> d1c50c95fecc190f035a45875480212214e027b9
+  value: 'EfficientNetB0'
 scheduler:
   desc: 'step_lr, lambda_lr, multistep_lr, exponential_lr, cosine_annealing_lr, cosine_annealing_warm_restarts_lr, reduce_on_plateau_lr, cyclic_lr'
   value: 'cosine_annealing_warm_restarts_lr'
