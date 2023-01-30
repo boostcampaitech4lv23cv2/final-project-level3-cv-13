@@ -33,6 +33,11 @@ parameters:
     values:
       - EfficientNetB0
       - Resnet50
+      - EfficientNetB4
+  dataset:
+    values:
+      - Fish_Dataset
+      - Sashimi_Dataset
   name:
     distribution: categorical
     values:
