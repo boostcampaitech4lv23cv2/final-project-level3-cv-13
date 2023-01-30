@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
 
-# 52번째 줄 print 제거 필요
+
 # cm_image 함수 table 이름 잘 보이게 정리 필요
 # accuracy, macro_f1 정확한지 확인 필요
 # 카테고리 이미지가 없을 때 NaN으로 표시 되는 오류 해결 필요
@@ -64,7 +64,7 @@ def macro_f1(class_items, CLASSES):
 def cm_image(confusion_matrix, classes):
     cm_figure = plt.figure(figsize=(24, 20))
     fig, ax =plt.subplots(1,1)
-    # print(confusion_matrix)
+
     data= confusion_matrix
 
     column_labels = classes
@@ -83,7 +83,7 @@ def cm_image(confusion_matrix, classes):
 
 def confusion_normalize(class_items):
 
-    # confusion matrix normalize 전체 열의 true label 수로 나눠서 normalize 한다
+    # confusion matrix normalize 전체 열의 true label 수로 나눠서 normalize
     for j in range(len(class_items)):
         norm = sum(class_items[:,j])
 

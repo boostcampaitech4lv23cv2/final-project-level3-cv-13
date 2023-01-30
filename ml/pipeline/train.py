@@ -38,10 +38,6 @@ import os.path as osp
 from torch.optim.lr_scheduler import StepLR
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/opt/ml/storage_key.json"
 
-'''
-222, 224 print문 삭제 필요
-200번 째 CLASSES 상수 삭제하고 실제 리스트 작성 필요
-'''
 
 def get_lr(optimizer):
     for param_group in optimizer.param_groups:
@@ -219,9 +215,9 @@ def train(data_dir, model_dir, args):
             cm_figure = cm_image(class_items, classes)
             cm_figure = wandb.Image(cm_figure)
             accuracy_score = accuracy(class_items, CLASSES)
-            # print(accuracy_score)
+
             macro_f1_score = macro_f1(class_items, CLASSES)
-            # print(macro_f1_score)
+            
             
             val_loss = np.sum(val_loss_items) / len(val_loader)
             val_acc = np.sum(val_acc_items) / len(val_dataset)
