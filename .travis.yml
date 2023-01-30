@@ -76,6 +76,7 @@ jobs:
     - npm run build
     deploy:
       provider: firebase
+      skip_cleanup: true
       on:
         repo: "boostcampaitech4lv23cv2/final-project-level3-cv-13"
         all_branches: true
