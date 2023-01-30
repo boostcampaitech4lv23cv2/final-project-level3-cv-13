@@ -334,7 +334,7 @@ if __name__ == '__main__':
 
     UploadBlob.upload_blob(
         bucket_name="model-registry-cv13",
-        source_file_name=f"{save_dir}/{data}_{config.model}_best_{best_val_acc:.4f}.onnx",
+        source_file_name=f"{save_dir}/{data}_{config.model}_best_{best_macro_f1_score:.4f}.onnx",
         destination_blob_name=f"{data}-{config.model}-{best_macro_f1_score:.4f}-{today}.onnx",
     )
 
