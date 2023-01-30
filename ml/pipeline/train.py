@@ -198,7 +198,7 @@ def train(data_dir, model_dir, args):
             val_loss = np.sum(val_loss_items) / len(val_loader)
             val_acc = np.sum(val_acc_items) / len(val_dataset)
             best_val_loss = min(best_val_loss, val_loss)
-            dummy_input = torch.randn(1, 3, 384, 384).to(device)
+            dummy_input = torch.randn(1, 3, *args.resize).to(device)
             if val_acc > best_val_acc:
                 early_stop = 0
 
@@ -306,7 +306,7 @@ if __name__ == '__main__':
     UploadBlob.upload_blob(
         bucket_name="model-registry-cv13",
         source_file_name=f"{save_dir}/{data}_{config.model}_best_{best_val_acc:.4f}.onnx",
-        destination_blob_name=f"{data}_{config.model}-{best_val_acc:.4f}-{today}.onnx",
+        destination_blob_name=f"{data}-{config.model}-{best_val_acc:.4f}-{today}.onnx",
     )
 
     
