@@ -16,9 +16,13 @@ from PIL import Image
 from torchvision.transforms import Resize,ToTensor, Normalize, Compose, CenterCrop, ColorJitter, RandomCrop, RandomHorizontalFlip, RandomGrayscale
 import wandb
 
+CLASSES = [0, 1, 2, 3, 4]
+
 class Fish_Dataset(Dataset):
 
+
     def __init__(self, img_dir, ann_dir, transform, num_classes):
+
         self.img_labels = pd.read_csv(ann_dir)
         self.img_dir = img_dir
         self.transform = transform
@@ -31,7 +35,7 @@ class Fish_Dataset(Dataset):
         image = cv2.imread(osp.join(self.img_dir, file_path))
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = self.transform(image=image)['image']
-        return image/255, label
+        return image, label
 
     def set_transform(self, transform):
         self.transform = transform
