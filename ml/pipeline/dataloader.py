@@ -16,7 +16,6 @@ from PIL import Image
 from torchvision.transforms import Resize,ToTensor, Normalize, Compose, CenterCrop, ColorJitter, RandomCrop, RandomHorizontalFlip, RandomGrayscale
 import wandb
 
-CLASSES = [0, 1, 2, 3, 4]
 
 class Fish_Dataset(Dataset):
 
