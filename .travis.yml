@@ -77,7 +77,8 @@ jobs:
     deploy:
       provider: firebase
       on:
-        branches: "feature/FISH-39-react-web-app-"
+        repo: "boostcampaitech4lv23cv2/final-project-level3-cv-13"
+        all_branches: true
       token:
         secure: "HFUcsZuNWtqLlvk2+c63jF5CxRKerp4a/S5I8564QLkLhnqjTt6eJGjoSnXYPc/oBu/aq57bhgMLt99P3mET47XzUyks+8y0U33MQKf+b4yz5uM8SEnbwLGVYfO8Yi547/J67N6uOF11k8b2BGclamIo1OKJBSs3VBieh6NMoMAwnksZLdR+PrAlZLMLRbwmUTreGzDZ/5iy6j7Oj6Rum3oHmZ1kDVE0fdhIFHL6npSVro859eSW10eYmGzim/dWxQqrSvZ1ycV1Lw5jaEXD+fZJ7o3uxdNlm7ak9ox8QQ5ewhZQ+eynreRBQiXjXz7l59AjElu7io4wct77e8sKGlA+WKDtEfUXbN8i76mRxTMqUInm5g4w5w/W0BR9syOASQyv9rrfztYLUDeSkFrfnX/vuj3CEoadaO7bFM+5FCudlQgTGb+9d3cJxEqZdfKFR79DTr8rjDsDM19ephyvdVjoRhdhe0gLldXsi1Q/Q4LfDFKG5fI4gBtfadtnDAfq0r1Q65rdL3lztOVwOGjjnv47lGrPs4iZLAhNCMdgwupD+c4LDwuK6xUT7sgKgidlt3DXlEZtCzlBDSl1ytqIiujzZAL8aqv8EOuGvRTsZbnD4XoGY30wP46UUYuKh3P6gdBugDAEiso857eM+Lr0Soa7VaKbi+rz6nPlswwq08Y="
 notifications:
