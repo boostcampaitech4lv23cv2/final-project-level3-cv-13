@@ -285,7 +285,7 @@ if __name__ == '__main__':
         project="Final_Project",
         config = wandb_yaml
     )
-    this_run_name=f"{data}_{wandb.config.model}_{wandb.config.epochs}_{wandb.config.batch_size}_{wandb.config.optimizer}_{wandb.config.lr}"
+    this_run_name=f"{wandb.config.dataset.split('_')[0]}_{wandb.config.model}_{wandb.config.epochs}_{wandb.config.batch_size}_{wandb.config.optimizer}_{wandb.config.lr}"
     wandb.run.name=this_run_name
     wandb.save(wandb_yaml)
 
