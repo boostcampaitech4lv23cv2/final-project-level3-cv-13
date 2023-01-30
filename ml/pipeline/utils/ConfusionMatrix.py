@@ -28,7 +28,9 @@ def accuracy(class_items, CLASSES):
 
 
 def macro_f1(class_items, CLASSES):
-    
+    tp = 0
+    fp = 0
+    fn = 0
     # class별 macro_f1을 담기 위한 dict 생성
     macro_f1_items = dict()
     
@@ -40,20 +42,20 @@ def macro_f1(class_items, CLASSES):
         fn = sum(class_items[i][:])-tp
 
         # precision & recall 계산
-        # if tp == 0 and fp == 0:
-        #     precision = 0
-        # else:     
-        precision = (tp/(tp+fp))
+        if tp == 0 and fp == 0:
+            precision = 0
+        else:     
+            precision = (tp/(tp+fp))
             
-        # if tp == 0 and fn == 0:
-        #     recall = 0 
-        # else:
-        recall = (tp/(tp+fn))
+        if tp == 0 and fn == 0:
+            recall = 0 
+        else:
+            recall = (tp/(tp+fn))
 
-        # if precision == 0 and recall == 0:
-        #     f1_score = 0
-        # else:
-        f1_score = 2*precision*recall/(precision + recall)
+        if precision == 0 and recall == 0:
+            f1_score = 0
+        else:
+            f1_score = 2*precision*recall/(precision + recall)
     
         macro_f1_items[CLASSES[i]] = f1_score
         

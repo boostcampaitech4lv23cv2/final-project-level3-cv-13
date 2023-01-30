@@ -135,6 +135,7 @@ def train(data_dir, model_dir, args):
     global best_val_acc
     best_val_acc = 0
     best_val_loss = np.inf
+    best_macro_f1_score = 0
 
     early_stop = 0
     breaker = False
@@ -213,43 +214,43 @@ def train(data_dir, model_dir, args):
             cm_figure = cm_image(class_items)
             cm_figure = wandb.Image(cm_figure)
             accuracy_score = accuracy(class_items, CLASSES)
-            print(accuracy_score)
+            # print(accuracy_score)
             macro_f1_score = macro_f1(class_items, CLASSES)
-            print(macro_f1_score)
+            # print(macro_f1_score)
             
             val_loss = np.sum(val_loss_items) / len(val_loader)
             val_acc = np.sum(val_acc_items) / len(val_dataset)
             best_val_loss = min(best_val_loss, val_loss)
             dummy_input = torch.randn(1, 3, 384, 384).to(device)
-            if val_acc > best_val_acc:
+            if macro_f1_score > best_macro_f1_score:
                 early_stop = 0
 
                 [os.remove(f) for f in glob.glob(f"{save_dir}/*_best_*")]
-                print(f"New best model for val accuracy : {val_acc:4.2%}! saving the best model..")
-                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{val_acc:.4f}.pth")
-                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{val_acc:.4f}.onnx", export_params=True,
+                print(f"New best model for val accuracy : {macro_f1_score:6.4}! saving the best model..")
+                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{macro_f1_score:6.4}.pth")
+                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{macro_f1_score:6.4}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
                                 'output' : {0 : 'batch_size'}})
                 best_val_acc = val_acc
             [os.remove(f) for f in glob.glob(f"{save_dir}/*_last_*")]
-            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{val_acc:6.4}.pth")
-            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{val_acc:6.4}.onnx", export_params=True,
+            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{macro_f1_score:6.4}.pth")
+            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{macro_f1_score:6.4}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
                                 'output' : {0 : 'batch_size'}})
 
             print(
-                f"[Val] acc : {val_acc:4.2%}, loss: {val_loss:4.2} || "
-                f"best acc : {best_val_acc:4.2%}, best loss: {best_val_loss:4.2}"
+                f"[Val] acc : {val_acc:4.2%}, f1_score : {macro_f1_score:4.2}, loss: {val_loss:4.2} || "
+                f"best acc : {best_val_acc:4.2%}, best f1_score : {best_macro_f1_score:4.2}, best loss: {best_val_loss:4.2}"
             )
 
-            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "results": figure, "Confusion Matrix": cm_figure})
+            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "Val/f1 score": macro_f1_score, "results": figure, "Confusion Matrix": cm_figure})
 
             print(f'{early_stop_arg-early_stop} Epoch left until early stopping..')                
-            if val_acc <= best_val_acc:                
+            if macro_f1_score <= best_macro_f1_score:                
                 if early_stop == early_stop_arg:
                     breaker = True
                     print(f'--------epoch {epoch} early stopping--------')
