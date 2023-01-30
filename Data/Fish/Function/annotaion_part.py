@@ -17,7 +17,7 @@ def make_annotation(dataset_path, image_path, label_filename, mode, direc_root =
     anns_path = dataset_path + '/' + label_filename
     anns_name_list = os.listdir(anns_path)
     
-    for count ,anns_folder_name in enumerate (anns_name_list): #gbt_fish_dtset1~4.json
+    for count ,anns_folder_name in enumerate(anns_name_list): #gbt_fish_dtset1~4.json
         print("Making anns process [",count+1,"/",len(anns_name_list),"]")
         if anns_folder_name[-5:] != ".json":
             print(anns_folder_name," is not json \n\n")
@@ -66,8 +66,8 @@ def make_annotation(dataset_path, image_path, label_filename, mode, direc_root =
                                 "categories_id" : categories_id[idx], 
                                 "bbox" : bbox[idx]}
 
-            with open(direc_root+'/'+'[new]_'+anns_folder_name, "w") as f:
-                print("new_json file is complete to create at \n",direc_root+'/'+'[new]'+anns_folder_name,"\n\n")
+            with open(direc_root+'/'anns_folder_name, "w") as f:
+                print("new_json file is complete to create at \n",direc_root+'/'+anns_folder_name,"\n\n")
                 json.dump(new_json, f, indent = 4)
 
     return categories

@@ -4,14 +4,13 @@ from Function.annotaion_part import make_annotation
 from Function.image_part import crop_image
 
 ###########Setting Part ###########
-dataset_path  = "/opt/ml/final-project-level3-cv-13/Data/Fish/Fish_dataset" #Fish_dataset 폴더가 있는 파일의 절대 경로를 적어주자
-train_image_filename = "Training/dtset" #dtset들의 상위폴더의 폴더명을 적어주자
-train_label_filename = "Training/gbt_fish_dtset" #json파일 (label)이 담겨 있는 폴더명을 적어주자
+dataset_path  = "/opt/ml/val_images" #Fish_dataset 폴더가 있는 파일의 절대 경로를 적어주자
+train_image_filename = "images" #dtset들의 상위폴더의 폴더명을 적어주자
+train_label_filename = "output/training"
+val_image_filename = "images" #images의 상위폴더의 폴더명을 적어주자
+val_label_filename = "output/validation" #json파일 (label)이 담겨 있는 폴더명을 적어주자
 
-val_image_filename = "Validation/dtset" #images의 상위폴더의 폴더명을 적어주자
-val_label_filename = "Validation/gbt_fish_dtset" #json파일 (label)이 담겨 있는 폴더명을 적어주자
-
-csv_folder_path = '/opt/ml/final-project-level3-cv-13/Data/Fish/Fish_dataset/output/analysis_csv'
+csv_folder_path = '/opt/ml/final-project-level3-cv-13/Data/Fish/Fish_dataset/csv'
 
 
 try:
@@ -38,8 +37,8 @@ print("\n######################################")
 print("##    start to running image part   ##")
 print("######################################\n")
 
-train_images_size_list, train_csv = crop_image(dataset_path, train_image_filename)
-valid_images_size_list, valid_csv = crop_image(dataset_path, val_image_filename)
+train_images_size_list, train_csv = crop_image(dataset_path, train_image_filename, os.path.join(dataset_path, train_label_filename))
+valid_images_size_list, valid_csv = crop_image(dataset_path, val_image_filename, os.path.join(dataset_path, val_label_filename))
 
 
 

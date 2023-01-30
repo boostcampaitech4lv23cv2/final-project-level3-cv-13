@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+from inspect import signature
 from torch.nn.modules.loss import _WeightedLoss
 from torch import Tensor
 from typing import Callable, Optional
@@ -28,7 +29,7 @@ class FocalLoss(nn.Module):
 
 
 class LabelSmoothingLoss(nn.Module):
-    def __init__(self, classes=3, smoothing=0.0, dim=-1):
+    def __init__(self, classes, smoothing=0.01, dim=-1):
         super(LabelSmoothingLoss, self).__init__()
         self.confidence = 1.0 - smoothing
         self.smoothing = smoothing
@@ -47,7 +48,7 @@ class LabelSmoothingLoss(nn.Module):
 # https://gist.github.com/SuperShinyEyes/dcc68a08ff8b615442e3bc6a9b55a354
 # F1 스코어를 낸 다음 이를 이용하여 학습하게 하는 loss
 class F1Loss(nn.Module):
-    def __init__(self, classes=3, epsilon=1e-7):
+    def __init__(self, classes, epsilon=1e-7):
         super().__init__()
         self.classes = classes
         self.epsilon = epsilon
@@ -117,7 +118,11 @@ def is_criterion(criterion_name):
 def create_criterion(criterion_name, **kwargs):
     if is_criterion(criterion_name):
         create_fn = criterion_entrypoint(criterion_name)
-        criterion = create_fn(**kwargs)
+        sig = signature(create_fn)
+        if 'classes' in sig.parameters.values() :
+            criterion = create_fn(**kwargs)
+        else:
+            criterion = create_fn()
     else:
         raise RuntimeError('Unknown loss (%s)' % criterion_name)
     return criterion

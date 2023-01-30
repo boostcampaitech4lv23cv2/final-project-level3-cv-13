@@ -3,10 +3,10 @@ from PIL import Image
 import json
 
 
-def crop_image(dataset_path,image_filename,anns_path = "/opt/ml/final-project-level3-cv-13/Data/Fish/Fish_dataset/output/new_json_set"):
+def crop_image(dataset_path,image_filename,anns_path):
 
     #parameter
-    save_path = dataset_path +'/'+"output/crop_image"
+    save_path = dataset_path +"/crop_image"
 
     #디렉토리 없으면 만들어 주는 코드
     try:

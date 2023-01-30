@@ -12,7 +12,7 @@ from tqdm import tqdm
 #setting part
 search_url = "https://www.google.co.kr/imghp?hl=ko&tab=ri&ogbl"#구글이미지
 User_agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36'
-search_keywords = ["참돔화"]
+search_keywords = ["참돔회"]
 max_img_num = 1500
 Max_scroll_count = 40
 save_path = "C:\\Users\\user\\Desktop\\final_proj\\myenv\\output"
@@ -91,11 +91,15 @@ for keyword in search_keywords:
     # 4k 버튼 눌러주기
     equipment_xpath = "/html/body/div[2]/c-wiz/div[1]/div/div[1]/div[2]/div[2]/div" #통과
     view_box_xpath = "/html/body/div[2]/c-wiz/div[2]/div[2]/c-wiz[1]/div/div/div[1]/div/div[1]/div/div[1]"
+    #큰 사진
     big_xpath = "/html/body/div[2]/c-wiz/div[2]/div[2]/c-wiz[1]/div/div/div[3]/div/a[2]/div"
+    #중간 사진
+    mid_xpath = "/html/body/div[2]/c-wiz/div[2]/div[2]/c-wiz[1]/div/div/div[3]/div/a[3]/div"
 
     driver.find_element_by_xpath(equipment_xpath).click()
     driver.find_element_by_xpath(view_box_xpath).click()
     driver.find_element_by_xpath(big_xpath).click()
+    #driver.find_element_by_xpath(mid_xpath).click()
 
 
     #스크롤 내려주는 코드
@@ -147,7 +151,7 @@ for keyword in search_keywords:
                 image.click()
                 #만약 실행이 잘 안되면 이미지 로드 문제 일수도 있어서 지연을 조금주자
                 time.sleep(DELAY)
-
+                
                 #큰 이미지를 누르는 코드 
                 img_url = driver.find_element_by_css_selector(".n3VNCb.KAlRDb").get_attribute("src")
                 #img_url = driver.find_element_by_xpath('/html/body/div[2]/c-wiz/div[3]/div[2]/div[3]/div[2]/div/div[2]/div[2]/div[2]/c-wiz/div[2]/div[1]/div[1]/div[2]/div/a/img').get_attribute("src")
@@ -156,38 +160,37 @@ for keyword in search_keywords:
                 driver.execute_script('window.open("'+img_url+'");')  #구글 창 새 탭으로 열기
                 time.sleep(DELAY)
 
-                driver.switch_to.window(driver.window_handles[-1])  #새로 연 탭으로 이동
-
-                time.sleep(DELAY)
-                #이제 src 링크를 가져오는 코드를 짜자
-                if img_url[-4:] == "file": #file로 새탭을 열면 자동으로 다운로드 받아지는 현상 fix
-                    print("\n## 탭에서 다운로드 시도")
-                    link_url.append(img_url)
+                #이 부분에서 다운로드가 받아지고 탭이 안열리는 현상이 발생
+                if len(driver.window_handles) <= 1: # 탭이 안 열림
+                    print("## 탭이 닫혔습니다")
+                    driver.switch_to.window(driver.window_handles[-1]) # 마지막 탭으로 이동
+                    time.sleep(DELAY)
+                    count += 1
+                    count_list["link"]+=1
                     pbar.update(1)
-                    #driver.close()  #링크 이동 후 탭 닫기
+                    continue #다음 loop로
+
+                else:
+
+                    driver.switch_to.window(driver.window_handles[-1])  #새로 연 탭으로 이동
+                    time.sleep(DELAY)
+                    #이제 src 링크를 가져오는 코드를 짜자
+                    urllib.request.urlretrieve(img_url, tmp_save_path + "\\" + str(output_name).zfill(4) +".jpg")
+                    size_lst.append(driver.title.split()[-1][1:-1])
+                    driver.close()  #링크 이동 후 탭 닫기
+
                     driver.switch_to.window(driver.window_handles[0])  #다시 이전 창(탭)으로 이동
                     time.sleep(DELAY)
-                    count_list["link"]+=1
-                    
-                    continue
-
-                urllib.request.urlretrieve(img_url, tmp_save_path + "\\" + str(output_name).zfill(4) +".jpg")
-                size_lst.append(driver.title.split()[-1][1:-1])
-                driver.close()  #링크 이동 후 탭 닫기
-
-                driver.switch_to.window(driver.window_handles[0])  #다시 이전 창(탭)으로 이동
-                time.sleep(DELAY)
-                count += 1
-                count_list["normal"]+=1
-                print("\n## ",max_img_num,"(",len(images),")","개의 이미지 중 ",output_name,"번째 이미지 저장완료")
-                pbar.update(1)
-                output_name += 1
+                    count += 1
+                    count_list["normal"]+=1
+                    print("\n## ",max_img_num,"(",len(images),")","개의 이미지 중 ",output_name,"번째 이미지 저장완료")
+                    pbar.update(1)
+                    output_name += 1
             except:
 
                 print("\n## [Error] 사진을 저장하지 못했습니다 (can't load image)")
                 count_list["cant"]+=1
                 pbar.update(1)
-                pass
             print(len(driver.window_handles))
             if len(driver.window_handles) != 1:
                 time.sleep(DELAY)

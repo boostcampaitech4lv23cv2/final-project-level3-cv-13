@@ -1,5 +1,4 @@
 import streamlit as st
-import yaml
 from PIL import Image
 import io
 import requests
@@ -13,12 +12,19 @@ def get_prediction(picture):
 
     st.image(image, caption='Uploaded Image',use_column_width=True)
     with st.spinner("Predicting Image..."):
-        response = requests.post("http://localhost:8000/inference", files={'files': image_bytes})
+        response = requests.post("https://fast-api-backend-nzhkc6v44a-du.a.run.app/inference", files={'files': image_bytes})
+        # response = requests.post("http://0.0.0.0:8000/inference", files={'files': image_bytes})
         label = response.json()
     st.metric("Type",label)
     st.metric("Time Taken",f"{time.time()-t:.3f} sec")
 
-st.title("Fish Classification Model")
+def start():
+    return requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/blob_name").json()
+    # return requests.get("http://0.0.0.0:8000/blob_name").json()
+
+name=start()
+st.title("FICV")
+st.markdown(f"<h6 style='text-align: right; color: grey'> {name} </h6>",unsafe_allow_html=True)
 
 genre = st.radio(
     "Image Mode:",
@@ -34,4 +40,7 @@ else:
         get_prediction(picture)
 
 
-st.markdown("<h6 style='text-align: right; color: grey'> Created by Jaeyoung Shin </h6>",unsafe_allow_html=True)
+
+
+st.markdown(f"<h6 style='text-align: right; color: grey'> We collect your data to ensure you have the best browsing experience on our website. </h6>",unsafe_allow_html=True)
+st.markdown(f"<h6 style='text-align: right; color: grey'> By using our site, you acknowledge that you have read and understood our Privacy Policy. </h6>",unsafe_allow_html=True)
