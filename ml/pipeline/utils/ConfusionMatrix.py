@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
 
-
 # 52번째 줄 print 제거 필요
 # cm_image 함수 table 이름 잘 보이게 정리 필요
 # accuracy, macro_f1 정확한지 확인 필요
@@ -65,6 +64,7 @@ def macro_f1(class_items, CLASSES):
 def cm_image(confusion_matrix, classes):
     cm_figure = plt.figure(figsize=(24, 20))
     fig, ax =plt.subplots(1,1)
+    # print(confusion_matrix)
     data= confusion_matrix
 
     column_labels = classes
@@ -72,9 +72,22 @@ def cm_image(confusion_matrix, classes):
 
     ax.axis('off')
 
-    axtable = ax.table(cellText=data, rowLabels=row_labels, colLabels=column_labels, cellLoc='center', loc="center", cellColours=plt.cm.RdYlGn(data/100))
+    axtable = ax.table(cellText=data, rowLabels=row_labels, colLabels=column_labels, cellLoc='center', loc="center", cellColours=plt.cm.YlGn(data))
+    axtable.auto_set_font_size(False)
+    axtable.set_fontsize(13)
     axtable.scale(1,3)
 
     plt.show()
 
     return fig
+
+def confusion_normalize(class_items):
+
+    # confusion matrix normalize 전체 열의 true label 수로 나눠서 normalize 한다
+    for j in range(len(class_items)):
+        norm = sum(class_items[:,j])
+
+        for i in range(len(class_items)):
+            class_items[i,j] = round(class_items[i,j]/norm,2)
+
+    return class_items

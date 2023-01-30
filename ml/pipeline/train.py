@@ -30,7 +30,7 @@ from utils import UploadBlob
 from utils import IncrementPath
 from utils import GridImage
 from utils import SeedEverything
-from utils.ConfusionMatrix import confusion_matrix, accuracy, macro_f1, cm_image
+from utils.ConfusionMatrix import confusion_matrix, accuracy, macro_f1, cm_image, confusion_normalize
 
 
 import wandb
@@ -212,6 +212,9 @@ def train(data_dir, model_dir, args):
                     figure = GridImage.grid_image(
                         inputs_np, labels, preds, n=16, shuffle= False
                     )
+            
+            class_items = confusion_normalize(class_items)
+            
             classes = list(args.fish_classes) if data == 'fish' else list(args.sashimi_classes)
             cm_figure = cm_image(class_items, classes)
             cm_figure = wandb.Image(cm_figure)
