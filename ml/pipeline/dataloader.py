@@ -15,7 +15,7 @@ from albumentations.pytorch.transforms import ToTensorV2
 from PIL import Image
 from torchvision.transforms import Resize,ToTensor, Normalize, Compose, CenterCrop, ColorJitter, RandomCrop, RandomHorizontalFlip, RandomGrayscale
 import wandb
-
+import sklearn.utils
 
 class Fish_Dataset(Dataset):
 
@@ -50,6 +50,7 @@ class Sashimi_Dataset(Dataset):
 
     def __init__(self, img_dir, ann_dir, transform, num_classes):
         self.img_labels = pd.read_csv(ann_dir)
+        self.img_labels = sklearn.utils.shuffle(self.img_labels)
         self.img_dir = img_dir
         self.transform = transform
         self.num_classes = num_classes
