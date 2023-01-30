@@ -229,7 +229,7 @@ def train(data_dir, model_dir, args):
                 print(f"New best model for val accuracy : {macro_f1_score:6.4}! saving the best model..")
                 torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{macro_f1_score:6.4}.pth")
                 torch.set_flush_denormal(True)
-                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{macro_f1_score:6.4}.onnx", export_params=True,
+                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{macro_f1_score:6.4}.onnx", export_params=True, opset_version=11,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
@@ -240,7 +240,7 @@ def train(data_dir, model_dir, args):
             [os.remove(f) for f in glob.glob(f"{save_dir}/*_last_*")]
             torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{macro_f1_score:6.4}.pth")
             torch.set_flush_denormal(True)
-            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{macro_f1_score:6.4}.onnx", export_params=True,
+            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{macro_f1_score:6.4}.onnx", export_params=True, opset_version=11,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
