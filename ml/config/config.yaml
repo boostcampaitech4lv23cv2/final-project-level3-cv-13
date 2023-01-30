@@ -28,7 +28,7 @@ sashimi_classes:
 lr:
   value: 0.0001
 epochs:
-  value: 10
+  value: 30
 batch_size:
   value: 16
 val_batch_size:
