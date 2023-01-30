@@ -19,10 +19,10 @@ import sklearn.utils
 
 class Fish_Dataset(Dataset):
 
-
     def __init__(self, img_dir, ann_dir, transform, num_classes):
 
         self.img_labels = pd.read_csv(ann_dir)
+        self.img_labels = sklearn.utils.shuffle(self.img_labels)
         self.img_dir = img_dir
         self.transform = transform
         self.num_classes = num_classes
