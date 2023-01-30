@@ -3,19 +3,19 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { green, grey } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Fish from "./Fish";
 import Sashimi from "./Sashimi";
 import AboutUs from "./AboutUs";
+import "./index.css";
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 const theme = createTheme({
-  Typography: {
-    h1: {
-      color: green[500],
-    },
+  typography: {
+    fontFamily: `"NanumSquareRoundEB", "Roboto"`
   },
   palette: {
     text: {

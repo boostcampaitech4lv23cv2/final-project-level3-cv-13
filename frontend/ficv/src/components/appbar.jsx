@@ -2,11 +2,9 @@ import { AppBar, Toolbar, IconButton, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import React from "react";
 
-export default function Appbar() {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-
+export default function Appbar(props) {
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+    props.setMobileOpen(!props.mobileOpen);
   };
   return (
     <AppBar position="fixed" sx={{zIndex:4000}}>

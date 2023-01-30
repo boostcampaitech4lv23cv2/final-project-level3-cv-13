@@ -18,3 +18,21 @@ export default function MainDesc({ children }) {
     </>
   );
 }
+
+export function Desc({ children }) {
+  return (
+    <>
+      <Typography
+        variant="body1"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {children}
+      </Typography>
+      <br />
+    </>
+  );
+}

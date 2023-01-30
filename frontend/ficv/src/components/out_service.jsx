@@ -6,14 +6,13 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Paper } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-export default function Service({ img_src, desc_title, desc, link}) {
-  const movePage = useNavigate();
+
+export default function OutService({ img_src, desc_title, desc, link}) {
   return (
-    <Paper elevation={6} sx={{ maxWidth: 345 }}>
-      <Card sx={{ maxWidth: 345 }}>
+    <Paper elevation={12} sx={{ width: 330 }}>
+      <Card sx={{ width: 330 }}>
         <CardMedia
-          sx={{ height: 345}}
+          sx={{ height: 330}}
           image={img_src}
           alt="Cannot load image"
           title="Fish Classification Service"
@@ -28,7 +27,7 @@ export default function Service({ img_src, desc_title, desc, link}) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={(e)=> movePage(link)}>Get Started</Button>
+          <Button size="small" onClick={(e)=>{window.open(link)}}>Link</Button>
         </CardActions>
       </Card>
     </Paper>

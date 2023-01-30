@@ -20,10 +20,9 @@ const drawerWidth = 180;
 
 export default function SideBar(props) {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
   const movePage = useNavigate();
   const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
+    props.setMobileOpen(!props.mobileOpen);
   };
   const icons = [home_icon, fish_icon, sashimi_icon, github_icon];
   // const attribution = [<a href="https://www.flaticon.com/free-icons/main-page" title="main page icons">Main page icons created by Mihimihi - Flaticon</a>,
@@ -37,7 +36,7 @@ export default function SideBar(props) {
       <Toolbar />
       <Divider />
       <List>
-        {["Main", "Fish", "Sashimi", "About us"].map((text, index) => (
+        {["Main", "물고기 분류", "회 분류", "About us"].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={(e)=> movePage(link[index])}>
               <ListItemIcon>
@@ -63,7 +62,7 @@ export default function SideBar(props) {
       <Drawer
         container={container}
         variant="temporary"
-        open={mobileOpen}
+        open={props.mobileOpen}
         onClose={handleDrawerToggle}
         ModalProps={{
           keepMounted: true,
