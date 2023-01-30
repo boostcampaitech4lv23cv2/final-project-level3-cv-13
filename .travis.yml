@@ -1,5 +1,3 @@
-language: python
-python: '3.8'
 services:
 - docker
 env:
@@ -9,7 +7,6 @@ env:
   - FRONTEND_RUN_SERVICE=fast-api-frontend
   - BACKEND_RUN_SERVICE=fast-api-backend
   - CLOUD_RUN_REGION=asia-northeast3
-  - secure: HFUcsZuNWtqLlvk2+c63jF5CxRKerp4a/S5I8564QLkLhnqjTt6eJGjoSnXYPc/oBu/aq57bhgMLt99P3mET47XzUyks+8y0U33MQKf+b4yz5uM8SEnbwLGVYfO8Yi547/J67N6uOF11k8b2BGclamIo1OKJBSs3VBieh6NMoMAwnksZLdR+PrAlZLMLRbwmUTreGzDZ/5iy6j7Oj6Rum3oHmZ1kDVE0fdhIFHL6npSVro859eSW10eYmGzim/dWxQqrSvZ1ycV1Lw5jaEXD+fZJ7o3uxdNlm7ak9ox8QQ5ewhZQ+eynreRBQiXjXz7l59AjElu7io4wct77e8sKGlA+WKDtEfUXbN8i76mRxTMqUInm5g4w5w/W0BR9syOASQyv9rrfztYLUDeSkFrfnX/vuj3CEoadaO7bFM+5FCudlQgTGb+9d3cJxEqZdfKFR79DTr8rjDsDM19ephyvdVjoRhdhe0gLldXsi1Q/Q4LfDFKG5fI4gBtfadtnDAfq0r1Q65rdL3lztOVwOGjjnv47lGrPs4iZLAhNCMdgwupD+c4LDwuK6xUT7sgKgidlt3DXlEZtCzlBDSl1ytqIiujzZAL8aqv8EOuGvRTsZbnD4XoGY30wP46UUYuKh3P6gdBugDAEiso857eM+Lr0Soa7VaKbi+rz6nPlswwq08Y=
 stages:
 - "\U0001F680build"
 jobs:
@@ -17,6 +14,8 @@ jobs:
   - stage: "\U0001F680build"
     if: commit_message =~ /build$/ OR commit_message =~ /build-backend$/
     name: Backend-build
+    language: python
+    python: '3.8'
     before_install:
     - openssl aes-256-cbc -K $encrypted_e5b5363276b3_key -iv $encrypted_e5b5363276b3_iv
       -in google_key.json.enc -out google_key.json -d
@@ -40,6 +39,8 @@ jobs:
   - stage: "\U0001F680build"
     if: commit_message =~ /build$/ OR commit_message =~ /build-frontend$/
     name: Frontend-build
+    language: python
+    python: '3.8'
     before_install:
     - openssl aes-256-cbc -K $encrypted_e5b5363276b3_key -iv $encrypted_e5b5363276b3_iv
       -in google_key.json.enc -out google_key.json -d
@@ -63,10 +64,12 @@ jobs:
       --memory=512Mi --max-instances=1
   - stage: "\U0001F680build"
     if: commit_message =~ /build$/ OR commit_message =~ /build-react$/
+    language: nodejs
+    node_js:
+    - "node"
+    warnings_are_errors: false
     name: React-build
     before_install:
-    - sudo apt install nodejs
-    - sudo apt install npm
     - cd frontend/ficv
     - npm install
     script:
@@ -74,6 +77,6 @@ jobs:
     deploy:
       provider: firebase
       token:
-        secure: ${secure}
+        secure: HFUcsZuNWtqLlvk2+c63jF5CxRKerp4a/S5I8564QLkLhnqjTt6eJGjoSnXYPc/oBu/aq57bhgMLt99P3mET47XzUyks+8y0U33MQKf+b4yz5uM8SEnbwLGVYfO8Yi547/J67N6uOF11k8b2BGclamIo1OKJBSs3VBieh6NMoMAwnksZLdR+PrAlZLMLRbwmUTreGzDZ/5iy6j7Oj6Rum3oHmZ1kDVE0fdhIFHL6npSVro859eSW10eYmGzim/dWxQqrSvZ1ycV1Lw5jaEXD+fZJ7o3uxdNlm7ak9ox8QQ5ewhZQ+eynreRBQiXjXz7l59AjElu7io4wct77e8sKGlA+WKDtEfUXbN8i76mRxTMqUInm5g4w5w/W0BR9syOASQyv9rrfztYLUDeSkFrfnX/vuj3CEoadaO7bFM+5FCudlQgTGb+9d3cJxEqZdfKFR79DTr8rjDsDM19ephyvdVjoRhdhe0gLldXsi1Q/Q4LfDFKG5fI4gBtfadtnDAfq0r1Q65rdL3lztOVwOGjjnv47lGrPs4iZLAhNCMdgwupD+c4LDwuK6xUT7sgKgidlt3DXlEZtCzlBDSl1ytqIiujzZAL8aqv8EOuGvRTsZbnD4XoGY30wP46UUYuKh3P6gdBugDAEiso857eM+Lr0Soa7VaKbi+rz6nPlswwq08Y=
 notifications:
   slack: boostcampaitech:6V8JoxJiotqi87IDmTe3HgHb
