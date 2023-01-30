@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
-from dataloader import CLASSES
+
 
 
 # 52번째 줄 print 제거 필요
@@ -62,13 +62,13 @@ def macro_f1(class_items, CLASSES):
     print(macro_f1_items)       
     return sum(macro_f1_items.values())/len(macro_f1_items)
 
-def cm_image(confusion_matrix):
+def cm_image(confusion_matrix, classes):
     cm_figure = plt.figure(figsize=(24, 20))
     fig, ax =plt.subplots(1,1)
     data= confusion_matrix
 
-    column_labels = CLASSES
-    row_labels =CLASSES
+    column_labels = classes
+    row_labels =classes
 
     ax.axis('off')
 

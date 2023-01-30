@@ -31,7 +31,7 @@ from utils import IncrementPath
 from utils import GridImage
 from utils import SeedEverything
 from utils.ConfusionMatrix import confusion_matrix, accuracy, macro_f1, cm_image
-from dataloader import CLASSES
+
 
 import wandb
 import os.path as osp
@@ -187,7 +187,8 @@ def train(data_dir, model_dir, args):
             val_loss_items = []
             val_acc_items = []
             figure = None
-                        
+            CLASSES = args.fish_classes if data == 'fish' else args.sashimi_classes
+            CLASSES = list(range(len(CLASSES)))
             class_items = np.zeros((len(CLASSES),len(CLASSES)))
 
             for val_batch in val_loader:
@@ -211,7 +212,8 @@ def train(data_dir, model_dir, args):
                     figure = GridImage.grid_image(
                         inputs_np, labels, preds, n=16, shuffle= False
                     )
-            cm_figure = cm_image(class_items)
+            classes = list(args.fish_classes) if data == 'fish' else list(args.sashimi_classes)
+            cm_figure = cm_image(class_items, classes)
             cm_figure = wandb.Image(cm_figure)
             accuracy_score = accuracy(class_items, CLASSES)
             # print(accuracy_score)
@@ -226,16 +228,18 @@ def train(data_dir, model_dir, args):
             if macro_f1_score > best_macro_f1_score:
                 early_stop = 0
                 [os.remove(f) for f in glob.glob(f"{save_dir}/*_best_*")]
-                print(f"New best model for val accuracy : {macro_f1_score:6.4}! saving the best model..")
+                print(f"New best model for val macro f1 score : {macro_f1_score:6.4}! saving the best model..")
                 torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{macro_f1_score:6.4}.pth")
                 torch.set_flush_denormal(True)
                 torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{macro_f1_score:6.4}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
-                                'output' : {0 : 'batch_size'}})
-                best_val_acc = val_acc
+                                'output' : {0 : 'batch_size'}})  
+                best_macro_f1_score = macro_f1_score
                 torch.set_flush_denormal(False)
+            if val_acc > best_val_acc:
+                best_val_acc = val_acc
                 
             [os.remove(f) for f in glob.glob(f"{save_dir}/*_last_*")]
             torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{macro_f1_score:6.4}.pth")

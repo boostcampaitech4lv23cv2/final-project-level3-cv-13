@@ -41,8 +41,8 @@ resize:
 criterion:
   value: 'focal'
 model:
-  desc: 'Resnet50, EfficientNetB0, EfficientNetB7, Swin_Base_patch4_window12_384_in22k'
-  value: 'Swin_Base_patch4_window12_384_in22k'
+  desc: 'Resnet50, EfficientNetB0, EfficientNetB4, EfficientNetB7, Swin_Base_patch4_window12_384_in22k'
+  value: 'EfficientNetB0'
 scheduler:
   desc: 'step_lr, lambda_lr, multistep_lr, exponential_lr, cosine_annealing_lr, cosine_annealing_warm_restarts_lr, reduce_on_plateau_lr, cyclic_lr'
   value: 'cosine_annealing_warm_restarts_lr'
@@ -55,7 +55,7 @@ val_ratio:
 log_interval:
   value: 1
 dataset:
-  value: 'Fish_Dataset'
+  value: 'Sashimi_Dataset'
 transform:
   value: 'transforms_1'
 model_dir:
