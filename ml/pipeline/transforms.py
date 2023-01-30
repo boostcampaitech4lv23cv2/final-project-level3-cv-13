@@ -48,7 +48,7 @@ class transforms_4:
             A.Oneof([
                 A.CLAHE(p=0.3),
                 A.Blur(blur_limit=(30, 40), p=0.3)
-            ])
+            ]),
             A.Normalize(),
             ToTensorV2()
         ])
