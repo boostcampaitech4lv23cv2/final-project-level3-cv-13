@@ -119,9 +119,10 @@ def create_criterion(criterion_name, **kwargs):
     if is_criterion(criterion_name):
         create_fn = criterion_entrypoint(criterion_name)
         sig = signature(create_fn)
-        if sig.parameters['classes']:
+        try:
+            sig.parameters['classes']
             criterion = create_fn(**kwargs)
-        else:
+        except KeyError:
             criterion = create_fn()
     else:
         raise RuntimeError('Unknown loss (%s)' % criterion_name)
