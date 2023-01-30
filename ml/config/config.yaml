@@ -1,29 +1,29 @@
 seed:
   value: 42
 fish_classes:
-  value: {'Olive_flounder' : '광어',
-          'Korea_rockfish' : '우럭',
-          'Red_seabream' : '참돔',
-          'Black_porgy' : '감성돔',
-          'Rock_bream' : '돌돔',
-          'Croaker' : '민어',
-          'Argyrosomus_japonicus' : '큰민어',
-          'Starry_flounder' : '강도다리',
-          'Longtooth_grouper' : '자바리',
-          'Convict_grouper' : '능성어',
-          'Japanese_amberjack' : '방어',
-          'Yellowtail_amberjack' : '부시리',
+  value: {'Olive_flounder_F' : '광어',
+          'Korea_rockfish_F' : '우럭',
+          'Red_seabream_F' : '참돔',
+          'Black_porgy_F' : '감성돔',
+          'Rock_bream_F' : '돌돔',
+          'Croaker_F' : '민어',
+          'Argyrosomus_japonicus_F' : '큰민어',
+          'Starry_flounder_F' : '강도다리',
+          'Longtooth_grouper_F' : '자바리',
+          'Convict_grouper_F' : '능성어',
+          'Japanese_amberjack_F' : '방어',
+          'Yellowtail_amberjack_F' : '부시리',
           }
 sashimi_classes:
-  value: {'Olive_flounder_sashimi' : '광어회',
-          'Korea_rockfish_sashimi' : '우럭회',
-          'Red_seabream_sashimi' : '참돔회',
-          'Brown_croaker_sashimi' : '민어회',
-          'Red_drum_sashimi' : '점성어회',
-          'Tilapia_sashimi' : '틸라피아회',
-          'Salmon_sashimi' : '연어회',
-          'Tuna_sashimi' : '참치회',
-          'Japanese_amberjack_sashimi' : '방어회'
+  value: {'Olive_flounder_S' : '광어회',
+          'Korea_rockfish_S' : '우럭회',
+          'Red_seabream_S' : '참돔회',
+          'Brown_croaker_S' : '민어회',
+          'Red_drum_S' : '점성어회',
+          'Tilapia_S' : '틸라피아회',
+          'Salmon_S' : '연어회',
+          'Tuna_S' : '참치회',
+          'Japanese_amberjack_S' : '방어회'
           }
 lr:
   value: 0.0001
