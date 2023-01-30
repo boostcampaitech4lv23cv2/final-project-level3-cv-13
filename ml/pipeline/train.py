@@ -131,6 +131,7 @@ def train(data_dir, model_dir, args):
     global best_val_acc
     best_val_acc = 0
     best_val_loss = np.inf
+    global best_macro_f1_score
     best_macro_f1_score = 0
 
     early_stop = 0
@@ -215,9 +216,7 @@ def train(data_dir, model_dir, args):
             cm_figure = cm_image(class_items, classes)
             cm_figure = wandb.Image(cm_figure)
             accuracy_score = accuracy(class_items, CLASSES)
-
             macro_f1_score = macro_f1(class_items, CLASSES)
-            
             
             val_loss = np.sum(val_loss_items) / len(val_loader)
             val_acc = np.sum(val_acc_items) / len(val_dataset)
@@ -336,7 +335,7 @@ if __name__ == '__main__':
     UploadBlob.upload_blob(
         bucket_name="model-registry-cv13",
         source_file_name=f"{save_dir}/{data}_{config.model}_best_{best_val_acc:.4f}.onnx",
-        destination_blob_name=f"{data}-{config.model}-{best_val_acc:.4f}-{today}.onnx",
+        destination_blob_name=f"{data}-{config.model}-{best_macro_f1_score:.4f}-{today}.onnx",
     )
 
     
