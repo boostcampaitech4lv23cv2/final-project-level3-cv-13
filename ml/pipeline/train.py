@@ -43,7 +43,7 @@ def train(data_dir, model_dir, args):
 
     global save_dir
     save_dir = IncrementPath.increment_path(os.path.join(model_dir, f"{args.model}_{args.epochs}_{args.batch_size}_{args.optimizer}_{args.lr}_exp"))
-    
+    global data
     data = 'fish' if args.dataset == 'Fish_Dataset' else 'sashimi'
     # -- settings
     use_cuda = torch.cuda.is_available()
@@ -204,16 +204,16 @@ def train(data_dir, model_dir, args):
 
                 [os.remove(f) for f in glob.glob(f"{save_dir}/*_best_*")]
                 print(f"New best model for val accuracy : {val_acc:4.2%}! saving the best model..")
-                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{val_acc:.4f}.pth")
-                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{val_acc:.4f}.onnx", export_params=True,
+                torch.save(model.state_dict(), f"{save_dir}/{data}_{config.model}_best_epoch{epoch}_{val_acc:.4f}.pth")
+                torch.onnx.export(model, dummy_input, f"{save_dir}/{data}_{config.model}_best_{val_acc:.4f}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
                                 'output' : {0 : 'batch_size'}})
                 best_val_acc = val_acc
             [os.remove(f) for f in glob.glob(f"{save_dir}/*_last_*")]
-            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{val_acc:6.4}.pth")
-            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{val_acc:6.4}.onnx", export_params=True,
+            torch.save(model.state_dict(), f"{save_dir}/{data}_{config.model}_last_{epoch}epoch_{val_acc:6.4}.pth")
+            torch.onnx.export(model, dummy_input, f"{save_dir}/{data}_{config.model}_last_{val_acc:6.4}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
@@ -305,8 +305,8 @@ if __name__ == '__main__':
 
     UploadBlob.upload_blob(
         bucket_name="model-registry-cv13",
-        source_file_name=f"{save_dir}/{config.model}_best_{best_val_acc:.4f}.onnx",
-        destination_blob_name=f"{config.model}-{best_val_acc:.4f}-{today}.onnx",
+        source_file_name=f"{save_dir}/{data}_{config.model}_best_{best_val_acc:.4f}.onnx",
+        destination_blob_name=f"{data}_{config.model}-{best_val_acc:.4f}-{today}.onnx",
     )
 
     
