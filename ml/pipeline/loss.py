@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import inspect
+from inspect import signature
 from torch.nn.modules.loss import _WeightedLoss
 from torch import Tensor
 from typing import Callable, Optional
@@ -118,8 +118,8 @@ def is_criterion(criterion_name):
 def create_criterion(criterion_name, **kwargs):
     if is_criterion(criterion_name):
         create_fn = criterion_entrypoint(criterion_name)
-        args, varargs, keywords, _ = inspect.getargspec(create_fn)
-        if 'classes' in args :
+        sig = signature(create_fn)
+        if 'classes' in sig.parameters.values() :
             criterion = create_fn(**kwargs)
         else:
             criterion = create_fn()

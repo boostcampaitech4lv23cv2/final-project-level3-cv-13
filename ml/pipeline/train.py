@@ -30,8 +30,18 @@ from utils import UploadBlob
 from utils import IncrementPath
 from utils import GridImage
 from utils import SeedEverything
+from utils.ConfusionMatrix import confusion_matrix, accuracy, macro_f1, cm_image
+from dataloader import CLASSES
 
+import wandb
+import os.path as osp
+from torch.optim.lr_scheduler import StepLR
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/opt/ml/storage_key.json"
+
+'''
+222, 224 print문 삭제 필요
+200번 째 CLASSES 상수 삭제하고 실제 리스트 작성 필요
+'''
 
 def get_lr(optimizer):
     for param_group in optimizer.param_groups:
@@ -39,36 +49,36 @@ def get_lr(optimizer):
 
 
 def train(data_dir, model_dir, args):
+
     SeedEverything.seed_everything(args.seed)
 
     global save_dir
-    save_dir = IncrementPath.increment_path(os.path.join(model_dir, f"{config.model}_{config.epochs}_{config.batch_size}_{config.optimizer}_{config.lr}_exp"))
-    
-
+    save_dir = IncrementPath.increment_path(os.path.join(model_dir, f"{args.model}_{args.epochs}_{args.batch_size}_{args.optimizer}_{args.lr}_exp"))
+    global data
+    data = 'fish' if args.dataset == 'Fish_Dataset' else 'sashimi'
     # -- settings
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda" if use_cuda else "cpu")
     print(f'Currently using {device}...')
-    print(f'Currently using {device}...')
 
     # -- dataset
     transform_module = getattr(import_module("transforms"), args.transform)
-    transform = transform_module(resize = config.resize)
+    transform = transform_module(resize = args.resize)
 
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
-        img_dir = data_dir,
-        ann_dir = osp.join(config.ann_dir, 'train.csv'),
+        img_dir = osp.join(data_dir, data),
+        ann_dir = osp.join(data_dir, data, 'train_1.csv'),
         transform = transform,
-        num_classes = len(args.classes)
+        num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
 
     val_dataset_module = getattr(import_module("dataloader"), args.dataset)
     val_dataset = val_dataset_module(
-        img_dir = data_dir,
-        ann_dir = osp.join(config.ann_dir, 'valid.csv'),
+        img_dir = osp.join(data_dir, data),
+        ann_dir = osp.join(data_dir, data, 'valid_1.csv'),
         transform = transform,
-        num_classes = len(args.classes)
+        num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
 
     # collate_fn needs for batch
@@ -110,11 +120,11 @@ def train(data_dir, model_dir, args):
     # -- model
     model_module = getattr(import_module("model"), args.model)  # default: BaseModel
     model = model_module(
-        num_classes=len(args.classes)
+        num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     ).to(device)
 
     # -- loss & metric
-    criterion = create_criterion(args.criterion, classes = len(args.classes))  # default: cross_entropy
+    criterion = create_criterion(args.criterion, classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes))
     optimizer = getattr(import_module("optimizer"), args.optimizer)(model)  # default: SGD
     
     # scheduler
@@ -125,6 +135,7 @@ def train(data_dir, model_dir, args):
     global best_val_acc
     best_val_acc = 0
     best_val_loss = np.inf
+    best_macro_f1_score = 0
 
     early_stop = 0
     breaker = False
@@ -176,6 +187,9 @@ def train(data_dir, model_dir, args):
             val_loss_items = []
             val_acc_items = []
             figure = None
+                        
+            class_items = np.zeros((len(CLASSES),len(CLASSES)))
+
             for val_batch in val_loader:
                 inputs, labels = val_batch
                 inputs = inputs.to(device, dtype=torch.float32)
@@ -184,6 +198,8 @@ def train(data_dir, model_dir, args):
                 outs = model(inputs)
                 preds = torch.argmax(outs, dim=-1)
 
+                class_items = confusion_matrix(labels, preds, class_items, CLASSES)
+                
                 loss_item = criterion(outs, labels).item()
                 acc_item = (labels == preds).sum().item()
                 val_loss_items.append(loss_item)
@@ -195,40 +211,50 @@ def train(data_dir, model_dir, args):
                     figure = GridImage.grid_image(
                         inputs_np, labels, preds, n=16, shuffle= False
                     )
-
+            cm_figure = cm_image(class_items)
+            cm_figure = wandb.Image(cm_figure)
+            accuracy_score = accuracy(class_items, CLASSES)
+            # print(accuracy_score)
+            macro_f1_score = macro_f1(class_items, CLASSES)
+            # print(macro_f1_score)
+            
             val_loss = np.sum(val_loss_items) / len(val_loader)
             val_acc = np.sum(val_acc_items) / len(val_dataset)
             best_val_loss = min(best_val_loss, val_loss)
-            dummy_input = torch.randn(1, 3, 384, 384).to(device)
-            if val_acc > best_val_acc:
+            dummy_input = torch.randn(1, 3, *args.resize).to(device)
+            
+            if macro_f1_score > best_macro_f1_score:
                 early_stop = 0
-
                 [os.remove(f) for f in glob.glob(f"{save_dir}/*_best_*")]
-                print(f"New best model for val accuracy : {val_acc:4.2%}! saving the best model..")
-                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{val_acc:.4f}.pth")
-                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{val_acc:.4f}.onnx", export_params=True,
+                print(f"New best model for val accuracy : {macro_f1_score:6.4}! saving the best model..")
+                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{macro_f1_score:6.4}.pth")
+                torch.set_flush_denormal(True)
+                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{macro_f1_score:6.4}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
                                 'output' : {0 : 'batch_size'}})
                 best_val_acc = val_acc
+                torch.set_flush_denormal(False)
+                
             [os.remove(f) for f in glob.glob(f"{save_dir}/*_last_*")]
-            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{val_acc:6.4}.pth")
-            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{val_acc:6.4}.onnx", export_params=True,
+            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{macro_f1_score:6.4}.pth")
+            torch.set_flush_denormal(True)
+            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{macro_f1_score:6.4}.onnx", export_params=True,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
                                 'output' : {0 : 'batch_size'}})
-
+            torch.set_flush_denormal(False)
             print(
-                f"[Val] acc : {val_acc:4.2%}, loss: {val_loss:4.2} || "
-                f"best acc : {best_val_acc:4.2%}, best loss: {best_val_loss:4.2}"
+                f"[Val] acc : {val_acc:4.2%}, f1_score : {macro_f1_score:4.2}, loss: {val_loss:4.2} || "
+                f"best acc : {best_val_acc:4.2%}, best f1_score : {best_macro_f1_score:4.2}, best loss: {best_val_loss:4.2}"
             )
 
-            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "results": figure})
+            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "Val/f1 score": macro_f1_score, "results": figure, "Confusion Matrix": cm_figure})
 
             print(f'{early_stop_arg-early_stop} Epoch left until early stopping..')                
-            if val_acc <= best_val_acc:                
+            if macro_f1_score <= best_macro_f1_score:                
                 if early_stop == early_stop_arg:
                     breaker = True
                     print(f'--------epoch {epoch} early stopping--------')
@@ -267,7 +293,8 @@ if __name__ == '__main__':
 
     # Data and model checkpoints directories
     parser.add_argument('--seed', type=int, default=config.seed, help='random seed (default: 42)')
-    parser.add_argument('--classes', type=list, default=config.classes, help='category id')
+    parser.add_argument('--fish_classes', type=list, default=config.fish_classes, help='fish category id')
+    parser.add_argument('--sashimi_classes', type=list, default=config.sashimi_classes, help='sashimi category id')
     parser.add_argument('--epochs', type=int, default=config.epochs, help='number of epochs to train (default: 1)')
     parser.add_argument('--dataset', type=str, default=config.dataset, help='dataset augmentation type (default: MaskBaseDataset)')
     parser.add_argument('--transform', type=str, default=config.transform, help='data augmentation type (default: Basepreprocessing)')
@@ -305,8 +332,8 @@ if __name__ == '__main__':
 
     UploadBlob.upload_blob(
         bucket_name="model-registry-cv13",
-        source_file_name=f"{save_dir}/{config.model}_best_{best_val_acc:.4f}.onnx",
-        destination_blob_name=f"{config.model}-{best_val_acc:.4f}-{today}.onnx",
+        source_file_name=f"{save_dir}/{data}_{config.model}_best_{best_val_acc:.4f}.onnx",
+        destination_blob_name=f"{data}-{config.model}-{best_val_acc:.4f}-{today}.onnx",
     )
 
     
