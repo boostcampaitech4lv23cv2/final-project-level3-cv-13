@@ -1,0 +1,29 @@
+@font-face {
+    font-family: "NanumSquareRoundB";
+    src: url("./fonts/NanumSquareRoundB.ttf");
+  }
+@font-face {
+    font-family: "NanumSquareRoundEB";
+    src: url("./fonts/NanumSquareRoundEB.ttf");
+  }
+@font-face {
+    font-family: "NanumSquareRoundL";
+    src: url("./fonts/NanumSquareRoundL.ttf");
+  }
+@font-face {
+font-family: "NanumSquareRoundR";
+src: url("./fonts/NanumSquareRoundR.ttf");
+}
+
+:root {
+	--font-NanumSquareRoundB: "NanumSquareRoundB";
+	--font-NanumSquareRoundEB: "NanumSquareRoundEB";
+    --font-NanumSquareRoundL: "NanumSquareRoundL";
+    --font-NanumSquareRoundR: "NanumSquareRoundR";
+}
+/* @font-face {
+    font-family: 'NanumSquareRound';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_two@1.0/NanumSquareRound.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+} */
