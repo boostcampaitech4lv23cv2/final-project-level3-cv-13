@@ -1,5 +1,5 @@
 ## api 구성
-from fastapi import FastAPI, UploadFile, File
+from fastapi import FastAPI, UploadFile, File, Form
 from app.inference import Inference
 from PIL import Image
 import io
@@ -7,6 +7,7 @@ import numpy as np
 import albumentations
 import pandas as pd
 import gcsfs
+import os
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -24,6 +25,7 @@ app.add_middleware(
 
 @app.on_event("startup") 
 def init():
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="google_key.json"
     global model
     model=Inference()
 
@@ -32,7 +34,7 @@ def get_blob_name() -> str:
     return model.blob_name
 
 @app.post("/inference")
-async def inference(files: UploadFile=File(...)) -> int:
+async def inference(files:UploadFile = File()) -> int:
     image= await files.read()
     image = Image.open(io.BytesIO(image))
     image = image.convert("RGB")

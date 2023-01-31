@@ -194,6 +194,8 @@ Lib/
 Scripts/
 *.log
 *.cfg
+
+#Data
 Data/**/*.JPG
 Data/**/*.jpg
 Data/**/*.png
