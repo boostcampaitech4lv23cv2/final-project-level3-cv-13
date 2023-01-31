@@ -17,9 +17,10 @@ export default function SubmitImageButton({image,inference,link }) {
       <Button
         variant="contained"
         component="label"
-        style={{ "background-image": `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`}}
+        style={{ "backgroundImage": `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`}}
         onClick={async (event) => {
           const formData = new FormData();
+          inference(null);
           formData.append("files", image);
           try {
             const response = await fetch(

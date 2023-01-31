@@ -1,7 +1,7 @@
 import Typography from "@mui/material/Typography";
 import React from "react";
 
-export default function MainDesc({ children }) {
+export  function MainDesc({ children }) {
   return (
     <>
       <Typography
