@@ -1,4 +1,4 @@
-import { Card, CardMedia, Typography, Box, CardContent } from "@mui/material";
+import { Card, Typography, Box, CardContent } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import React from "react";
 import dnd from "../images/drag-and-drop.png";

@@ -28,7 +28,7 @@ export default function AboutUs(){
           img_src={notion}
           desc_title="Notion page"
           desc = "진행과정 및 진행방식에 대해 정리되어있습니다."
-          link = "https://github.com/boostcampaitech4lv23cv2/final-project-level3-cv-13"
+          link = "https://gratis-keyboard-88d.notion.site/Final-Project-cv13-188a946369fd41eda77776eb1f398f07"
         ></OutService>
         <OutService
           img_src={github}

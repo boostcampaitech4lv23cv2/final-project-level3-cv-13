@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { grey } from "@mui/material/colors";
+import { grey} from "@mui/material/colors";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Fish from "./Fish";
 import Sashimi from "./Sashimi";
@@ -18,9 +18,16 @@ const theme = createTheme({
     fontFamily: `"NanumSquareRoundEB", "Roboto"`
   },
   palette: {
+    primary: {
+      main: "#1D6BE2"
+    },
+    secondary:{
+      main: "#4B89E7"
+    },
     text: {
       primary: "#173A5E",
       secondary: grey[400],
+      third: "#FFFFFF"
     },
   },
 });

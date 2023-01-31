@@ -30,13 +30,13 @@ export default function App() {
         <Service
           img_src={fish_service}
           desc_title="물고기 분류 서비스"
-          desc = "Our fish classification service provides up to 11 species fish classification"
+          desc = "물고기 분류 서비스는 11종의 어종 구별이 가능합니다."
           link = "/fish"
         ></Service>
         <Service
           img_src={sashimi_service}
           desc_title="회 분류 서비스"
-          desc = "Our Sashimi classification service provides up to 8 species fish classification"
+          desc = "회 분류 서비스는 현재 8 종류의 회 구별이 가능합니다."
           link = "/sashimi"
         ></Service>
       </Stack>

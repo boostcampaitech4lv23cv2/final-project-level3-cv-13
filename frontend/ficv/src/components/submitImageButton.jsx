@@ -2,8 +2,9 @@ import Button from "@mui/material/Button";
 import React from "react";
 import ImageIcon from "@mui/icons-material/Image";
 import { Typography } from "@mui/material";
-
+import { useTheme } from '@mui/material/styles';
 export default function SubmitImageButton({image,inference,link }) {
+  const theme = useTheme();
   return (
     <div
       style={{
@@ -16,7 +17,7 @@ export default function SubmitImageButton({image,inference,link }) {
       <Button
         variant="contained"
         component="label"
-        
+        style={{ "background-image": `linear-gradient(to right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`}}
         onClick={async (event) => {
           const formData = new FormData();
           formData.append("files", image);
