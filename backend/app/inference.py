@@ -30,36 +30,75 @@ class CustomFormatter(logging.Formatter):
         formatter = logging.Formatter(log_fmt)
         return formatter.format(record)
 
-
-class Inference:
-    def __init__(self) -> None:
+class Logger:
+    def __init__(self):
         self.logger = logging.getLogger()
         # DEBUG(10), INFO(20), WARNING(30, default), ERROR(40), CRITICAL(50)
         self.logger.setLevel("INFO")
         handler=logging.StreamHandler()
         handler.setFormatter(CustomFormatter())
         self.logger.addHandler(handler)
-        self.logger.info(os.environ["GOOGLE_APPLICATION_CREDENTIALS"])
+    def get_logger(self):
+        return self.logger
+
+class Inference:
+    def __init__(self,logger) -> None:
+        self.logger= logger
         self.storage_client = storage.Client()
         bucket = self.storage_client.bucket(BUCKET_NAME)
-        newest_blob=None
+        best_blob=None
+        best_blob_score=0
         for blob in bucket.list_blobs():
-            if newest_blob==None:
-                newest_blob=blob
-            else:
-                if newest_blob.time_created<blob.time_created:
-                    
-                    newest_blob=blob
+            # 분류태스크_모델명_성능_날짜.onnx
+            task, _, score, _= blob.name.split("-")
+            score=float(score)
+            if task=="fish":
+                if best_blob == None:
+                    best_blob=blob
+                    best_blob_score=score
+                else:
+                    if best_blob_score<score:
+                        best_blob=blob
+                        best_blob_score = score
         contents = blob.download_as_string()
-        self.logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {newest_blob.name}")
-
+        self.logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {best_blob.name}")
         self.session=self.__create_session(contents)
-        self.blob_name=newest_blob.name
+        self.blob_name=best_blob.name
 
     def __create_session(self,model: str) -> ort.InferenceSession:
         return ort.InferenceSession(model)
 
     def run(self,x):
         out=self.session.run(None, {'input': x})
-        self.logger.info(out[0][0].tolist())
+        return out[0][0]
+
+class Inference_Sashimi:
+    def __init__(self,logger) -> None:
+        self.logger= logger
+        self.storage_client = storage.Client()
+        bucket = self.storage_client.bucket(BUCKET_NAME)
+        best_blob=None
+        best_blob_score=0
+        for blob in bucket.list_blobs():
+            # 분류태스크_모델명_성능_날짜.onnx
+            task, _, score, _= blob.name.split("-")
+            score=float(score)
+            if task=="sashimi":
+                if best_blob == None:
+                    best_blob=blob
+                    best_blob_score=score
+                else:
+                    if best_blob_score<score:
+                        best_blob=blob
+                        best_blob_score = score
+        contents = blob.download_as_string()
+        self.session=self.__create_session(contents)
+        self.logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {best_blob.name}")
+        self.blob_name=best_blob.name
+
+    def __create_session(self,model: str) -> ort.InferenceSession:
+        return ort.InferenceSession(model)
+
+    def run(self,x):
+        out=self.session.run(None, {'input': x})
         return out[0][0]
