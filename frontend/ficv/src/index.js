@@ -12,6 +12,7 @@ import "./index.css";
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+document.title = "FICV"
 
 const theme = createTheme({
   typography: {
