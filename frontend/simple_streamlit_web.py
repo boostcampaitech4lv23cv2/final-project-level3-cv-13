@@ -37,12 +37,12 @@ def get_prediction_sashimi(picture):
     st.metric("Prediction Score", f"{percent}%")
 
 def start():
-    # return requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/blob_name").json()
-    return requests.get("http://0.0.0.0:8000/blob_name").json()
+    return requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/blob_name").json()
+    # return requests.get("http://0.0.0.0:8000/blob_name").json()
 
 def start_sashimi():
-    # return requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/blob_name").json()
-    return requests.get("http://0.0.0.0:8000/blob_name_sashimi").json()
+    return requests.get("https://fast-api-backend-nzhkc6v44a-du.a.run.app/blob_name").json()
+    # return requests.get("http://0.0.0.0:8000/blob_name_sashimi").json()
 
 name=start()
 st.title("FICV")
