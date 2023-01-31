@@ -36,7 +36,7 @@ jobs:
         - docker build -t "${IMAGE}/backend:${TRAVIS_COMMIT}" -f backend/Dockerfile .
         - docker push "${IMAGE}/backend:${TRAVIS_COMMIT}"
         - gcloud run deploy "${BACKEND_RUN_SERVICE}" --image="${IMAGE}/backend:${TRAVIS_COMMIT}" --port=8000
-          --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed --cpu=2 --memory=2Gi --max-instances=3
+          --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed --cpu=2 --memory=1Gi --max-instances=3
     - stage: 🚀build
       if: commit_message =~ /build$/ OR commit_message =~ /build-frontend$/
       name: Frontend-build
@@ -57,7 +57,7 @@ jobs:
       script:
         - docker build -t "${IMAGE}/frontend:${TRAVIS_COMMIT}" -f frontend/Dockerfile .
         - docker push "${IMAGE}/frontend:${TRAVIS_COMMIT}"
-        - gcloud run deploy "${FRONTEND_RUN_SERVICE}" --image="${IMAGE}/frontend:${TRAVIS_COMMIT}" --port=8000
+        - gcloud run deploy "${FRONTEND_RUN_SERVICE}" --image="${IMAGE}/frontend:${TRAVIS_COMMIT}" --port=443
           --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed --memory=512Mi --max-instances=1
 
 notifications:
