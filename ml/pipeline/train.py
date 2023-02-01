@@ -253,7 +253,7 @@ def train(data_dir, model_dir, args):
                 f"best acc : {best_val_acc:4.2%}, best f1_score : {best_macro_f1_score:4.2}, best loss: {best_val_loss:4.2}"
             )
 
-            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "Val/f1 score": macro_f1_score, "results": figure, "Confusion Matrix": cm_figure})
+            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "Val/f1 score": macro_f1_score, "Val/best f1 score": best_macro_f1_score, "results": figure, "Confusion Matrix": cm_figure})
 
             print(f'{early_stop_arg-early_stop} Epoch left until early stopping..')                
             if macro_f1_score <= best_macro_f1_score:                
