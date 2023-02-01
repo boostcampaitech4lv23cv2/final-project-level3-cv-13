@@ -60,9 +60,10 @@ def csv_refactor(path, category, csv_folder_path):
                    writer.writerow(['img_path',"categories_id"])
                 with tqdm(total = len(df)) as pbar:
                     for idx in range (len(df)):
-                        title_name = df.iloc[idx][0].split("/")[0]
-                        name = df.iloc[idx][0].split("/")[1]
-                        writer.writerow([osp.join(remove_space(title_name),name),category_name[folder]])
+                        # title_name = df.iloc[idx][0].split("/")[0]
+                        # name = df.iloc[idx][0].split("/")[1]
+                        # writer.writerow([osp.join(remove_space(title_name),name),category_name[folder]])
+                        writer.writerow([osp.join(folder,df.iloc[idx][0]),category_name[folder]])
                         pbar.update(1)
         
         
