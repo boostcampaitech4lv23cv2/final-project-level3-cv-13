@@ -5,19 +5,24 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import { Paper } from "@mui/material";
+import { CardActionArea, Paper } from "@mui/material";
 
-export default function OutService({ img_src, desc_title, desc, link}) {
+export default function OutService({ img_src, desc_title, desc, link }) {
   return (
     <Paper elevation={12} sx={{ width: 330 }}>
       <Card sx={{ width: 330 }}>
-        <CardMedia
-          sx={{ height: 330}}
-          image={img_src}
-          alt="Cannot load image"
-          title="Fish Classification Service"
-
-        />
+        <CardActionArea
+          onClick={(e) => {
+            window.open(link);
+          }}
+        >
+          <CardMedia
+            sx={{ height: 330 }}
+            image={img_src}
+            alt="Cannot load image"
+            title="Fish Classification Service"
+          />
+        </CardActionArea>
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
             {desc_title}
@@ -27,7 +32,15 @@ export default function OutService({ img_src, desc_title, desc, link}) {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small" onClick={(e)=>{window.open(link)}}>Link</Button>
+          <Button
+            size="medium"
+            onClick={(e) => {
+              window.open(link);
+            }}
+            color="secondary"
+          >
+            Link
+          </Button>
         </CardActions>
       </Card>
     </Paper>

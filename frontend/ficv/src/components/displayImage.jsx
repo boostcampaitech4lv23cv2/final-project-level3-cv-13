@@ -1,4 +1,4 @@
-import { Card, CardMedia, Typography, Box, CardContent } from "@mui/material";
+import { Card, Typography, Box, CardContent } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import React from "react";
 import dnd from "../images/drag-and-drop.png";
@@ -35,7 +35,7 @@ export default function Image({ image, setImage }) {
                   justifyContent: "center",
                 }}
               >
-                해당 글씨를 눌러 예측하고 싶은 파일을 선택하거나 끌어서
+                해당 영역을 눌러 예측하고 싶은 파일을 선택하거나 끌어서
                 넣어주세요!
               </Typography>
             </>

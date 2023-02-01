@@ -25,11 +25,6 @@ export default function SideBar(props) {
     props.setMobileOpen(!props.mobileOpen);
   };
   const icons = [home_icon, fish_icon, sashimi_icon, github_icon];
-  // const attribution = [<a href="https://www.flaticon.com/free-icons/main-page" title="main page icons">Main page icons created by Mihimihi - Flaticon</a>,
-  //                      <a href="https://www.flaticon.com/free-icons/fish" title="fish icons">Fish icons created by ultimatearm - Flaticon</a>,
-  //                      <a href="https://www.flaticon.com/free-icons/sashimi" title="sashimi icons">Sashimi icons created by Freepik - Flaticon</a>,
-  //                      <a href="https://www.flaticon.com/kr/free-icons/github" title="github 아이콘">Github 아이콘  제작자: Roundicons Premium - Flaticon</a>
-  //                      ];
   const link = ["/", "/fish", "/sashimi", "/about_us"]
   const drawer = (
     <div>
