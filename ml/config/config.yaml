@@ -19,8 +19,7 @@ sashimi_classes:
           'Korea_rockfish_sashimi' : '우럭회',
           'Red_seabream_sashimi' : '참돔회',
           'Brown_croaker_sashimi' : '민어회',
-          'Red_drum_sashimi' : '점성어회',
-          'Tilapia_sashimi' : '틸라피아회',
+          'Red_drum_and_Tilapia_sashimi' : '점성어회 틸라피아회',
           'Salmon_sashimi' : '연어회',
           'Tuna_sashimi' : '참치회',
           'Japanese_amberjack_sashimi' : '방어회'
@@ -42,7 +41,7 @@ criterion:
   value: 'focal'
 model:
   desc: 'Resnet50, EfficientNetB0, EfficientNetB7, Swin_Base_patch4_window12_384_in22k'
-  value: 'Swin_Base_patch4_window12_384_in22k'
+  value: 'EfficientNetB0'
 scheduler:
   desc: 'step_lr, lambda_lr, multistep_lr, exponential_lr, cosine_annealing_lr, cosine_annealing_warm_restarts_lr, reduce_on_plateau_lr, cyclic_lr'
   value: 'cosine_annealing_warm_restarts_lr'

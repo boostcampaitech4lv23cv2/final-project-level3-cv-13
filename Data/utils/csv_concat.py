@@ -23,10 +23,10 @@ sashimi_category = {'Olive_flounder_sashimi' : 0,
                     'Red_seabream_sashimi' : 2,
                     'Brown_croaker_sashimi' : 3,
                     'Red_drum_sashimi' : 4,
-                    'Tilapia_sashimi' : 5,
-                    'Salmon_sashimi' : 6,
-                    'Tuna_sashimi' : 7,
-                    'Japanese_amberjack_sashimi' : 8
+                    'Tilapia_sashimi' : 4,
+                    'Salmon_sashimi' : 5,
+                    'Tuna_sashimi' : 6,
+                    'Japanese_amberjack_sashimi' : 7
                    }
 
 def csv_refactor(path, category, csv_folder_path):
