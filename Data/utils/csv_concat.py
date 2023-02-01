@@ -3,6 +3,7 @@ import os
 import os.path as osp
 import csv
 from tqdm import tqdm
+import sklearn.utils
 
 fish_category = {'Olive_flounder' : 0,
                  'Korea_rockfish' : 1,
@@ -53,6 +54,7 @@ def csv_refactor(path, category, csv_folder_path):
         csv_path = osp.join(path, folder, 'label.csv')
         print(csv_path)
         df = pd.read_csv(csv_path)
+        df = sklearn.utils.shuffle(df)
         if df.columns[0] == 'img_path':
             with open(csv_folder_path + "/" + category +'.csv',csv_mode[flag],newline='') as f:
                 writer = csv.writer(f)
