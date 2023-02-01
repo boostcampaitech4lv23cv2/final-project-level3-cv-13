@@ -35,7 +35,7 @@ export default function Image({ image, setImage }) {
                   justifyContent: "center",
                 }}
               >
-                해당 글씨를 눌러 예측하고 싶은 파일을 선택하거나 끌어서
+                해당 영역을 눌러 예측하고 싶은 파일을 선택하거나 끌어서
                 넣어주세요!
               </Typography>
             </>

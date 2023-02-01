@@ -2,7 +2,6 @@ import { Modal, Box, Typography, Button } from "@mui/material";
 import { useState } from "react";
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { grey} from "@mui/material/colors";
-const drawerWidth = 180;
 export default function Tutorial() {
   const [open, setOpen] = useState(false);
   const style = {

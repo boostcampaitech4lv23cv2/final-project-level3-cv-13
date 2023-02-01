@@ -36,7 +36,6 @@ export default function Sashimi() {
     "참돔",
     "민어",
     "점성어",
-    "틸라피아",
     "연어",
     "참치",
     "방어",
@@ -71,7 +70,7 @@ export default function Sashimi() {
         >
           <MainDescWhite>분류 가능한 회 종류</MainDescWhite>
           <DescWhite>
-            광어, 우럭, 참돔, 민어, 점성어, 탈라피아, 연어, 참치, 방어
+            광어, 우럭, 참돔, 민어, 점성어, 연어, 참치, 방어
           </DescWhite>
         </Box>
       </Box>
