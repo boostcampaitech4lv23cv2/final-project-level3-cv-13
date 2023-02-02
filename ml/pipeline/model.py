@@ -3,6 +3,7 @@ import torch
 import timm
 
 # timm create_model
+# timm.models
 '''
 def __init__(
         self, block_args, num_classes=1000, num_features=1280, in_chans=3, stem_size=32, fix_stem=False,
@@ -76,4 +77,24 @@ class Swin_Tiny_patch4_window7_224(nn.Module):
 
     def forward(self, x):
         x = self.swin_base(x)
+        return x
+    
+class efficientnetv2_l(nn.Module):
+    
+    def __init__(self, num_classes):
+        super().__init__()
+        self.efficientnetv2 = timm.create_model('efficientnetv2_l', pretrained = True, num_classes = num_classes, drop_rate=0.3, act_layer = nn.ReLU)
+
+    def forward(self, x):
+        x = self.efficientnetv2(x)
+        return x
+    
+class efficientnetv2_s(nn.Module):
+    
+    def __init__(self, num_classes):
+        super().__init__()
+        self.efficientnetv2 = timm.create_model('efficientnetv2_s', pretrained = True, num_classes = num_classes, drop_rate=0.3, act_layer = nn.ReLU)
+
+    def forward(self, x):
+        x = self.efficientnetv2(x)
         return x

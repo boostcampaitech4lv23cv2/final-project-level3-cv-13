@@ -3,6 +3,7 @@ import os
 import os.path as osp
 import csv
 from tqdm import tqdm
+import sklearn.utils
 
 fish_category = {'Olive_flounder' : 0,
                  'Korea_rockfish' : 1,
@@ -23,10 +24,10 @@ sashimi_category = {'Olive_flounder_sashimi' : 0,
                     'Red_seabream_sashimi' : 2,
                     'Brown_croaker_sashimi' : 3,
                     'Red_drum_sashimi' : 4,
-                    'Tilapia_sashimi' : 5,
-                    'Salmon_sashimi' : 6,
-                    'Tuna_sashimi' : 7,
-                    'Japanese_amberjack_sashimi' : 8
+                    'Tilapia_sashimi' : 4,
+                    'Salmon_sashimi' : 5,
+                    'Tuna_sashimi' : 6,
+                    'Japanese_amberjack_sashimi' : 7
                    }
 
 def csv_refactor(path, category, csv_folder_path):
@@ -53,6 +54,7 @@ def csv_refactor(path, category, csv_folder_path):
         csv_path = osp.join(path, folder, 'label.csv')
         print(csv_path)
         df = pd.read_csv(csv_path)
+        df = sklearn.utils.shuffle(df)
         if df.columns[0] == 'img_path':
             with open(csv_folder_path + "/" + category +'.csv',csv_mode[flag],newline='') as f:
                 writer = csv.writer(f)
@@ -60,9 +62,10 @@ def csv_refactor(path, category, csv_folder_path):
                    writer.writerow(['img_path',"categories_id"])
                 with tqdm(total = len(df)) as pbar:
                     for idx in range (len(df)):
-                        title_name = df.iloc[idx][0].split("/")[0]
-                        name = df.iloc[idx][0].split("/")[1]
-                        writer.writerow([osp.join(remove_space(title_name),name),category_name[folder]])
+                        # title_name = df.iloc[idx][0].split("/")[0]
+                        # name = df.iloc[idx][0].split("/")[1]
+                        # writer.writerow([osp.join(remove_space(title_name),name),category_name[folder]])
+                        writer.writerow([osp.join(folder,df.iloc[idx][0]),category_name[folder]])
                         pbar.update(1)
         
         

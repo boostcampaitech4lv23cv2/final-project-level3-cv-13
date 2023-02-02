@@ -4,7 +4,7 @@ import os.path as osp
 import os
 from sklearn.model_selection import StratifiedKFold
 from tqdm import tqdm
-
+import random
 
 def dataset_split(path, name):
     """통합된 csv파일을 train, valid로 나눔
@@ -13,7 +13,7 @@ def dataset_split(path, name):
         path (_type_): 입력으로 들어올 csv파일의 경로
     """
     data = pd.read_csv(path + f'{name}.csv')
-
+    
     target = data.loc[:,'categories_id']
 
     cv = StratifiedKFold(n_splits=5)
@@ -30,6 +30,9 @@ def dataset_split(path, name):
 
 
 if __name__ == "__main__":
+    random.seed(2023)
+    np.random.seed(2023)
+    sklearn.random.seed(2023)
     fish_path = '/opt/ml/data/fish/'
     sashimi_path = '/opt/ml/data/sashimi/'
     dataset_split(fish_path, 'fish')
