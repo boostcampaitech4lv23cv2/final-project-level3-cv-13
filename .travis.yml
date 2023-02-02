@@ -3,7 +3,7 @@ services:
 env:
   global:
   - GCP_PROJECT_ID=helloworld-374304
-  - IMAGE=asia.gcr.io/helloworld-374304
+  - IMAGE=asia-northeast3-docker.pkg.dev/helloworld-374304/ficv
   - FRONTEND_RUN_SERVICE=fast-api-frontend
   - BACKEND_RUN_SERVICE=fast-api-backend
   - CLOUD_RUN_REGION=asia-northeast3
@@ -26,7 +26,7 @@ jobs:
     install:
     - gcloud auth activate-service-account --key-file=google_key.json
     - gcloud auth list
-    - cat google_key.json | docker login -u _json_key --password-stdin https://asia.gcr.io
+    - cat google_key.json | docker login -u _json_key --password-stdin https://asia-northeast3-docker.pkg.dev
     - gcloud projects list
     - gcloud config set project helloworld-374304
     - gcloud services enable run.googleapis.com
@@ -51,7 +51,7 @@ jobs:
     install:
     - gcloud auth activate-service-account --key-file=google_key.json
     - gcloud auth list
-    - cat google_key.json | docker login -u _json_key --password-stdin https://asia.gcr.io
+    - cat google_key.json | docker login -u _json_key --password-stdin https://asia-northeast3-docker.pkg.dev
     - gcloud projects list
     - gcloud config set project helloworld-374304
     - gcloud services enable run.googleapis.com
