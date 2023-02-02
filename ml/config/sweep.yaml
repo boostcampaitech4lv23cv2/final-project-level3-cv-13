@@ -1,0 +1,53 @@
+program: train.py
+method: bayes
+metric:
+  goal: maximize
+  name: Val/f1 score
+parameters:
+  batch_size:
+    values:
+      - 16
+      - 32
+      - 64
+      - 128
+  criterion:
+    values: ["cross_entropy", "focal", "label_smoothing", "f1"]
+  epochs:
+    distribution: int_uniform
+    max: 20
+    min: 10
+  lr:
+    distribution: uniform
+    max: 0.0002
+    min: 5e-05
+  dataset:
+    values:
+      - Fish_Dataset
+      - Sashimi_Dataset
+  name:
+    distribution: categorical
+    values:
+      - exp
+  optimizer:
+    values:
+      - Adam
+      - SGD
+      - Momentum
+      - AdamW
+      - Adagrad
+  scheduler:
+    values:
+      - step_lr
+      - lambda_lr
+      - multistep_lr
+      - exponential_lr
+      - cosine_annealing_lr
+      - cosine_annealing_warm_restarts_lr
+  transform:
+    distribution: categorical
+    values:
+      - transforms_1
+      - transforms_2
+      - transforms_3
+      - transforms_4
+

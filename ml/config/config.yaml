@@ -1,0 +1,71 @@
+seed:
+  value: 42
+fish_classes:
+  value: {'Olive_flounder_F' : '광어',
+          'Korea_rockfish_F' : '우럭',
+          'Red_seabream_F' : '참돔',
+          'Black_porgy_F' : '감성돔',
+          'Rock_bream_F' : '돌돔',
+          'Croaker_F' : '민어',
+          'Argyrosomus_japonicus_F' : '큰민어',
+          'Starry_flounder_F' : '강도다리',
+          'Longtooth_grouper_F' : '자바리',
+          'Convict_grouper_F' : '능성어',
+          'Japanese_amberjack_F' : '방어',
+          'Yellowtail_amberjack_F' : '부시리',
+          }
+sashimi_classes:
+  value: {'Olive_flounder_S' : '광어회',
+          'Korea_rockfish_S' : '우럭회',
+          'Red_seabream_S' : '참돔회',
+          'Brown_croaker_S' : '민어회',
+          'Red_drum_and_Tilapia_S' : '점성어회 틸라피아회',
+          'Salmon_S' : '연어회',
+          'Tuna_S' : '참치회',
+          'Japanese_amberjack_S' : '방어회'
+          }
+lr:
+  value: 0.0001
+epochs:
+  value: 30
+batch_size:
+  value: 16
+val_batch_size:
+  value: 16
+optimizer:
+  desc: 'SGD, Momentum, Adam, AdamW, Adagrad'
+  value: "Adam"
+resize:
+  value: [384, 384]
+criterion:
+  value: 'label_smoothing'
+model:
+  desc: 'Resnet50, EfficientNetB0, EfficientNetB4, EfficientNetB7, Swin_Base_patch4_window12_384_in22k, efficientnetv2_s, efficientnetv2_l'
+  value: 'efficientnetv2_l'
+scheduler:
+  desc: 'step_lr, lambda_lr, multistep_lr, exponential_lr, cosine_annealing_lr, cosine_annealing_warm_restarts_lr, reduce_on_plateau_lr, cyclic_lr'
+  value: 'cosine_annealing_warm_restarts_lr'
+T_0:
+  value: 50
+early_stop:
+  value: 5
+val_ratio:
+  value: 0.2
+log_interval:
+  value: 1
+dataset:
+  desc: 'Fish_Dataset, Sashimi_Dataset'
+  value: 'Fish_Dataset'
+transform:
+  value: 'transforms_1'
+model_dir:
+  desc: 'output이 저장될 경로'
+  value: '../output'
+output_folder_name:
+  desc: 'output에 생성될 폴더 이름'
+  value: 'exp'
+data_dir:
+  desc: 'data 저장소 경로'
+  value: '../../../data'
+momentum:
+  value: 0.001
