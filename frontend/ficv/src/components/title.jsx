@@ -8,6 +8,7 @@ export function BigTitle({ children }) {
           <Typography
       variant="h1"
       color={"text.primary"}
+      fontSize={150}
       
     >
       {children}
