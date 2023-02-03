@@ -35,7 +35,7 @@ jobs:
     - docker push "${IMAGE}/backend:${TRAVIS_COMMIT}"
     - gcloud run deploy "${BACKEND_RUN_SERVICE}" --image="${IMAGE}/backend:${TRAVIS_COMMIT}"
       --port=8000 --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed
-      --cpu=1 --memory=1Gi --min-instances=100 --max-instances=100 --concurrency=4 --timeout=2
+      --cpu=1 --memory=1Gi --max-instances=10 --concurrency=5 --timeout=2
   - stage: 🚀build
     if: commit_message =~ /build$/ OR commit_message =~ /build-frontend$/
     name: Frontend-build
