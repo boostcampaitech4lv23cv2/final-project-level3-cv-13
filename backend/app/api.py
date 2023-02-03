@@ -27,7 +27,7 @@ app.add_middleware(
 @app.on_event("startup") 
 def init():
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="google_key.json"
-    global model_fish, model_sashimi
+    global model_fish, model_sashimi,logger
     logger=Logger()
     model_fish=Inference(logger.get_logger())
     model_sashimi = Inference_Sashimi(logger.get_logger())
@@ -39,6 +39,13 @@ def get_blob_name() -> str:
 @app.get("/blob_name_sashimi")
 def get_blob_name() -> str:
     return model_sashimi.blob_name
+
+@app.get("/refresh")
+def refresh():
+    global model_fish, model_sashimi,logger
+    model_fish=Inference(logger.get_logger())
+    model_sashimi = Inference_Sashimi(logger.get_logger())
+    return "Sucess!"
 
 @app.post("/inference")
 async def inference(files:UploadFile = File()) -> List[int]:
