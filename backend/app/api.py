@@ -58,7 +58,7 @@ async def inference(files:UploadFile = File()) -> List[int]:
     model_fish.logger.info(softmax_label)
     label=label.argmax(0)
     prob=int(softmax_label[label]*100)
-    log_user_input_sashimi(image,label,prob)
+    log_user_input_fish(image,label,prob)
     return [label, prob]
 
 @app.post("/inference_sashimi")
