@@ -10,7 +10,7 @@ import gcsfs
 from typing import List
 import os
 from fastapi.middleware.cors import CORSMiddleware
-import logging
+# from fastapi_cprofile.profiler import CProfileMiddleware
 
 RESIZE=(384,384)
 
@@ -23,6 +23,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# app.add_middleware(CProfileMiddleware, enable=True, print_each_request = True, strip_dirs = False, sort_by='time')
 
 @app.on_event("startup") 
 def init():
