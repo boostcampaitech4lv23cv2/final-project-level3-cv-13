@@ -23,6 +23,7 @@ google-crc32c==1.5.0
 google-resumable-media==2.4.0
 googleapis-common-protos==1.58.0
 h11==0.14.0
+httptools==0.5.0
 humanfriendly==10.0
 idna==3.4
 imageio==2.24.0
@@ -42,6 +43,7 @@ pyasn1==0.4.8
 pyasn1-modules==0.2.8
 pydantic==1.10.4
 python-dateutil==2.8.2
+python-dotenv==0.21.1
 python-multipart==0.0.5
 pytz==2022.7.1
 PyWavelets==1.4.1
@@ -62,4 +64,7 @@ tifffile==2022.10.10
 typing_extensions==4.4.0
 urllib3==1.26.14
 uvicorn==0.20.0
+uvloop==0.17.0
+watchfiles==0.18.1
+websockets==10.4
 yarl==1.8.2
