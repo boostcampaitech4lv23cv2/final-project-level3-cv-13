@@ -8,6 +8,7 @@ import { DescWhite,MainDescWhite } from "./components/main_desc";
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import Tutorial from "./components/tutorial";
+import RefreshButton from "./components/refreshButton";
 
 async function getModel(setModelName){
   try {
@@ -49,21 +50,7 @@ export default function Fish() {
     <BasicBar>
       <SmallTitle>물고기 분류 서비스 <Tutorial></Tutorial></SmallTitle>
       <br />
-      <Image image={selectedImage} setImage={setSelectedImage}></Image>
-      <SubmitImageButton
-        image={selectedImage}
-        inference={setlabel}
-        link="https://fast-api-backend-nzhkc6v44a-du.a.run.app/inference"
-      />
-      <Typography
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        variant="h5"
-      >
-        {label != null ? <p>예측 결과: {num2str[label[0]]}   |   예측 확률: {label[1]}%</p> : <p></p>}
-      </Typography>
-      <Box display="flex" justifyContent="center" alignItems="center" sx={{ borderRadius: '16px' }}>
+      <Box display="flex" justifyContent="center" alignItems="center" sx={{ borderRadius: '16px' }} paddingBottom={10}>
         <Box
           padding={5}
           style={{
@@ -78,16 +65,33 @@ export default function Fish() {
           </DescWhite>
         </Box>
       </Box>
+      <Image image={selectedImage} setImage={setSelectedImage}></Image>
+      <SubmitImageButton
+        image={selectedImage}
+        inference={setlabel}
+        link="https://fast-api-backend-nzhkc6v44a-du.a.run.app/inference"
+      />
+      <Typography
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        variant="h5"
+      >
+        {label != null ? <p>예측 결과: {num2str[label[0]]}   |   예측 확률: {label[1]}%</p> : <p></p>}
+      </Typography>
       <Box>
+      
       <Typography
         display="flex"
         justifyContent="right"
         alignItems="center"
-        paddingTop={50}
+        paddingTop={40}
         color="text.secondary"
-      >
-       {modelName}
+        >
+        {modelName}
+        <RefreshButton ></RefreshButton>
       </Typography>
+      
       </Box>
     </BasicBar>
   );
