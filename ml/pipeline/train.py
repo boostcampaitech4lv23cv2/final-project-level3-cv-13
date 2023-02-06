@@ -59,7 +59,7 @@ def train(data_dir, model_dir, args):
 
     # -- dataset
     transform_module = getattr(import_module("transforms"), args.transform)
-    transform = transform_module(resize = args.resize)
+    transform = transform_module(resize = (args.resize, args.resize))
 
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
@@ -245,7 +245,7 @@ def train(data_dir, model_dir, args):
             val_loss = np.sum(val_loss_items) / len(val_loader)
             val_acc = np.sum(val_acc_items) / len(val_dataset)
             best_val_loss = min(best_val_loss, val_loss)
-            dummy_input = torch.randn(1, 3, *args.resize).to(device)
+            dummy_input = torch.randn(1, 3, (args.resize, args.resize)).to(device)
             
             if macro_f1_score > best_macro_f1_score:
                 early_stop = 0
