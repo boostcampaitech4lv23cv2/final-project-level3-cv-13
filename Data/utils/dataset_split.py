@@ -32,7 +32,6 @@ def dataset_split(path, name):
 if __name__ == "__main__":
     random.seed(2023)
     np.random.seed(2023)
-    sklearn.random.seed(2023)
     fish_path = '/opt/ml/data/fish/'
     sashimi_path = '/opt/ml/data/sashimi/'
     dataset_split(fish_path, 'fish')
