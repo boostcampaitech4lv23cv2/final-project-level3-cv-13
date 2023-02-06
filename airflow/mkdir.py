@@ -27,7 +27,8 @@ from pathlib import Path
 from airflow import models
 from airflow.providers.google.cloud.transfers.gcs_to_sftp import GCSToSFTPOperator
 from airflow.operators.dummy import DummyOperator
-from airflow.operators.bash import BashOperator
+from airflow.providers.ssh.operators.ssh import SSHOperator
+from airflow.providers.ssh.hooks.ssh import SSHHook
 from airflow.utils.trigger_rule import TriggerRule
 
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
@@ -41,6 +42,7 @@ DESTINATION_PATH_SASHIMI = "/opt/ml/af_test/sashimi"
 GCS_FISH_DIR = "fish/*"
 GCS_SASHIMI_DIR = "sashimi/*"
 date = "{{ ds_nodash }}"
+sshHook = SSHHook(ssh_conn_id=SFTP_CONN_ID)
 
 with models.DAG(
     DAG_ID,
@@ -50,23 +52,24 @@ with models.DAG(
     tags=["example", "gcs"],
 ) as dag:
 
-    dummy = BashOperator(
+    dummy = DummyOperator(
             task_id = "start",
-            bash_command="echo pwd",
     )
-
+    
     # today folder name
-    fish_mkdir_today = BashOperator(
+    fish_mkdir_today = SSHOperator(
             task_id="fish-mkdir-today",
-            bash_command="mkdir -p {{params.fish_des}}/{{ ds_nodash }}",
+            command="mkdir -p {{params.fish_des}}/{{ ds_nodash }}",
+            ssh_hook=sshHook,
             params={'fish_des': DESTINATION_PATH_FISH,
                     'date': date,
             }
     )
 
-    sashimi_mkdir_today = BashOperator(
+    sashimi_mkdir_today = SSHOperator(
             task_id="sashimi-mkdir-today",
-            bash_command="mkdir -p {{params.sashimi_des}}/{{ ds_nodash }}",
+            command="mkdir -p {{params.sashimi_des}}/{{ ds_nodash }}",
+            ssh_hook=sshHook,
             params={'sashimi_des': DESTINATION_PATH_SASHIMI,
                     'date': date,
             }
@@ -80,11 +83,7 @@ with models.DAG(
             source_bucket=BUCKET_NAME,
             source_object=GCS_FISH_DIR,
             destination_path=os.path.join(DESTINATION_PATH_FISH, date),
-            task_id="fish-mkdir-today",
-            bash_command="mkdir -p {{params.fish_des}}/{{ ds_nodash }}",
-            params={'fish_des': DESTINATION_PATH_FISH,
-                    'date': date,
-            }
+            keep_directory_structure=False,
     )
 
     move_dir_sashimi = GCSToSFTPOperator(
@@ -95,7 +94,7 @@ with models.DAG(
             destination_path=os.path.join(DESTINATION_PATH_SASHIMI, date),
             keep_directory_structure=False,
     )
-
+    
     # filename_label_score   
     # rename
     (
