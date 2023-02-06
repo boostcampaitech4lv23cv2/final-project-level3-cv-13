@@ -19,7 +19,7 @@ def grid_image(np_images, gts, preds, n=16, shuffle=False):
     assert n <= batch_size
 
     choices = random.choices(range(batch_size), k=n) if shuffle else list(range(n))
-    figure = plt.figure(figsize=(12, 18 + 2))  # cautions: hardcoded, 이미지 크기에 따라 figsize 를 조정해야 할 수 있습니다. T.T
+    figure = plt.figure(figsize=(25, 25))  # cautions: hardcoded, 이미지 크기에 따라 figsize 를 조정해야 할 수 있습니다. T.T
     plt.subplots_adjust(top=0.8)  # cautions: hardcoded, 이미지 크기에 따라 top 를 조정해야 할 수 있습니다. T.T
     n_grid = int(np.ceil(n ** 0.5))
     tasks = ["fish"]
@@ -28,7 +28,7 @@ def grid_image(np_images, gts, preds, n=16, shuffle=False):
         pred = preds[choice].item()
         image = np_images[choice]
         title = "\n".join([
-            f"{tasks} - gt: {gt}, pred: {pred}"
+            f" \n gt: {gt} \n pred: {pred}"
         ])
 
         plt.subplot(n_grid, n_grid, idx + 1, title=title)
@@ -49,8 +49,9 @@ def denormalize_image(image, mean, std):
     
     img_cp = image.copy()
     img_cp *= std
+    img_cp *= 255.0
     img_cp += mean
     img_cp *= 255.0
     img_cp = np.clip(img_cp, 0, 255).astype(np.uint8)
-        
+
     return img_cp

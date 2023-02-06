@@ -1,64 +1,86 @@
-language: python
-python: '3.8'
 services:
 - docker
 env:
   global:
   - GCP_PROJECT_ID=helloworld-374304
-  - IMAGE=asia.gcr.io/helloworld-374304
+  - IMAGE=asia-northeast3-docker.pkg.dev/helloworld-374304/ficv
   - FRONTEND_RUN_SERVICE=fast-api-frontend
   - BACKEND_RUN_SERVICE=fast-api-backend
   - CLOUD_RUN_REGION=asia-northeast3
-
 stages:
-  - 🚀build
-
+- "\U0001F680build"
 jobs:
   include:
-    - stage: 🚀build
-      if: commit_message =~ /build$/ OR commit_message =~ /build-backend$/
-      name: Backend-build
-      before_install: 
-        - openssl aes-256-cbc -K $encrypted_e5b5363276b3_key -iv $encrypted_e5b5363276b3_iv
-          -in google_key.json.enc -out google_key.json -d
-        - sudo usermod -a -G docker $USER
-        - curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-410.0.0-linux-x86_64.tar.gz
-        - tar -xf google-cloud-cli-410.0.0-linux-x86_64.tar.gz
-        - "./google-cloud-sdk/install.sh --quiet"
-      install: 
-        - gcloud auth activate-service-account --key-file=google_key.json
-        - gcloud auth list
-        - cat google_key.json | docker login -u _json_key --password-stdin https://asia.gcr.io
-        - gcloud projects list
-        - gcloud config set project helloworld-374304
-        - gcloud services enable run.googleapis.com
-      script:
-        - docker build -t "${IMAGE}/backend:${TRAVIS_COMMIT}" -f backend/Dockerfile .
-        - docker push "${IMAGE}/backend:${TRAVIS_COMMIT}"
-        - gcloud run deploy "${BACKEND_RUN_SERVICE}" --image="${IMAGE}/backend:${TRAVIS_COMMIT}" --port=8000
-          --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed --cpu=4 --memory=2Gi --max-instances=3
-    - stage: 🚀build
-      if: commit_message =~ /build$/ OR commit_message =~ /build-frontend$/
-      name: Frontend-build
-      before_install: 
-        - openssl aes-256-cbc -K $encrypted_e5b5363276b3_key -iv $encrypted_e5b5363276b3_iv
-          -in google_key.json.enc -out google_key.json -d
-        - sudo usermod -a -G docker $USER
-        - curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-410.0.0-linux-x86_64.tar.gz
-        - tar -xf google-cloud-cli-410.0.0-linux-x86_64.tar.gz
-        - "./google-cloud-sdk/install.sh --quiet"
-      install: 
-        - gcloud auth activate-service-account --key-file=google_key.json
-        - gcloud auth list
-        - cat google_key.json | docker login -u _json_key --password-stdin https://asia.gcr.io
-        - gcloud projects list
-        - gcloud config set project helloworld-374304
-        - gcloud services enable run.googleapis.com
-      script:
-        - docker build -t "${IMAGE}/frontend:${TRAVIS_COMMIT}" -f frontend/Dockerfile .
-        - docker push "${IMAGE}/frontend:${TRAVIS_COMMIT}"
-        - gcloud run deploy "${FRONTEND_RUN_SERVICE}" --image="${IMAGE}/frontend:${TRAVIS_COMMIT}" --port=443
-          --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed --memory=512Mi --max-instances=1
-
+  - stage: 🚀build
+    if: commit_message =~ /build$/ OR commit_message =~ /build-backend$/
+    name: Backend-build
+    language: python
+    python: '3.8'
+    before_install:
+    - openssl aes-256-cbc -K $encrypted_e5b5363276b3_key -iv $encrypted_e5b5363276b3_iv
+      -in google_key.json.enc -out google_key.json -d
+    - sudo usermod -a -G docker $USER
+    - curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-410.0.0-linux-x86_64.tar.gz
+    - tar -xf google-cloud-cli-410.0.0-linux-x86_64.tar.gz
+    - "./google-cloud-sdk/install.sh --quiet"
+    install:
+    - gcloud auth activate-service-account --key-file=google_key.json
+    - gcloud auth list
+    - cat google_key.json | docker login -u _json_key --password-stdin https://asia-northeast3-docker.pkg.dev
+    - gcloud projects list
+    - gcloud config set project helloworld-374304
+    - gcloud services enable run.googleapis.com
+    script:
+    - docker build -t "${IMAGE}/backend:${TRAVIS_COMMIT}" -f backend/Dockerfile .
+    - docker push "${IMAGE}/backend:${TRAVIS_COMMIT}"
+    - gcloud run deploy "${BACKEND_RUN_SERVICE}" --image="${IMAGE}/backend:${TRAVIS_COMMIT}"
+      --port=8000 --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed
+      --cpu=1 --memory=1Gi --min-instances=0 --max-instances=10 --concurrency=5 --timeout=2
+  - stage: 🚀build
+    if: commit_message =~ /build$/ OR commit_message =~ /build-frontend$/
+    name: Frontend-build
+    language: python
+    python: '3.8'
+    before_install:
+    - openssl aes-256-cbc -K $encrypted_e5b5363276b3_key -iv $encrypted_e5b5363276b3_iv
+      -in google_key.json.enc -out google_key.json -d
+    - sudo usermod -a -G docker $USER
+    - curl -O https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-410.0.0-linux-x86_64.tar.gz
+    - tar -xf google-cloud-cli-410.0.0-linux-x86_64.tar.gz
+    - "./google-cloud-sdk/install.sh --quiet"
+    install:
+    - gcloud auth activate-service-account --key-file=google_key.json
+    - gcloud auth list
+    - cat google_key.json | docker login -u _json_key --password-stdin https://asia-northeast3-docker.pkg.dev
+    - gcloud projects list
+    - gcloud config set project helloworld-374304
+    - gcloud services enable run.googleapis.com
+    script:
+    - docker build -t "${IMAGE}/frontend:${TRAVIS_COMMIT}" -f frontend/Dockerfile
+      .
+    - docker push "${IMAGE}/frontend:${TRAVIS_COMMIT}"
+    - gcloud run deploy "${FRONTEND_RUN_SERVICE}" --image="${IMAGE}/frontend:${TRAVIS_COMMIT}"
+      --port=443 --region="${CLOUD_RUN_REGION}" --allow-unauthenticated --platform=managed
+      --memory=512Mi --max-instances=1
+  - stage: 🚀build
+    if: commit_message =~ /build$/ OR commit_message =~ /build-react$/
+    language: nodejs
+    node_js:
+    - 16
+    warnings_are_errors: false
+    name: React-build
+    before_install:
+    - cd frontend/ficv
+    - npm install
+    script:
+    - npm run build
+    deploy:
+      provider: firebase
+      skip_cleanup: true
+      on:
+        repo: "boostcampaitech4lv23cv2/final-project-level3-cv-13"
+        all_branches: true
+      token:
+        secure: "HFUcsZuNWtqLlvk2+c63jF5CxRKerp4a/S5I8564QLkLhnqjTt6eJGjoSnXYPc/oBu/aq57bhgMLt99P3mET47XzUyks+8y0U33MQKf+b4yz5uM8SEnbwLGVYfO8Yi547/J67N6uOF11k8b2BGclamIo1OKJBSs3VBieh6NMoMAwnksZLdR+PrAlZLMLRbwmUTreGzDZ/5iy6j7Oj6Rum3oHmZ1kDVE0fdhIFHL6npSVro859eSW10eYmGzim/dWxQqrSvZ1ycV1Lw5jaEXD+fZJ7o3uxdNlm7ak9ox8QQ5ewhZQ+eynreRBQiXjXz7l59AjElu7io4wct77e8sKGlA+WKDtEfUXbN8i76mRxTMqUInm5g4w5w/W0BR9syOASQyv9rrfztYLUDeSkFrfnX/vuj3CEoadaO7bFM+5FCudlQgTGb+9d3cJxEqZdfKFR79DTr8rjDsDM19ephyvdVjoRhdhe0gLldXsi1Q/Q4LfDFKG5fI4gBtfadtnDAfq0r1Q65rdL3lztOVwOGjjnv47lGrPs4iZLAhNCMdgwupD+c4LDwuK6xUT7sgKgidlt3DXlEZtCzlBDSl1ytqIiujzZAL8aqv8EOuGvRTsZbnD4XoGY30wP46UUYuKh3P6gdBugDAEiso857eM+Lr0Soa7VaKbi+rz6nPlswwq08Y="
 notifications:
   slack: boostcampaitech:6V8JoxJiotqi87IDmTe3HgHb

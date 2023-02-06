@@ -2,15 +2,11 @@ program: train.py
 method: bayes
 metric:
   goal: maximize
-  name: Val/accuracy
+  name: Val/f1 score
 parameters:
-  resize:
-    values:
-      - [384, 384]
-      - [512, 256]
-      - [256, 512]
   batch_size:
     values:
+      - 16
       - 32
       - 64
       - 128
@@ -18,22 +14,12 @@ parameters:
     values: ["cross_entropy", "focal", "label_smoothing", "f1"]
   epochs:
     distribution: int_uniform
-    max: 400
-    min: 100
-  log_interval:
-    distribution: int_uniform
-    max: 40
+    max: 20
     min: 10
   lr:
     distribution: uniform
     max: 0.0002
     min: 5e-05
-  model:
-    distribution: categorical
-    values:
-      - EfficientNetB0
-      - Resnet50
-      - EfficientNetB4
   dataset:
     values:
       - Fish_Dataset
@@ -61,4 +47,7 @@ parameters:
     distribution: categorical
     values:
       - transforms_1
+      - transforms_2
+      - transforms_3
+      - transforms_4
 

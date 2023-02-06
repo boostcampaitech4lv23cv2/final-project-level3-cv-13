@@ -30,18 +30,14 @@ from utils import UploadBlob
 from utils import IncrementPath
 from utils import GridImage
 from utils import SeedEverything
-from utils.ConfusionMatrix import confusion_matrix, accuracy, macro_f1, cm_image
-from dataloader import CLASSES
+from utils.ConfusionMatrix import confusion_matrix, accuracy, macro_f1, cm_image, confusion_normalize
+
 
 import wandb
 import os.path as osp
 from torch.optim.lr_scheduler import StepLR
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="/opt/ml/storage_key.json"
 
-'''
-222, 224 print문 삭제 필요
-200번 째 CLASSES 상수 삭제하고 실제 리스트 작성 필요
-'''
 
 def get_lr(optimizer):
     for param_group in optimizer.param_groups:
@@ -135,12 +131,19 @@ def train(data_dir, model_dir, args):
     global best_val_acc
     best_val_acc = 0
     best_val_loss = np.inf
+    global best_macro_f1_score
     best_macro_f1_score = 0
 
     early_stop = 0
     breaker = False
     early_stop_arg = args.early_stop
-
+    
+    # GridImage에 이미지를 담기 위한 변수
+    val_preds = []
+    val_labels = []
+    val_images_num = args.GridImage
+    val_images = None
+    
     for epoch in range(args.epochs):
         # train loop
         model.train()
@@ -187,7 +190,8 @@ def train(data_dir, model_dir, args):
             val_loss_items = []
             val_acc_items = []
             figure = None
-                        
+            CLASSES = args.fish_classes if data == 'fish' else args.sashimi_classes
+            CLASSES = list(range(len(CLASSES)))
             class_items = np.zeros((len(CLASSES),len(CLASSES)))
 
             for val_batch in val_loader:
@@ -205,18 +209,38 @@ def train(data_dir, model_dir, args):
                 val_loss_items.append(loss_item)
                 val_acc_items.append(acc_item)
 
-                if figure is None:
-                    inputs_np = torch.clone(inputs).detach().cpu().permute(0, 2, 3, 1).numpy()
+                for input_image, pred, label in zip(inputs, preds, labels):
+                    # label과 pred이 일치하지 않는다면 image, pred, label을 담는다
+                    if pred != label:
+                        if len(val_preds) != val_images_num:
+                            
+                            if val_images == None:
+                                val_images = torch.unsqueeze(input_image, 0)
+                            else:
+                                _ = torch.unsqueeze(input_image, dim=0)
+                                val_images = torch.cat((val_images,_),0)
+
+
+                            val_preds.append(pred)
+                            val_labels.append(label)
+                        else:
+                            break
+
+                if len(val_preds) == val_images_num:
+                    # 요구된 이미지만큼 이미지가 모였다면 GridImage에 대입
+                    inputs_np = torch.clone(val_images).detach().cpu().permute(0, 2, 3, 1).numpy()
                     # inputs_np = val_dataset_module.denormalize_image(inputs_np*255, val_dataset.mean, val_dataset.std)
                     figure = GridImage.grid_image(
-                        inputs_np, labels, preds, n=16, shuffle= False
+                        inputs_np, val_labels, val_preds, n=val_images_num, shuffle= False
                     )
-            cm_figure = cm_image(class_items)
+
+            class_items = confusion_normalize(class_items)
+            
+            classes = list(args.fish_classes) if data == 'fish' else list(args.sashimi_classes)
+            cm_figure = cm_image(class_items, classes)
             cm_figure = wandb.Image(cm_figure)
             accuracy_score = accuracy(class_items, CLASSES)
-            # print(accuracy_score)
             macro_f1_score = macro_f1(class_items, CLASSES)
-            # print(macro_f1_score)
             
             val_loss = np.sum(val_loss_items) / len(val_loader)
             val_acc = np.sum(val_acc_items) / len(val_dataset)
@@ -226,21 +250,26 @@ def train(data_dir, model_dir, args):
             if macro_f1_score > best_macro_f1_score:
                 early_stop = 0
                 [os.remove(f) for f in glob.glob(f"{save_dir}/*_best_*")]
-                print(f"New best model for val accuracy : {macro_f1_score:6.4}! saving the best model..")
-                torch.save(model.state_dict(), f"{save_dir}/{config.model}_best_epoch{epoch}_{macro_f1_score:6.4}.pth")
+                print(f"New best model for val macro f1 score : {macro_f1_score:6.4}! saving the best model..")
+                torch.save(model.state_dict(), f"{save_dir}/{data}_{config.model}_best_epoch{epoch}_{macro_f1_score:6.4}.pth")
                 torch.set_flush_denormal(True)
-                torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_best_{macro_f1_score:6.4}.onnx", export_params=True,
+                torch.onnx.export(model, dummy_input, f"{save_dir}/{data}_{config.model}_best_{macro_f1_score:6.4}.onnx", export_params=True, opset_version=11,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
-                                'output' : {0 : 'batch_size'}})
-                best_val_acc = val_acc
+                                'output' : {0 : 'batch_size'}})  
+                best_macro_f1_score = macro_f1_score
                 torch.set_flush_denormal(False)
-                
+            if val_acc > best_val_acc:
+                best_val_acc = val_acc
+            # 다음 Validation을 위한 변수 초기화
+            val_images = None
+            val_preds = []
+            val_labels = []
             [os.remove(f) for f in glob.glob(f"{save_dir}/*_last_*")]
-            torch.save(model.state_dict(), f"{save_dir}/{config.model}_last_{epoch}epoch_{macro_f1_score:6.4}.pth")
+            torch.save(model.state_dict(), f"{save_dir}/{data}_{config.model}_last_{epoch}epoch_{macro_f1_score:6.4}.pth")
             torch.set_flush_denormal(True)
-            torch.onnx.export(model, dummy_input, f"{save_dir}/{config.model}_last_{macro_f1_score:6.4}.onnx", export_params=True,
+            torch.onnx.export(model, dummy_input, f"{save_dir}/{data}_{config.model}_last_{macro_f1_score:6.4}.onnx", export_params=True, opset_version=11,
                       input_names = ['input'],
                       output_names = ['output'],
                       dynamic_axes={'input' : {0 : 'batch_size'},
@@ -251,7 +280,7 @@ def train(data_dir, model_dir, args):
                 f"best acc : {best_val_acc:4.2%}, best f1_score : {best_macro_f1_score:4.2}, best loss: {best_val_loss:4.2}"
             )
 
-            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "Val/f1 score": macro_f1_score, "results": figure, "Confusion Matrix": cm_figure})
+            wandb.log({"Val/loss": val_loss, "epoch": epoch, "Val/accuracy": val_acc, "Val/f1 score": macro_f1_score, "Val/best f1 score": best_macro_f1_score, "results": figure, "Confusion Matrix": cm_figure})
 
             print(f'{early_stop_arg-early_stop} Epoch left until early stopping..')                
             if macro_f1_score <= best_macro_f1_score:                
@@ -283,7 +312,7 @@ if __name__ == '__main__':
         project="Final_Project",
         config = wandb_yaml
     )
-    this_run_name=f"{wandb.config.model}_{wandb.config.epochs}_{wandb.config.batch_size}_{wandb.config.optimizer}_{wandb.config.lr}"
+    this_run_name=f"{wandb.config.dataset.split('_')[0]}_{wandb.config.model}_{wandb.config.epochs}_{wandb.config.batch_size}_{wandb.config.optimizer}_{wandb.config.lr}"
     wandb.run.name=this_run_name
     wandb.save(wandb_yaml)
 
@@ -310,7 +339,7 @@ if __name__ == '__main__':
     parser.add_argument('--lr_decay_step', type=int, default=20, help='learning rate scheduler deacy step (default: 20)')
     parser.add_argument('--log_interval', type=int, default=config.log_interval, help='how many batches to wait before logging training status')
     parser.add_argument('--name', default=config.output_folder_name, help='model save at {SM_MODEL_DIR}/{name}')
-
+    parser.add_argument('--GridImage', default=config.GridImage, type=int, help='number of val GridImage (default: 36)')
     # Container environment
     parser.add_argument('--data_dir', type=str, default=os.environ.get('SM_CHANNEL_TRAIN', config.data_dir))
     parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR', config.model_dir))
@@ -332,8 +361,8 @@ if __name__ == '__main__':
 
     UploadBlob.upload_blob(
         bucket_name="model-registry-cv13",
-        source_file_name=f"{save_dir}/{data}_{config.model}_best_{best_val_acc:.4f}.onnx",
-        destination_blob_name=f"{data}-{config.model}-{best_val_acc:.4f}-{today}.onnx",
+        source_file_name=f"{save_dir}/{data}_{config.model}_best_{best_macro_f1_score:6.4}.onnx",
+        destination_blob_name=f"{data}-{config.model}-{best_macro_f1_score:6.4}-{today}.onnx",
     )
 
     
