@@ -38,6 +38,7 @@ optimizer:
 resize:
   value: [384, 384]
 criterion:
+  desc: 'label_smoothing, f1, focal, cross_entropy'
   value: 'label_smoothing'
 model:
   desc: 'Resnet50, EfficientNetB0, EfficientNetB4, EfficientNetB7, Swin_Base_patch4_window12_384_in22k, efficientnetv2_s, efficientnetv2_l'
