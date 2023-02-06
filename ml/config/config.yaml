@@ -36,7 +36,7 @@ optimizer:
   desc: 'SGD, Momentum, Adam, AdamW, Adagrad'
   value: "Adam"
 resize:
-  value: 512
+  value: [384, 384]
 criterion:
   value: 'label_smoothing'
 model:
