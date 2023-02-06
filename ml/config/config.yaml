@@ -71,3 +71,5 @@ momentum:
   value: 0.9
 GridImage:
   value: 36
+kfold:
+  value: 1
