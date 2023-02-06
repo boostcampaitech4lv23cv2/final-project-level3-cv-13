@@ -51,11 +51,16 @@ def inference(model_dir):
     
     with torch.no_grad():
         batch_size = 1
-        file_path = '/opt/ml/data/fish/Croaker/e4694ec0d379bdec6410312bb244d42d21279403e458a25cb0e31c470c1a.jpg'
+        # file_path = '/opt/ml/data/fish/Croaker/e4694ec0d379bdec6410312bb244d42d21279403e458a25cb0e31c470c1a.jpg'
+        file_path = '/opt/ml/data/fish/Croaker/3353bd277d5481b48feab7ee7a665eda374bb4360e89211df029b1081418.jpg'
         image = cv2.imread(file_path)
+        print(image.shape)
+        # image = list(image)
 
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         # image = np.expand_dims(image, axis=0)
+        print(image.shape)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
 
         transform=A.Compose([
             A.Resize(384, 384),
@@ -65,13 +70,22 @@ def inference(model_dir):
         
         image = transform(image=image)['image']
         image = image/255
-        image = image.unsqueeze(0)
-        image = image.to(device, dtype=torch.float32)
+        image = image.detach().cpu().numpy()
+        # print(image)
+        image = image.tolist()
+        image = np.expand_dims(image, axis=0)
+        # print("-----------------")
+        # print(image)
+        image = image.astype(np.float32)
+        # image = image.unsqueeze(0)
+        image = torch.from_numpy(image).to(device)
+        # image = image.to(device, dtype=torch.float32)
         # feed-forward test
         start = time.time()
 
-        # exp = image.detach().cpu().numpy()
+        # exp = 
         # print(image)
+        print(image.shape)
         output = model(image)
         print(output)
         preds = torch.argmax(output, dim=1)
