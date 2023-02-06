@@ -64,7 +64,7 @@ def train(data_dir, model_dir, args):
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
         img_dir = osp.join(data_dir, data),
-        ann_dir = osp.join(data_dir, data, f'train_{args.kfold}.csv'),
+        ann_dir = osp.join(data_dir, data, 'train_1.csv'),
         transform = transform,
         num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
@@ -72,7 +72,7 @@ def train(data_dir, model_dir, args):
     val_dataset_module = getattr(import_module("dataloader"), args.dataset)
     val_dataset = val_dataset_module(
         img_dir = osp.join(data_dir, data),
-        ann_dir = osp.join(data_dir, data, f'valid_{args.kfold}.csv'),
+        ann_dir = osp.join(data_dir, data, 'valid_1.csv'),
         transform = transform,
         num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
@@ -340,7 +340,6 @@ if __name__ == '__main__':
     parser.add_argument('--log_interval', type=int, default=config.log_interval, help='how many batches to wait before logging training status')
     parser.add_argument('--name', default=config.output_folder_name, help='model save at {SM_MODEL_DIR}/{name}')
     parser.add_argument('--GridImage', default=config.GridImage, type=int, help='number of val GridImage (default: 36)')
-    parser.add_argument('--kfold', default=config.kfold, type=int, help='number of kfold (default: 1)')
     # Container environment
     parser.add_argument('--data_dir', type=str, default=os.environ.get('SM_CHANNEL_TRAIN', config.data_dir))
     parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR', config.model_dir))
