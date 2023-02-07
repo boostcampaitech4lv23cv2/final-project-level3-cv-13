@@ -41,7 +41,7 @@ def grid_image(np_images, gts, preds, n=16, shuffle=False):
         image = denormalize_image(image, mean, std)
 
         plt.imshow(image.astype(np.uint8))
-
+    plt.close()
     return figure
 
 
