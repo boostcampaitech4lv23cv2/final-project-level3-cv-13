@@ -1,16 +1,15 @@
 ## api 구성
-from fastapi import FastAPI, UploadFile, File, Form 
+from fastapi import FastAPI, UploadFile, File, Form ,Query
 from app.inference import Inference, Inference_Sashimi,Logger                               
 from PIL import Image
 import io
 import numpy as np
 import albumentations
-import pandas as pd
-import gcsfs
-from typing import List
+import secrets
+from typing import List,Tuple
 import os
 from fastapi.middleware.cors import CORSMiddleware
-import logging
+# from fastapi_cprofile.profiler import CProfileMiddleware
 
 RESIZE=(384,384)
 
@@ -23,11 +22,12 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+# app.add_middleware(CProfileMiddleware, enable=True, print_each_request = True, strip_dirs = False, sort_by='time')
 
 @app.on_event("startup") 
 def init():
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="google_key.json"
-    global model_fish, model_sashimi
+    global model_fish, model_sashimi,logger
     logger=Logger()
     model_fish=Inference(logger.get_logger())
     model_sashimi = Inference_Sashimi(logger.get_logger())
@@ -40,8 +40,15 @@ def get_blob_name() -> str:
 def get_blob_name() -> str:
     return model_sashimi.blob_name
 
+@app.get("/refresh")
+def refresh():
+    global model_fish, model_sashimi,logger
+    model_fish=Inference(logger.get_logger())
+    model_sashimi = Inference_Sashimi(logger.get_logger())
+    return "Sucess!"
+
 @app.post("/inference")
-async def inference(files:UploadFile = File()) -> List[int]:
+async def inference(files:UploadFile = File()) -> Tuple[int,int,str]:
     image= await files.read()
     image = Image.open(io.BytesIO(image))
     image = image.convert("RGB")
@@ -49,11 +56,13 @@ async def inference(files:UploadFile = File()) -> List[int]:
     label= model_fish.run(data)
     softmax_label = softmax(label.tolist())
     model_fish.logger.info(softmax_label)
-    log_user_input_fish(image,label.argmax(0))
-    return [label.argmax(0), int(softmax_label[label.argmax(0)]*100)]
+    label=label.argmax(0)
+    prob=int(softmax_label[label]*100)
+    file_name = log_user_input_fish(image,label,prob)
+    return (label, prob, file_name)
 
 @app.post("/inference_sashimi")
-async def inference_sashimi(files: UploadFile=File()) -> List[int]:
+async def inference_sashimi(files: UploadFile=File()) -> Tuple[int,int,str]:
     image= await files.read()
     image = Image.open(io.BytesIO(image))
     image = image.convert("RGB")
@@ -61,8 +70,19 @@ async def inference_sashimi(files: UploadFile=File()) -> List[int]:
     label= model_sashimi.run(data)
     softmax_label = softmax(label.tolist())
     model_sashimi.logger.info(softmax_label)
-    log_user_input_sashimi(image,label.argmax(0))
-    return [label.argmax(0), int(softmax_label[label.argmax(0)]*100)]
+    label=label.argmax(0)
+    prob=int(softmax_label[label]*100)
+    file_name = log_user_input_sashimi(image,label,prob)
+    return (label, prob, file_name)
+
+@app.get("/reaction/") 
+def change_reaction(q: List[str] = Query(default=None)):
+    file_name=q[0]
+    label=q[1]
+    new_file_name = file_name[:-5] + label + file_name[-4:]
+    bucket=model_fish.storage_client.bucket("user-data-cv13")
+    blob = bucket.blob(file_name)
+    bucket.rename_blob(blob, new_file_name)
 
 def transform(image):
     aug = albumentations.Compose([
@@ -76,36 +96,22 @@ def transform(image):
     image=image.astype(np.float32)
     return image
 ##User data save for user data input
-def log_user_input_fish(image: Image,label:int):
+def log_user_input_fish(image: Image,label:int,probability:int):
     bucket=model_fish.storage_client.bucket("user-data-cv13")
-    fs = gcsfs.GCSFileSystem(project='helloworld-374304')
-    with fs.open('user-data-cv13/user_input_fish.csv') as f:
-        df = pd.read_csv(f)
-    cnt=len(df)
-    file_name= f"images/fish/{cnt:05d}.jpg"
-    new_row=pd.DataFrame({"img_path":file_name,"categories_id":label},index=[0])
-    df=pd.concat([df,new_row])
-    data=df.to_csv(index=False)
-    bucket.blob("user_input_fish.csv").upload_from_string(data,"text/csv")
+    file_name= f"fish/{secrets.token_hex(30)}_{label}_{probability}_1.jpg"
     with io.BytesIO() as output:
         image.save(output,format="JPEG")
         bucket.blob(file_name).upload_from_string(output.getvalue(),"image/jpeg")
+    return file_name
         
 ##User data save for user data input
-def log_user_input_sashimi(image: Image,label:int):
-    bucket=model_fish.storage_client.bucket("user-data-cv13")
-    fs = gcsfs.GCSFileSystem(project='helloworld-374304')
-    with fs.open('user-data-cv13/user_input_sashimi.csv') as f:
-        df = pd.read_csv(f)
-    cnt=len(df)
-    file_name= f"images/sashimi/{cnt:05d}.jpg"
-    new_row=pd.DataFrame({"img_path":file_name,"categories_id":label},index=[0])
-    df=pd.concat([df,new_row])
-    data=df.to_csv(index=False)
-    bucket.blob("user_input_sashimi.csv").upload_from_string(data,"text/csv")
+def log_user_input_sashimi(image: Image,label:int,probability:int):
+    bucket=model_sashimi.storage_client.bucket("user-data-cv13")
+    file_name= f"sashimi/{secrets.token_hex(30)}_{label}_{probability}_1.jpg"
     with io.BytesIO() as output:
         image.save(output,format="JPEG")
         bucket.blob(file_name).upload_from_string(output.getvalue(),"image/jpeg")
+    return file_name
         
 def softmax(x):
     e_x = np.exp(x - np.max(x))
