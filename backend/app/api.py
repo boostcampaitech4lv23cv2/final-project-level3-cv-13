@@ -89,7 +89,7 @@ def transform(image):
 ##User data save for user data input
 def log_user_input_fish(image: Image,label:int,probability:int):
     bucket=model_fish.storage_client.bucket("user-data-cv13")
-    file_name= f"images/fish/{secrets.token_hex(30)}_{label}_{probability}.jpg"
+    file_name= f"fish/{secrets.token_hex(30)}_{label}_{probability}.jpg"
     with io.BytesIO() as output:
         image.save(output,format="JPEG")
         bucket.blob(file_name).upload_from_string(output.getvalue(),"image/jpeg")
@@ -97,7 +97,7 @@ def log_user_input_fish(image: Image,label:int,probability:int):
 ##User data save for user data input
 def log_user_input_sashimi(image: Image,label:int,probability:int):
     bucket=model_fish.storage_client.bucket("user-data-cv13")
-    file_name= f"images/sashimi/{secrets.token_hex(30)}_{label}_{probability}.jpg"
+    file_name= f"sashimi/{secrets.token_hex(30)}_{label}_{probability}.jpg"
     with io.BytesIO() as output:
         image.save(output,format="JPEG")
         bucket.blob(file_name).upload_from_string(output.getvalue(),"image/jpeg")

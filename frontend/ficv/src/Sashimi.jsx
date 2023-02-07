@@ -8,6 +8,7 @@ import { DescWhite, MainDescWhite } from "./components/main_desc";
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import Tutorial from "./components/tutorial";
+import RefreshButton from "./components/refreshButton";
 
 async function getModel(setModelName){
   try {
@@ -23,7 +24,6 @@ async function getModel(setModelName){
     console.log("Error >>", err);
   }
 }
-
 export default function Sashimi() {
   const theme = useTheme();
   const [selectedImage, setSelectedImage] = useState(null);
@@ -46,6 +46,20 @@ export default function Sashimi() {
         회 분류 서비스 <Tutorial></Tutorial>
       </SmallTitle>
       <br />
+      <Box display="flex" justifyContent="center" alignItems="center" paddingBottom={10}>
+        <Box
+          padding={5}
+          style={{
+            backgroundImage: `linear-gradient(to bottom right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            borderRadius: "20px",
+          }}
+        >
+          <MainDescWhite>분류 가능한 회 종류</MainDescWhite>
+          <DescWhite>
+            광어, 우럭, 참돔, 민어, 점성어, 연어, 참치, 방어
+          </DescWhite>
+        </Box>
+      </Box>
       <Image image={selectedImage} setImage={setSelectedImage}></Image>
       <SubmitImageButton
         image={selectedImage}
@@ -60,28 +74,15 @@ export default function Sashimi() {
       >
         {label != null ? <p>예측 결과: {num2str[label[0]]}   |   예측 확률: {label[1]}%</p> : <p></p>}
       </Typography>
-      <Box display="flex" justifyContent="center" alignItems="center">
-        <Box
-          padding={5}
-          style={{
-            backgroundImage: `linear-gradient(to bottom right, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-            borderRadius: "20px",
-          }}
-        >
-          <MainDescWhite>분류 가능한 회 종류</MainDescWhite>
-          <DescWhite>
-            광어, 우럭, 참돔, 민어, 점성어, 연어, 참치, 방어
-          </DescWhite>
-        </Box>
-      </Box>
       <Typography
         display="flex"
         justifyContent="right"
         alignItems="center"
         color="text.secondary"
-        paddingTop={50}
+        paddingTop={40}
       >
        {modelName}
+       <RefreshButton ></RefreshButton>
       </Typography>
     </BasicBar>
   );
