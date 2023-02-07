@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import Tutorial from "./components/tutorial";
 import RefreshButton from "./components/refreshButton";
+import ReactionButton from "components/reaction";
 
 async function getModel(setModelName){
   try {
@@ -29,7 +30,8 @@ export default function Fish() {
   const theme = useTheme();
   const [selectedImage, setSelectedImage] = useState(null);
   const [label, setlabel] = useState(null);
-  const [modelName, setModelName] = useState("None");  
+  const [modelName, setModelName] = useState("None");
+  const [answered, setanswered] = useState(null);
   getModel(setModelName)
 
   const num2str = [
@@ -65,11 +67,12 @@ export default function Fish() {
           </DescWhite>
         </Box>
       </Box>
-      <Image image={selectedImage} setImage={setSelectedImage}></Image>
+      <Image image={selectedImage} setImage={setSelectedImage} setanswered={setanswered}></Image>
       <SubmitImageButton
         image={selectedImage}
         inference={setlabel}
         link="https://fast-api-backend-nzhkc6v44a-du.a.run.app/inference"
+        setanswered={setanswered}
       />
       <Typography
         display="flex"
@@ -79,8 +82,8 @@ export default function Fish() {
       >
         {label != null ? <p>예측 결과: {num2str[label[0]]}   |   예측 확률: {label[1]}%</p> : <p></p>}
       </Typography>
+      <ReactionButton label={label} answered={answered} setanswered={setanswered}></ReactionButton>
       <Box>
-      
       <Typography
         display="flex"
         justifyContent="right"

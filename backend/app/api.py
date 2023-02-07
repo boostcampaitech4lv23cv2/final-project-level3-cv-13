@@ -1,12 +1,12 @@
 ## api 구성
-from fastapi import FastAPI, UploadFile, File, Form 
+from fastapi import FastAPI, UploadFile, File, Form ,Query
 from app.inference import Inference, Inference_Sashimi,Logger                               
 from PIL import Image
 import io
 import numpy as np
 import albumentations
 import secrets
-from typing import List
+from typing import List,Tuple
 import os
 from fastapi.middleware.cors import CORSMiddleware
 # from fastapi_cprofile.profiler import CProfileMiddleware
@@ -48,7 +48,7 @@ def refresh():
     return "Sucess!"
 
 @app.post("/inference")
-async def inference(files:UploadFile = File()) -> List[int]:
+async def inference(files:UploadFile = File()) -> Tuple[int,int,str]:
     image= await files.read()
     image = Image.open(io.BytesIO(image))
     image = image.convert("RGB")
@@ -58,11 +58,11 @@ async def inference(files:UploadFile = File()) -> List[int]:
     model_fish.logger.info(softmax_label)
     label=label.argmax(0)
     prob=int(softmax_label[label]*100)
-    log_user_input_fish(image,label,prob)
-    return [label, prob]
+    file_name = log_user_input_fish(image,label,prob)
+    return (label, prob, file_name)
 
 @app.post("/inference_sashimi")
-async def inference_sashimi(files: UploadFile=File()) -> List[int]:
+async def inference_sashimi(files: UploadFile=File()) -> Tuple[int,int,str]:
     image= await files.read()
     image = Image.open(io.BytesIO(image))
     image = image.convert("RGB")
@@ -72,8 +72,17 @@ async def inference_sashimi(files: UploadFile=File()) -> List[int]:
     model_sashimi.logger.info(softmax_label)
     label=label.argmax(0)
     prob=int(softmax_label[label]*100)
-    log_user_input_sashimi(image,label,prob)
-    return [label, prob]
+    file_name = log_user_input_sashimi(image,label,prob)
+    return (label, prob, file_name)
+
+@app.get("/reaction/") 
+def change_reaction(q: List[str] = Query(default=None)):
+    file_name=q[0]
+    label=q[1]
+    new_file_name = file_name[:-5] + label + file_name[-4:]
+    bucket=model_fish.storage_client.bucket("user-data-cv13")
+    blob = bucket.blob(file_name)
+    bucket.rename_blob(blob, new_file_name)
 
 def transform(image):
     aug = albumentations.Compose([
@@ -89,18 +98,20 @@ def transform(image):
 ##User data save for user data input
 def log_user_input_fish(image: Image,label:int,probability:int):
     bucket=model_fish.storage_client.bucket("user-data-cv13")
-    file_name= f"fish/{secrets.token_hex(30)}_{label}_{probability}.jpg"
+    file_name= f"fish/{secrets.token_hex(30)}_{label}_{probability}_1.jpg"
     with io.BytesIO() as output:
         image.save(output,format="JPEG")
         bucket.blob(file_name).upload_from_string(output.getvalue(),"image/jpeg")
+    return file_name
         
 ##User data save for user data input
 def log_user_input_sashimi(image: Image,label:int,probability:int):
-    bucket=model_fish.storage_client.bucket("user-data-cv13")
-    file_name= f"sashimi/{secrets.token_hex(30)}_{label}_{probability}.jpg"
+    bucket=model_sashimi.storage_client.bucket("user-data-cv13")
+    file_name= f"sashimi/{secrets.token_hex(30)}_{label}_{probability}_1.jpg"
     with io.BytesIO() as output:
         image.save(output,format="JPEG")
         bucket.blob(file_name).upload_from_string(output.getvalue(),"image/jpeg")
+    return file_name
         
 def softmax(x):
     e_x = np.exp(x - np.max(x))
