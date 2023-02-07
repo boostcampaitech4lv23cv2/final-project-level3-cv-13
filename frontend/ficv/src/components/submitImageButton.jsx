@@ -3,7 +3,7 @@ import React from "react";
 import ImageIcon from "@mui/icons-material/Image";
 import { Typography } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
-export default function SubmitImageButton({image,inference,link }) {
+export default function SubmitImageButton({image,inference,link,setanswered}) {
   const theme = useTheme();
   return (
     <div
@@ -32,6 +32,8 @@ export default function SubmitImageButton({image,inference,link }) {
               }
             );
             inference(await response.json());
+            setanswered(false)
+    
           } catch (err) {
             console.log("Error >>", err);
           }

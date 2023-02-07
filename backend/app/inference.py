@@ -60,7 +60,7 @@ class Inference:
                     if best_blob_score<score:
                         best_blob=blob
                         best_blob_score = score
-        contents = blob.download_as_string()
+        contents = best_blob.download_as_string()
         self.logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {best_blob.name}")
         self.session=self.__create_session(contents)
         self.blob_name=best_blob.name
@@ -91,7 +91,7 @@ class Inference_Sashimi:
                     if best_blob_score<score:
                         best_blob=blob
                         best_blob_score = score
-        contents = blob.download_as_string()
+        contents = best_blob.download_as_string()
         self.session=self.__create_session(contents)
         self.logger.info(f"Downloaded ONNX from {BUCKET_NAME} as {best_blob.name}")
         self.blob_name=best_blob.name

@@ -64,7 +64,7 @@ def train(data_dir, model_dir, args):
     train_dataset_module = getattr(import_module("dataloader"), args.dataset)
     train_dataset = train_dataset_module(
         img_dir = osp.join(data_dir, data),
-        ann_dir = osp.join(data_dir, data, 'train_1.csv'),
+        ann_dir = osp.join(data_dir, data, f'train_{args.kfold}.csv'),
         transform = transform,
         num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
@@ -72,7 +72,7 @@ def train(data_dir, model_dir, args):
     val_dataset_module = getattr(import_module("dataloader"), args.dataset)
     val_dataset = val_dataset_module(
         img_dir = osp.join(data_dir, data),
-        ann_dir = osp.join(data_dir, data, 'valid_1.csv'),
+        ann_dir = osp.join(data_dir, data, f'valid_{args.kfold}.csv'),
         transform = transform,
         num_classes = len(args.fish_classes) if data == 'fish' else len(args.sashimi_classes)
     )
@@ -137,7 +137,13 @@ def train(data_dir, model_dir, args):
     early_stop = 0
     breaker = False
     early_stop_arg = args.early_stop
-
+    
+    # GridImage에 이미지를 담기 위한 변수
+    val_preds = []
+    val_labels = []
+    val_images_num = args.GridImage
+    val_images = None
+    
     for epoch in range(args.epochs):
         # train loop
         model.train()
@@ -203,13 +209,31 @@ def train(data_dir, model_dir, args):
                 val_loss_items.append(loss_item)
                 val_acc_items.append(acc_item)
 
-                if figure is None:
-                    inputs_np = torch.clone(inputs).detach().cpu().permute(0, 2, 3, 1).numpy()
+                for input_image, pred, label in zip(inputs, preds, labels):
+                    # label과 pred이 일치하지 않는다면 image, pred, label을 담는다
+                    if pred != label:
+                        if len(val_preds) != val_images_num:
+                            
+                            if val_images == None:
+                                val_images = torch.unsqueeze(input_image, 0)
+                            else:
+                                _ = torch.unsqueeze(input_image, dim=0)
+                                val_images = torch.cat((val_images,_),0)
+
+
+                            val_preds.append(pred)
+                            val_labels.append(label)
+                        else:
+                            break
+
+                if len(val_preds) == val_images_num:
+                    # 요구된 이미지만큼 이미지가 모였다면 GridImage에 대입
+                    inputs_np = torch.clone(val_images).detach().cpu().permute(0, 2, 3, 1).numpy()
                     # inputs_np = val_dataset_module.denormalize_image(inputs_np*255, val_dataset.mean, val_dataset.std)
                     figure = GridImage.grid_image(
-                        inputs_np, labels, preds, n=16, shuffle= False
+                        inputs_np, val_labels, val_preds, n=val_images_num, shuffle= False
                     )
-            
+
             class_items = confusion_normalize(class_items)
             
             classes = list(args.fish_classes) if data == 'fish' else list(args.sashimi_classes)
@@ -238,7 +262,10 @@ def train(data_dir, model_dir, args):
                 torch.set_flush_denormal(False)
             if val_acc > best_val_acc:
                 best_val_acc = val_acc
-                
+            # 다음 Validation을 위한 변수 초기화
+            val_images = None
+            val_preds = []
+            val_labels = []
             [os.remove(f) for f in glob.glob(f"{save_dir}/*_last_*")]
             torch.save(model.state_dict(), f"{save_dir}/{data}_{config.model}_last_{epoch}epoch_{macro_f1_score:6.4}.pth")
             torch.set_flush_denormal(True)
@@ -312,7 +339,9 @@ if __name__ == '__main__':
     parser.add_argument('--lr_decay_step', type=int, default=20, help='learning rate scheduler deacy step (default: 20)')
     parser.add_argument('--log_interval', type=int, default=config.log_interval, help='how many batches to wait before logging training status')
     parser.add_argument('--name', default=config.output_folder_name, help='model save at {SM_MODEL_DIR}/{name}')
-
+    parser.add_argument('--GridImage', default=config.GridImage, type=int, help='number of val GridImage (default: 36)')
+    parser.add_argument('--kfold', default=config.kfold, type=int, help='number of kfold (default: 1)')
+    # Container environment
     # Container environment
     parser.add_argument('--data_dir', type=str, default=os.environ.get('SM_CHANNEL_TRAIN', config.data_dir))
     parser.add_argument('--model_dir', type=str, default=os.environ.get('SM_MODEL_DIR', config.model_dir))

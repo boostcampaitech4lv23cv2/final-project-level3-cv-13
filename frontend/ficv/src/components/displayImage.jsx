@@ -2,9 +2,9 @@ import { Card, Typography, Box, CardContent } from "@mui/material";
 import { useDropzone } from "react-dropzone";
 import React from "react";
 import dnd from "../images/drag-and-drop.png";
-export default function Image({ image, setImage }) {
+export default function Image({ image, setImage ,setanswered}) {
   const { getRootProps, getInputProps } = useDropzone({
-    onDrop: (files) => setImage(files[0]),
+    onDrop: (files) => {setImage(files[0]);setanswered(null)},
   });
   return (
     <Box display="flex" justifyContent="center" alignItems="center">

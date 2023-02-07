@@ -25,57 +25,81 @@ from dataloader import Fish_Dataset
 from loss import create_criterion
 # from scheduler import create_scheduler
 
-from utils import UploadBlob
+# from utils import UploadBlob
 from utils import IncrementPath
 from utils import GridImage
 from utils import SeedEverything
 
+@torch.no_grad()
 def inference(model_dir):
     
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model_module = getattr(import_module("model"), 'EfficientNetB7')  # default: BaseModel
+    model_module = getattr(import_module("model"), 'EfficientNetB0')  # default: BaseModel
     model = model_module(
         num_classes = 12
     ).to(device)
     
     model.to(device)
     
-    checkpoint = torch.load("/opt/ml/final-project-level3-cv-13/ml/output/EfficientNetB7_10_16_Adam_0.0001_exp4/fish_EfficientNetB7_best_epoch8_0.9727.pth", map_location=device)
+    checkpoint = torch.load("/opt/ml/final-project-level3-cv-13/ml/output/EfficientNetB0_30_8_Adam_0.0001_exp37/fish_EfficientNetB0_best_epoch25_0.9433.pth", map_location=device)
     model.load_state_dict(checkpoint)
     model.eval()
-
+    # print(model)
     # Let's create a dummy input tensor  
     # make dummy data
     
+    with torch.no_grad():
+        batch_size = 1
+        # file_path = '/opt/ml/data/fish/Croaker/e4694ec0d379bdec6410312bb244d42d21279403e458a25cb0e31c470c1a.jpg'
+        file_path = '/opt/ml/data/fish/Croaker/3353bd277d5481b48feab7ee7a665eda374bb4360e89211df029b1081418.jpg'
+        image = cv2.imread(file_path)
+        print(image.shape)
+        # image = list(image)
 
-    batch_size = 1
-    file_path = '/opt/ml/data/fish/Croaker/0aadb8e6d39db834124c877bad828f2007e84a5006d4599788f5cb96b481.jpg'
-    image = cv2.imread(file_path)
-    image = np.expand_dims(image, axis=0)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        # image = np.expand_dims(image, axis=0)
+        print(image.shape)
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    transform=A.Compose([
-        A.Resize(384, 384),
-        A.Normalize(),
-        ToTensorV2(),
-    ])
 
-    image = transform(image=image)['image']
-    image = image.unsqueeze(0)
-    image = image.to(device, dtype=torch.float32)
-    # feed-forward test
-    start = time.time()
-    output = model(image)
-    preds = torch.argmax(output, dim=-1)
-    end = time.time()
-    print(f"{end - start:.5f} sec")
+        transform=A.Compose([
+            A.Resize(384, 384),
+            A.Normalize(),
+            ToTensorV2(),
+        ])
+        
+        image = transform(image=image)['image']
+        image = image/255
+        image = image.detach().cpu().numpy()
+        # print(image)
+        image = image.tolist()
+        image = np.expand_dims(image, axis=0)
+        # print("-----------------")
+        # print(image)
+        image = image.astype(np.float32)
+        # image = image.unsqueeze(0)
+        image = torch.from_numpy(image).to(device)
+        # image = image.to(device, dtype=torch.float32)
+        # feed-forward test
+        start = time.time()
+
+        # exp = 
+        # print(image)
+        print(image.shape)
+        output = model(image)
+        print(output)
+        preds = torch.argmax(output, dim=1)
+        preds = preds.cpu().numpy()
+        print(preds)
+        end = time.time()
+        print(f"{end - start:.5f} sec")
 
     
 
 
 if __name__ == "__main__":
-    path = '/opt/ml/final-project-level3-cv-13/ml/output/EfficientNetB7_10_16_Adam_0.0001_exp4'
+    SeedEverything.seed_everything(2023)
+    path = '/opt/ml/final-project-level3-cv-13/ml/output/EfficientNetB0_30_8_Adam_0.0001_exp37'
     yaml = osp.join(path, 'config.yaml')
     model = glob.glob(f"{path}/*best*.pth")
     inference(model_dir=model)
