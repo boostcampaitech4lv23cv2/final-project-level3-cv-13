@@ -76,6 +76,7 @@ pip install albumentations
 [GCP Bitbucket 객체 다운로드](https://cloud.google.com/storage/docs/downloading-objects#client-libraries-download-object-portion)  
 [GCP Bitbucket 파일 업로드](https://cloud.google.com/storage/docs/uploading-objects?hl=ko#storage-upload-object-python)  
 [GCP Bitbucket 파일 Read & Write](https://github.com/googleapis/python-storage/blob/HEAD/samples/snippets/storage_fileio_write_read.py)  
+[GCP Bitbucket 객체 복사, 이름 변경, 이동](https://cloud.google.com/storage/docs/copying-renaming-moving-objects?hl=ko#storage-copy-object-python)
 
 ### Travis CI
 [Travis CI Docker](https://docs.travis-ci.com/user/docker/)  
