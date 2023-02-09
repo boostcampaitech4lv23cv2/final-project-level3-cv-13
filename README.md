@@ -1,6 +1,9 @@
 # AI Tech4 CV-13 Final Project
 
-## 🐟수산시장 치팅 방지를 위한 어종 분류 서비스🐠
+## 🐟[FICV](https://ficv-74b93.web.app/) | 수산시장 치팅 방지를 위한 어종 분류 서비스🐠
+
+https://user-images.githubusercontent.com/71117066/217698404-eb7bf826-11bc-412d-a945-e810d56f5369.mp4
+
 
 ## 🕵️Members
 
