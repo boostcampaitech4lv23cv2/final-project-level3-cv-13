@@ -1,3 +1,13 @@
+## 서버 환경 구성(Requirements)
+```
+# Server Environment set-ups
+
+pip install pip==22.3.1
+pip install -r frontend/requirements.txt
+streamlit run frontend/simple_streamlit_web.py --server.fileWatcherType=none --server.port 443 --server.address 0.0.0.0 --browser.gatherUsageStats False
+```
+
+
 ## Streamlit으로 Demo Frontend page 만들기
 ### Streamlit
 [Streamlit GCP Setup](https://www.artefact.com/blog/how-to-deploy-and-secure-your-streamlit-app-on-gcp/)  

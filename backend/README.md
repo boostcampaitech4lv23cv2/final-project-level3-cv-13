@@ -1,47 +1,11 @@
 ## 서버 환경 구성(Requirements)
 ```
 # Server Environment set-ups
--f https://download.pytorch.org/whl/torch_stable.html
-pip install fast-api
-pip install uvicorn
 
-#for server torch environments
-pip install torch==1.13.1+cpu
-pip install torchaudio==0.13.1+cpu
-pip install torchvision==0.14.1+cpu
-pip install python-multipart
-
-# for code integrity test
-pip install pytest==7.2.0
-pip install httpx==0.23.3
-
-# Convert models to resolve dependency issues
-pip install onnxruntime
-pip install onnx
-
-# for image preprocessing
-pip install albumentations
-
+pip install pip==22.3.1
+pip install -r backend/requirements.txt
+python backend/main.py
 ```
-## 구현 목록
-- 프론트 구성
-    - Streamlit으로 구현 ✅
-- 백엔드 구성(fast api base)
-    - Onnx 변환 코드(자동화 예정)
-    - Onnx로 변환된 모델로 inference(완성) ✅
-    - GCP 설정
-        - Google Docker에 image push ✅
-        - Container Registry에 등록 ✅
-        - push된 이미지를 Cloud run으로 실행 ✅
-    - 서비스 요청에 따른 Inference 결과 저장 -> DB에 저장해서 분석하기
-- Pytest 구성
-    - 인퍼런스 시간 측정 ✅
-        - localhost
-            - Resnet50 : 0.3XX
-            - Efficient b0 : 0.1XX
-        -Google Cloud PlatForm
-            - Resnet50 : 0.4XX
-    - ...
 
 ## 참고자료
 ### ONNX 모델 변환 및 추론
