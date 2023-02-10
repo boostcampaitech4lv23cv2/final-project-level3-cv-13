@@ -33,12 +33,12 @@ from airflow.utils.trigger_rule import TriggerRule
 
 ENV_ID = os.environ.get("SYSTEM_TESTS_ENV_ID")
 PROJECT_ID = os.environ.get("SYSTEM_TESTS_GCP_PROJECT")
-DAG_ID = "gcs_to_sftp"
+DAG_ID = "ficv_pipeline"
 
 SFTP_CONN_ID = "aistages"
 BUCKET_NAME = "user-data-cv13"
-DESTINATION_PATH_FISH = "/opt/ml/data2/fish"
-DESTINATION_PATH_SASHIMI = "/opt/ml/data2/sashimi"
+DESTINATION_PATH_FISH = "/opt/ml/data/fish"
+DESTINATION_PATH_SASHIMI = "/opt/ml/data/sashimi"
 GCS_FISH_DIR = "fish/*"
 GCS_SASHIMI_DIR = "sashimi/*"
 date = "{{ ds_nodash }}"
