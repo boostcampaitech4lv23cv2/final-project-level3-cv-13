@@ -32,7 +32,7 @@ def dataset_split(path, name):
 if __name__ == "__main__":
     random.seed(2023)
     np.random.seed(2023)
-    fish_path = '/opt/ml/data/fish/'
-    sashimi_path = '/opt/ml/data/sashimi/'
+    fish_path = '/opt/ml/data2/fish/'
+    sashimi_path = '/opt/ml/data2/sashimi/'
     dataset_split(fish_path, 'fish')
     dataset_split(sashimi_path, 'sashimi')
