@@ -43,7 +43,7 @@ export default function ReactionButton({label, answered, setanswered}) {
           >
             <SentimentVerySatisfiedIcon
               fontSize="large"
-              color="error"
+              color="success"
             ></SentimentVerySatisfiedIcon>
           </Button>
           <Button
@@ -71,7 +71,7 @@ export default function ReactionButton({label, answered, setanswered}) {
           >
             <SentimentVeryDissatisfiedIcon
               fontSize="large"
-              color="success"
+              color="error"
             ></SentimentVeryDissatisfiedIcon>
           </Button>
         </Box>
