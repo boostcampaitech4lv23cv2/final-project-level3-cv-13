@@ -2,8 +2,7 @@
 
 ## 🐟[FICV](https://ficv-74b93.web.app/) | 수산시장 치팅 방지를 위한 어종 분류 서비스🐠
 
-
-
+https://user-images.githubusercontent.com/29935109/219285923-0bd00817-66f7-49bd-ac72-37aba273ab09.mp4
 
 ## 🕵️Members
 
