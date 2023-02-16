@@ -2,8 +2,7 @@
 
 ## 🐟[FICV](https://ficv-74b93.web.app/) | 수산시장 치팅 방지를 위한 어종 분류 서비스🐠
 
-https://user-images.githubusercontent.com/71117066/217698404-eb7bf826-11bc-412d-a945-e810d56f5369.mp4
-
+https://user-images.githubusercontent.com/29935109/219285923-0bd00817-66f7-49bd-ac72-37aba273ab09.mp4
 
 ## 🕵️Members
 
@@ -93,10 +92,9 @@ https://user-images.githubusercontent.com/71117066/217698404-eb7bf826-11bc-412d-
 ## 💾 Datasets
 - 이미지 구성 : 
    - AI HUB : 500,000장(광어, 우럭, 참돔, 감성돔, 돌돔)-> 각 100,000장
-   - Scraping Dataset(각 200장 이상)
+   - Scraping Dataset(각 300장 이상)
       - 물고기(광어, 우럭, 참돔, 감성돔, 돌돔, 민어, 큰민어, 강도다리, 자바리, 능성어, 방어, 부시리)
-      - 회(광어, 우럭, 참돔, 민어, 점성어, 틸라피아, 연어, 참치, 방어)     
-- 11 class : Background, General trash, Paper, Paper pack, Metal, Glass, Plastic, Styrofoam, Plastic bag, Battery, Clothing
+      - 회(광어, 우럭, 참돔, 민어, 점성어, 틸라피아, 연어, 참치, 방어)
 - annotation format : CSV(image root, label in each line)
 
 ## 🏔️Environments
